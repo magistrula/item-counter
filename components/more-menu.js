@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-export default function CounterItemMenu({ children }) {
+export default function CounterItemMenu({ children, closeOnClick = true }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const toggleMenu = useCallback((event) => {
@@ -30,6 +30,7 @@ export default function CounterItemMenu({ children }) {
           horizontal: 'right',
         }}
         onClose={closeMenu}
+        onClick={closeOnClick ? closeMenu : null}
       >
         {children}
       </Menu>
