@@ -25,6 +25,10 @@ export default function OrderCounterItem({
     incrementItem(itemName, -1);
   }, [itemName, incrementItem]);
 
+  const clearCountCb = useCallback(() => {
+    incrementItem(itemName, itemCount * -1);
+  }, [itemCount, itemName, incrementItem])
+
   const removeCb = useCallback(() => {
     removeItem(itemName);
   }, [itemName, removeItem]);
@@ -59,6 +63,7 @@ export default function OrderCounterItem({
         <MoreMenu>
           <MenuItem onClick={editItemCb}>Rename</MenuItem>
           <MenuItem onClick={removeCb}>Remove</MenuItem>
+          <MenuItem onClick={clearCountCb}>Reset Count</MenuItem>
         </MoreMenu>
 
         <IconButton variant="contained" onClick={decrementCb}>
