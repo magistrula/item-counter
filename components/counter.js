@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import { without } from 'lodash';
 
 import OrderCounterCategory from './counter/category';
@@ -172,15 +173,10 @@ export default function OrderCounter() {
         usePreset={usePreset}
       />
 
-      <Box display="flex" justifyContent="center">
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          mt={3}
-          mx={6}
-        >
+      <Box mt={3} mx={6}>
+        <Grid container spacing={4}>
           {categories.map((category, idx) => (
-            <Box key={category.name} mx={2} mb={4}>
+            <Grid item key={category.name} xs={12} sm={12} md={6} lg={4}>
               <OrderCounterCategory
                 index={idx}
                 name={category.name}
@@ -193,9 +189,9 @@ export default function OrderCounter() {
                 editCategory={editCategory}
                 removeCategory={removeCategory}
               />
-            </Box>
+            </Grid>
           ))}
-        </Box>
+        </Grid>
       </Box>
     </>
   );

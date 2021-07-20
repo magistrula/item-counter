@@ -8,8 +8,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import MoreMenu from '../more-menu';
 
-import s from './styles.module.scss';
-
 export default function OrderCounterItem({
   itemName,
   itemCount,
@@ -38,26 +36,28 @@ export default function OrderCounterItem({
   }, [itemName, editItem]);
 
   return (
-    <Box display="flex" justifyContent="space-between">
-      <Button
-        variant="contained"
-        size="large"
-        className={s['OrderCounter-itemButton']}
-        onClick={incrementCb}
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          width="100%"
+    <Box display="flex">
+      <Box display="flex" flexGrow={1}>
+        <Button
+          variant="contained"
+          size="large"
+          className="u-full-width"
+          onClick={incrementCb}
         >
-          <small>{itemCount || 0}</small>
-          <Box px={1}>
-            <small>{itemName}</small>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <small>{itemCount || 0}</small>
+            <Box px={1}>
+              <small>{itemName}</small>
+            </Box>
+            <small>{itemCount || 0}</small>
           </Box>
-          <small>{itemCount || 0}</small>
-        </Box>
-      </Button>
+        </Button>
+      </Box>
 
       <Box display="flex" ml={1}>
         <MoreMenu>

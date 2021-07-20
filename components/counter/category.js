@@ -7,7 +7,6 @@ import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 
 import CounterItem from './item';
-import s from './styles.module.scss';
 
 export default function OrderCounterCategory({
   index,
@@ -54,11 +53,11 @@ export default function OrderCounterCategory({
   );
 
   return (
-    <div className={s['OrderCounter-category']}>
+    <>
       <Box display="flex" mb={2}>
         <Box flexGrow={1} mr={1}>
           <TextField
-            className={s['OrderCounter-categoryInput']}
+            className="u-full-width"
             placeholder={name}
             onKeyDown={onKeyDownAddItemInput}
           />
@@ -83,6 +82,6 @@ export default function OrderCounterCategory({
           />
         </Box>
       ))}
-    </div>
+    </>
   );
 }
