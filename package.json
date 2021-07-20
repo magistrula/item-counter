@@ -16,6 +16,7 @@
     "next": "^10.0.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-lodash": "^0.1.2",
     "sass": "^1.35.2"
   },
   "devDependencies": {
