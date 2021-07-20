@@ -21,7 +21,7 @@ export default function CounterHeader({
         px={2}
         py={1.5}
       >
-        Item Counter
+        Counter
 
         <Box display="flex" alignItems="center">
           <Box mr={1}>
