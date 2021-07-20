@@ -27,12 +27,13 @@ export default function OrderCounter() {
       return;
     }
 
-    if (columnExists(colName)) {
+    const trimmedName = colName.trim();
+    if (columnExists(trimmedName)) {
       window.alert('Column already exists');
       return;
     }
 
-    setColumns([...columns, makeColumn(colName)]);
+    setColumns([...columns, makeColumn(trimmedName)]);
   }, [columns]);
 
   const removeColumn = useCallback(
@@ -53,13 +54,14 @@ export default function OrderCounter() {
         return;
       }
 
-      if (columnExists(newName)) {
+      const trimmedNewName = newName.trim();
+      if (columnExists(trimmedNewName)) {
         window.alert('Column already exists');
         return;
       }
 
       const updatedCols = [...columns];
-      updatedCols[colIdx].name = newName;
+      updatedCols[colIdx].name = trimmedNewName;
       setColumns(updatedCols);
     },
     [columns]
@@ -71,13 +73,14 @@ export default function OrderCounter() {
         return;
       }
 
-      if (itemExists(itemName)) {
+      const trimmedName = itemName.trim();
+      if (itemExists(trimmedName)) {
         window.alert('Item already exists');
         return;
       }
 
       const updatedCols = [...columns];
-      updatedCols[colIdx].items.push(itemName);
+      updatedCols[colIdx].items.push(trimmedName);
       setColumns(updatedCols);
     },
     [columns]
@@ -102,23 +105,24 @@ export default function OrderCounter() {
 
   const editItem = useCallback(
     (oldName, colIdx) => {
-      const newName = window.prompt('Enter new item name');
+      const newName = window.prompt('Enter new item name', oldName);
       if (!newName) {
         return;
       }
 
-      if (itemExists(newName)) {
+      const newTrimmedName = newName.trim();
+      if (itemExists(newTrimmedName)) {
         window.alert('Item already exists');
         return;
       }
 
       const updatedCols = [...columns];
       const colItems = updatedCols[colIdx].items;
-      colItems[colItems.indexOf(oldName)] = newName;
+      colItems[colItems.indexOf(oldName)] = newTrimmedName;
       setColumns(updatedCols);
 
       const updatedItemCounts = Object.assign({}, itemCounts, {
-        [newName]: itemCounts[oldName] || 0,
+        [newTrimmedName]: itemCounts[oldName] || 0,
       });
       delete updatedItemCounts[oldName];
       setItemCounts(updatedItemCounts);
