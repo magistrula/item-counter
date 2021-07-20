@@ -56,16 +56,18 @@ export default function OrderCounterColumn({
   return (
     <div className={s['OrderCounter-column']}>
       <Box display="flex" mb={2}>
-        <TextField
-          className={s['OrderCounter-columnInput']}
-          placeholder={colName}
-          onKeyDown={onKeyDownAddItemInput}
-        />
+        <Box flexGrow={1} mr={1}>
+          <TextField
+            className={s['OrderCounter-columnInput']}
+            placeholder={colName}
+            onKeyDown={onKeyDownAddItemInput}
+          />
+        </Box>
 
         <IconButton onClick={editColumnCb}>
           <EditIcon fontSize="small" />
         </IconButton>
-        <IconButton size="small" onClick={removeColumnCb}>
+        <IconButton onClick={removeColumnCb}>
           <ClearIcon />
         </IconButton>
       </Box>
