@@ -41,10 +41,17 @@ export default function OrderCounterItem({
         className={s['OrderCounter-itemButton']}
         onClick={incrementCb}
       >
-        <Box display="flex" justifyContent="space-between" width="100%">
-          <span>({itemCount || 0})</span>
-          <span>{itemName}</span>
-          <span>({itemCount || 0})</span>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          width="100%"
+        >
+          <small>{itemCount || 0}</small>
+          <Box px={1}>
+            <small>{itemName}</small>
+          </Box>
+          <small>{itemCount || 0}</small>
         </Box>
       </Button>
 
