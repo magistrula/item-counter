@@ -7,7 +7,6 @@ import { without } from 'lodash';
 import OrderCounterCategory from './counter/category';
 import CounterHeader from './counter/header';
 import { FOOD_BANK_PRESET } from '../constants/presets';
-import s from './counter/styles.module.scss';
 
 function makeColumn(name) {
   return { name, items: [] };
@@ -175,7 +174,6 @@ export default function OrderCounter() {
 
       <Box display="flex" justifyContent="center">
         <Box
-          className={s['OrderCounter-categoriesContainer']}
           display="flex"
           flexWrap="wrap"
           justifyContent="space-between"
