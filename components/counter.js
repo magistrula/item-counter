@@ -176,7 +176,6 @@ export default function OrderCounter() {
         <Box
           display="flex"
           flexWrap="wrap"
-          justifyContent="space-between"
           mt={3}
           mx={6}
         >
