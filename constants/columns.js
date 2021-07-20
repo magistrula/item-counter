@@ -17,7 +17,7 @@ export const DEFAULT_COLS = [
     items: ['2% milk', 'almond milk', 'eggs', 'bacon', 'baby food'],
   },
   {
-    name: 'Dry Goods',
+    name: 'Pantry Items',
     items: ['rice', 'lentils', 'pasta', 'pinto', 'garbanzo', 'maseca', 'oil'],
   },
 ];
