@@ -6,7 +6,7 @@ import { without } from 'lodash';
 
 import ColunterColumn from './counter/column';
 import CounterHeader from './counter/header';
-import { DEFAULT_COLS } from '../constants/columns';
+import { FOOD_BANK_COLUMNS } from '../constants/columns';
 import s from './counter/styles.module.scss';
 
 function makeColumn(name) {
@@ -14,11 +14,11 @@ function makeColumn(name) {
 }
 
 export default function OrderCounter() {
-  const [columns, setColumns] = useState(DEFAULT_COLS);
+  const [columns, setColumns] = useState(FOOD_BANK_COLUMNS);
   const [itemCounts, setItemCounts] = useState({});
 
   const setDefaultColumns = useCallback(() => {
-    setColumns(DEFAULT_COLS);
+    setColumns(FOOD_BANK_COLUMNS);
     setItemCounts({});
   }, []);
 

@@ -1,4 +1,4 @@
-export const DEFAULT_COLS = [
+export const FOOD_BANK_COLUMNS = [
   {
     name: 'Produce',
     items: [
@@ -17,7 +17,7 @@ export const DEFAULT_COLS = [
     items: ['5% milk', '2% milk', 'almond milk', 'eggs', 'bacon', 'baby food'],
   },
   {
-    name: 'Pantry Items',
+    name: 'Pantry',
     items: ['rice', 'lentils', 'pasta', 'pinto', 'garbanzo', 'maseca', 'oil'],
   },
 ];
