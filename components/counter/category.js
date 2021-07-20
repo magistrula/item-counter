@@ -1,14 +1,15 @@
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import Box from '@material-ui/core/Box';
 import ClearIcon from '@material-ui/icons/Clear';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
+import { difference, isEmpty } from 'lodash';
 import TextField from '@material-ui/core/TextField';
 
 import CounterItem from './item';
 
-export default function OrderCounterCategory({
+function CounterCategory({
   index,
   name,
   itemCounts,
@@ -31,8 +32,8 @@ export default function OrderCounterCategory({
   );
 
   const editCategoryCb = useCallback(() => {
-    editCategory(index);
-  }, [index, editCategory]);
+    editCategory(name, index);
+  }, [name, index, editCategory]);
 
   const removeCategoryCb = useCallback(() => {
     removeCategory(index);
@@ -85,3 +86,28 @@ export default function OrderCounterCategory({
     </>
   );
 }
+
+function areCountsUnchanged(prev, next) {
+  return next.itemNames.every((itemName) => {
+    return next.itemCounts[itemName] === prev.itemCounts[itemName]
+  });
+}
+
+function areItemsUnchanged(prev, next) {
+  return isEmpty(difference(prev.itemNames, next.itemNames));
+}
+
+function arePropsEqual(prev, next) {
+  return (
+    prev.index === next.index &&
+    prev.name === next.name &&
+    prev.addItem === next.addItem &&
+    prev.editItem === next.editItem &&
+    prev.incrementItem === next.incrementItem &&
+    prev.removeItem === next.removeItem &&
+    prev.editCategory === next.editCategory &&
+    prev.removeCategory === next.removeCategory
+  ) && areCountsUnchanged(prev, next) && areItemsUnchanged(prev, next);
+}
+
+export default memo(CounterCategory, arePropsEqual);

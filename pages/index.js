@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Head from 'next/head'
 import Link from 'next/link';
-import OrderCounter from '../components/counter';
+import Counter from '../components/counter';
 
 export default function Home() {
   return (
@@ -16,7 +16,7 @@ export default function Home() {
       </Head>
 
       <main>
-        <OrderCounter />
+        <Counter />
       </main>
     </div>
   )

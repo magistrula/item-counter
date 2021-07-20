@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import MoreMenu from '../more-menu';
 
-export default function OrderCounterItem({
+function CounterItem({
   itemName,
   itemCount,
   editItem,
@@ -73,3 +73,5 @@ export default function OrderCounterItem({
     </Box>
   );
 }
+
+export default memo(CounterItem);
