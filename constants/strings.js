@@ -1,0 +1,1 @@
+export const INSTRUCTIONS_TEXT = 'ADD A COLUMN: click "Add Column" and enter the column name.\n\nADD AN ITEM TO A COLUMN: type the item name in the text input at the top of the column, then hit the Return key.';

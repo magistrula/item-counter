@@ -58,7 +58,7 @@ export default function OrderCounterColumn({
       <Box display="flex" mb={2}>
         <TextField
           className={s['OrderCounter-columnInput']}
-          placeholder={`${colName}: add item`}
+          placeholder={colName}
           onKeyDown={onKeyDownAddItemInput}
         />
 
