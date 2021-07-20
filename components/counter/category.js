@@ -9,65 +9,65 @@ import TextField from '@material-ui/core/TextField';
 import CounterItem from './item';
 import s from './styles.module.scss';
 
-export default function OrderCounterColumn({
-  colIdx,
-  colName,
+export default function OrderCounterCategory({
+  index,
+  name,
   itemCounts,
   itemNames,
   addItem,
   editItem,
   incrementItem,
   removeItem,
-  editColumn,
-  removeColumn,
+  editCategory,
+  removeCategory,
 }) {
   const onKeyDownAddItemInput = useCallback(
     event => {
       if (event.keyCode === 13) {
-        addItem(event.target.value, colIdx);
+        addItem(event.target.value, index);
         event.target.value = '';
       }
     },
-    [colIdx, addItem]
+    [index, addItem]
   );
 
-  const editColumnCb = useCallback(() => {
-    editColumn(colIdx);
-  }, [colIdx, editColumn]);
+  const editCategoryCb = useCallback(() => {
+    editCategory(index);
+  }, [index, editCategory]);
 
-  const removeColumnCb = useCallback(() => {
-    removeColumn(colIdx);
-  }, [colIdx, removeColumn]);
+  const removeCategoryCb = useCallback(() => {
+    removeCategory(index);
+  }, [index, removeCategory]);
 
   const removeItemCb = useCallback(
     itemName => {
-      removeItem(itemName, colIdx);
+      removeItem(itemName, index);
     },
-    [colIdx, removeItem]
+    [index, removeItem]
   );
 
   const editItemCb = useCallback(
     itemName => {
-      editItem(itemName, colIdx);
+      editItem(itemName, index);
     },
-    [colIdx, editItem]
+    [index, editItem]
   );
 
   return (
-    <div className={s['OrderCounter-column']}>
+    <div className={s['OrderCounter-category']}>
       <Box display="flex" mb={2}>
         <Box flexGrow={1} mr={1}>
           <TextField
-            className={s['OrderCounter-columnInput']}
-            placeholder={colName}
+            className={s['OrderCounter-categoryInput']}
+            placeholder={name}
             onKeyDown={onKeyDownAddItemInput}
           />
         </Box>
 
-        <IconButton onClick={editColumnCb}>
+        <IconButton onClick={editCategoryCb}>
           <EditIcon fontSize="small" />
         </IconButton>
-        <IconButton onClick={removeColumnCb}>
+        <IconButton onClick={removeCategoryCb}>
           <ClearIcon />
         </IconButton>
       </Box>

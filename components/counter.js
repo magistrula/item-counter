@@ -4,9 +4,9 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { without } from 'lodash';
 
-import ColunterColumn from './counter/column';
+import OrderCounterCategory from './counter/category';
 import CounterHeader from './counter/header';
-import { FOOD_BANK_COLUMNS } from '../constants/columns';
+import { FOOD_BANK_PRESET } from '../constants/presets';
 import s from './counter/styles.module.scss';
 
 function makeColumn(name) {
@@ -14,16 +14,16 @@ function makeColumn(name) {
 }
 
 export default function OrderCounter() {
-  const [columns, setColumns] = useState(FOOD_BANK_COLUMNS);
+  const [categories, setCategories] = useState(FOOD_BANK_PRESET.categories);
   const [itemCounts, setItemCounts] = useState({});
 
-  const setDefaultColumns = useCallback(() => {
-    setColumns(FOOD_BANK_COLUMNS);
+  const usePreset = useCallback((preset) => {
+    setCategories(preset.categories);
     setItemCounts({});
   }, []);
 
-  const clearAllColumns = useCallback(() => {
-    setColumns([]);
+  const clearAllCategories = useCallback(() => {
+    setCategories([]);
     setItemCounts({});
   }, []);
 
@@ -31,54 +31,54 @@ export default function OrderCounter() {
     setItemCounts({});
   }, []);
 
-  const addColumn = useCallback(() => {
-    const colName = window.prompt('Enter column name');
-    if (!colName) {
+  const addCategory = useCallback(() => {
+    const name = window.prompt('Enter category name');
+    if (!name) {
       return;
     }
 
-    const trimmedName = colName.trim();
-    if (columnExists(trimmedName)) {
+    const trimmedName = name.trim();
+    if (categoryExists(trimmedName)) {
       window.alert('Column already exists');
       return;
     }
 
-    setColumns([...columns, makeColumn(trimmedName)]);
-  }, [columns]);
+    setCategories([...categories, makeColumn(trimmedName)]);
+  }, [categories]);
 
-  const removeColumn = useCallback(
-    colIdx => {
-      if (!window.confirm('Delete column?')) {
+  const removeCategory = useCallback(
+    catIdx => {
+      if (!window.confirm('Delete category?')) {
         return;
       }
 
-      setColumns(without(columns, columns[colIdx]));
+      setCategories(without(categories, categories[catIdx]));
     },
-    [columns]
+    [categories]
   );
 
-  const editColumn = useCallback(
-    colIdx => {
-      const newName = window.prompt('Enter new column name');
+  const editCategory = useCallback(
+    catIdx => {
+      const newName = window.prompt('Enter new category name');
       if (!newName) {
         return;
       }
 
       const trimmedNewName = newName.trim();
-      if (columnExists(trimmedNewName)) {
+      if (categoryExists(trimmedNewName)) {
         window.alert('Column already exists');
         return;
       }
 
-      const updatedCols = [...columns];
-      updatedCols[colIdx].name = trimmedNewName;
-      setColumns(updatedCols);
+      const updatedCols = [...categories];
+      updatedCols[catIdx].name = trimmedNewName;
+      setCategories(updatedCols);
     },
-    [columns]
+    [categories]
   );
 
   const addItem = useCallback(
-    (itemName, colIdx) => {
+    (itemName, catIdx) => {
       if (!itemName) {
         return;
       }
@@ -89,32 +89,32 @@ export default function OrderCounter() {
         return;
       }
 
-      const updatedCols = [...columns];
-      updatedCols[colIdx].items.push(trimmedName);
-      setColumns(updatedCols);
+      const updatedCols = [...categories];
+      updatedCols[catIdx].items.push(trimmedName);
+      setCategories(updatedCols);
     },
-    [columns]
+    [categories]
   );
 
   const removeItem = useCallback(
-    (itemName, colIdx) => {
+    (itemName, catIdx) => {
       if (!window.confirm('Remove item?')) {
         return;
       }
 
-      const updatedCols = [...columns];
-      updatedCols[colIdx].items = without(updatedCols[colIdx].items, itemName);
-      setColumns(updatedCols);
+      const updatedCols = [...categories];
+      updatedCols[catIdx].items = without(updatedCols[catIdx].items, itemName);
+      setCategories(updatedCols);
 
       const updatedCounts = Object.assign({}, itemCounts);
       delete updatedCounts[itemName];
       setItemCounts(updatedCounts);
     },
-    [columns, itemCounts]
+    [categories, itemCounts]
   );
 
   const editItem = useCallback(
-    (oldName, colIdx) => {
+    (oldName, catIdx) => {
       const newName = window.prompt('Enter new item name', oldName);
       if (!newName) {
         return;
@@ -126,10 +126,10 @@ export default function OrderCounter() {
         return;
       }
 
-      const updatedCols = [...columns];
-      const colItems = updatedCols[colIdx].items;
-      colItems[colItems.indexOf(oldName)] = newTrimmedName;
-      setColumns(updatedCols);
+      const updatedCols = [...categories];
+      const items = updatedCols[catIdx].items;
+      items[items.indexOf(oldName)] = newTrimmedName;
+      setCategories(updatedCols);
 
       const updatedItemCounts = Object.assign({}, itemCounts, {
         [newTrimmedName]: itemCounts[oldName] || 0,
@@ -137,7 +137,7 @@ export default function OrderCounter() {
       delete updatedItemCounts[oldName];
       setItemCounts(updatedItemCounts);
     },
-    [columns, itemCounts]
+    [categories, itemCounts]
   );
 
   const incrementItem = useCallback(
@@ -152,10 +152,10 @@ export default function OrderCounter() {
     [itemCounts]
   );
 
-  const columnExists = colName => {
-    const lowerColName = colName.toLowerCase();
-    return columns.find(({ name }) => {
-      return name.toLowerCase() === lowerColName;
+  const categoryExists = catName => {
+    const lowerName = catName.toLowerCase();
+    return categories.find(({ name }) => {
+      return name.toLowerCase() === lowerName;
     });
   };
 
@@ -166,34 +166,35 @@ export default function OrderCounter() {
   return (
     <>
       <CounterHeader
-        addColumn={addColumn}
-        clearAllColumns={clearAllColumns}
+        presets={[FOOD_BANK_PRESET]}
+        addCategory={addCategory}
+        clearAllCategories={clearAllCategories}
         clearAllCounts={clearAllCounts}
-        setDefaultColumns={setDefaultColumns}
+        usePreset={usePreset}
       />
 
       <Box display="flex" justifyContent="center">
         <Box
-          className={s['OrderCounter-columnsContainer']}
+          className={s['OrderCounter-categoriesContainer']}
           display="flex"
           flexWrap="wrap"
           justifyContent="space-between"
           mt={3}
           mx={6}
         >
-          {columns.map((column, idx) => (
-            <Box key={column.name} mx={2} mb={4}>
-              <ColunterColumn
+          {categories.map((category, idx) => (
+            <Box key={category.name} mx={2} mb={4}>
+              <OrderCounterCategory
+                index={idx}
+                name={category.name}
+                itemCounts={itemCounts}
+                itemNames={category.items}
                 addItem={addItem}
-                colIdx={idx}
-                colName={column.name}
                 editItem={editItem}
                 incrementItem={incrementItem}
-                itemCounts={itemCounts}
-                itemNames={column.items}
                 removeItem={removeItem}
-                editColumn={editColumn}
-                removeColumn={removeColumn}
+                editCategory={editCategory}
+                removeCategory={removeCategory}
               />
             </Box>
           ))}
