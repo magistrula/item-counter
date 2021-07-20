@@ -26,17 +26,17 @@ export default function CounterHeader({
         <Box display="flex" alignItems="center">
           <MoreMenu>
             <MenuItem onClick={setDefaultColumns}>
-              Use Default Columns
+              Default Columns
             </MenuItem>
             <MenuItem onClick={clearAllColumns}>
-              Clear All Columns
+              Clear Columns
             </MenuItem>
             <MenuItem onClick={clearAllCounts}>
-              Clear All Counts
+              Clear Counts
             </MenuItem>
           </MoreMenu>
 
-          <Box ml={2}>
+          <Box ml={1}>
             <Button
               variant="contained"
               size="small"
