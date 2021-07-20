@@ -179,7 +179,7 @@ export default function OrderCounter() {
       <Box mt={3} mx={2}>
         <Grid container spacing={4}>
           {categories.map((category, idx) => (
-            <Grid item key={category.name} xs={12} sm={12} md={6} lg={4}>
+            <Grid item key={category.name} xs={12} sm={6} md={4} lg={3}>
               <OrderCounterCategory
                 index={idx}
                 name={category.name}
