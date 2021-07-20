@@ -57,7 +57,7 @@ export default function OrderCounterItem({
 
       <Box display="flex" ml={1}>
         <MoreMenu>
-          <MenuItem onClick={editItemCb}>Edit</MenuItem>
+          <MenuItem onClick={editItemCb}>Rename</MenuItem>
           <MenuItem onClick={removeCb}>Remove</MenuItem>
         </MoreMenu>
 
