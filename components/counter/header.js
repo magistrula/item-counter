@@ -24,6 +24,18 @@ export default function CounterHeader({
         Item Counter
 
         <Box display="flex" alignItems="center">
+          <Box mr={1}>
+            <Button
+              variant="contained"
+              size="small"
+              color="default"
+              onClick={addColumn}
+            >
+              <AddCircleIcon />
+              <Box ml={0.5}>Add Column</Box>
+            </Button>
+          </Box>
+
           <MoreMenu>
             <MenuItem onClick={setDefaultColumns}>
               Default Columns
@@ -35,18 +47,6 @@ export default function CounterHeader({
               Clear Counts
             </MenuItem>
           </MoreMenu>
-
-          <Box ml={1}>
-            <Button
-              variant="contained"
-              size="small"
-              color="default"
-              onClick={addColumn}
-            >
-              <AddCircleIcon />
-              <Box ml={0.5}>Add Column</Box>
-            </Button>
-          </Box>
         </Box>
       </Box>
     </AppBar>
