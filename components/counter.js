@@ -173,7 +173,7 @@ export default function OrderCounter() {
         usePreset={usePreset}
       />
 
-      <Box mt={3} mx={6}>
+      <Box mt={3} mx={2}>
         <Grid container spacing={4}>
           {categories.map((category, idx) => (
             <Grid item key={category.name} xs={12} sm={12} md={6} lg={4}>
