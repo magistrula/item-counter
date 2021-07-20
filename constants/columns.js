@@ -14,11 +14,10 @@ export const DEFAULT_COLS = [
   },
   {
     name: 'Essentials',
-    items: ['2% milk', 'almond milk', 'eggs', 'bacon', 'baby food'],
+    items: ['5% milk', '2% milk', 'almond milk', 'eggs', 'bacon', 'baby food'],
   },
   {
     name: 'Pantry Items',
     items: ['rice', 'lentils', 'pasta', 'pinto', 'garbanzo', 'maseca', 'oil'],
   },
 ];
-
