@@ -28,7 +28,7 @@ export default function CounterHeader({
         justifyContent="space-between"
         alignItems="center"
         px={2}
-        py={1.5}
+        py={0.5}
       >
         <IconButton color="inherit" onClick={showHelp}>
           <InfoOutlinedIcon />
@@ -41,7 +41,7 @@ export default function CounterHeader({
             color="default"
             onClick={addColumn}
           >
-            <AddCircleIcon />
+            <AddCircleIcon fontSize="small" />
             <Box ml={0.5}>Add Column</Box>
           </Button>
         </Box>
