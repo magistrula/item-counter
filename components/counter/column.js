@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 
 import Box from '@material-ui/core/Box';
 import ClearIcon from '@material-ui/icons/Clear';
+import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 
@@ -9,32 +10,47 @@ import CounterItem from './item';
 import s from './styles.module.scss';
 
 export default function OrderCounterColumn({
-  colId,
+  colIdx,
+  colName,
   itemCounts,
   itemNames,
   addItem,
+  editItem,
   incrementItem,
   removeItem,
+  editColumn,
   removeColumn,
 }) {
   const onKeyDownAddItemInput = useCallback(
     event => {
       if (event.keyCode === 13) {
-        addItem(event.target.value, colId);
+        addItem(event.target.value, colIdx);
         event.target.value = '';
       }
     },
-    [colId, addItem]
+    [colIdx, addItem]
   );
 
-  const removeColumnCb = useCallback(
-    () => removeColumn(colId),
-    [colId, removeColumn]
-  );
+  const editColumnCb = useCallback(() => {
+    editColumn(colIdx);
+  }, [colIdx, editColumn]);
+
+  const removeColumnCb = useCallback(() => {
+    removeColumn(colIdx);
+  }, [colIdx, removeColumn]);
 
   const removeItemCb = useCallback(
-    itemName => removeItem(itemName, colId),
-    [colId, removeItem]
+    itemName => {
+      removeItem(itemName, colIdx);
+    },
+    [colIdx, removeItem]
+  );
+
+  const editItemCb = useCallback(
+    itemName => {
+      editItem(itemName, colIdx);
+    },
+    [colIdx, editItem]
   );
 
   return (
@@ -42,11 +58,14 @@ export default function OrderCounterColumn({
       <Box display="flex" mb={2}>
         <TextField
           className={s['OrderCounter-columnInput']}
-          placeholder={`${colId}: add item`}
+          placeholder={`${colName}: add item`}
           onKeyDown={onKeyDownAddItemInput}
         />
 
-        <IconButton onClick={removeColumnCb}>
+        <IconButton onClick={editColumnCb}>
+          <EditIcon fontSize="small" />
+        </IconButton>
+        <IconButton size="small" onClick={removeColumnCb}>
           <ClearIcon />
         </IconButton>
       </Box>
@@ -56,6 +75,7 @@ export default function OrderCounterColumn({
           <CounterItem
             itemName={itemName}
             itemCount={itemCounts[itemName]}
+            editItem={editItemCb}
             incrementItem={incrementItem}
             removeItem={removeItemCb}
           />

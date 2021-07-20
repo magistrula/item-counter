@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 
@@ -11,23 +12,25 @@ import s from './styles.module.scss';
 export default function OrderCounterItem({
   itemName,
   itemCount,
+  editItem,
   incrementItem,
   removeItem,
 }) {
-  const incrementCb = useCallback(
-    () => incrementItem(itemName, 1),
-    [itemName, incrementItem]
-  );
+  const incrementCb = useCallback(() => {
+    incrementItem(itemName, 1);
+  }, [itemName, incrementItem]);
 
-  const decrementCb = useCallback(
-    () => incrementItem(itemName, -1),
-    [itemName, incrementItem]
-  );
+  const decrementCb = useCallback(() => {
+    incrementItem(itemName, -1);
+  }, [itemName, incrementItem]);
 
-  const removeCb = useCallback(
-    () => removeItem(itemName),
-    [itemName, removeItem]
-  );
+  const removeCb = useCallback(() => {
+    removeItem(itemName);
+  }, [itemName, removeItem]);
+
+  const editItemCb = useCallback(() => {
+    editItem(itemName);
+  }, [itemName, editItem]);
 
   return (
     <Box display="flex" justifyContent="space-between">
@@ -43,11 +46,14 @@ export default function OrderCounterItem({
         </Box>
       </Button>
       <Box display="flex" ml={1}>
-        <IconButton variant="contained" onClick={decrementCb}>
-          <IndeterminateCheckBoxIcon fontSize="small" />
+        <IconButton onClick={editItemCb}>
+          <EditIcon fontSize="small" />
         </IconButton>
         <IconButton onClick={removeCb}>
-          <DeleteIcon color="secondary" fontSize="small" />
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+        <IconButton variant="contained" onClick={decrementCb}>
+          <IndeterminateCheckBoxIcon fontSize="small" />
         </IconButton>
       </Box>
     </Box>
