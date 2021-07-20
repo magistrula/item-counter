@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import ExposureNeg1Icon from '@material-ui/icons/ExposureNeg1';
 import IconButton from '@material-ui/core/IconButton';
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import MoreMenu from '../more-menu';
@@ -66,8 +66,8 @@ export default function OrderCounterItem({
           <MenuItem onClick={clearCountCb}>Reset Count</MenuItem>
         </MoreMenu>
 
-        <IconButton variant="contained" onClick={decrementCb}>
-          <IndeterminateCheckBoxIcon fontSize="small" />
+        <IconButton disabled={!itemCount} variant="contained" onClick={decrementCb}>
+          <ExposureNeg1Icon fontSize="small" />
         </IconButton>
       </Box>
     </Box>
