@@ -7,18 +7,15 @@ import Button from '@material-ui/core/Button';
 import { without } from 'lodash';
 
 import ColunterColumn from './counter/column';
+import { DEFAULT_COLS } from '../constants/columns';
 import s from './counter/styles.module.scss';
-
-const DEFAULT_COL_NAMES = ['Produce', 'Essentials', 'Dry Goods'];
 
 function makeColumn(name) {
   return { name, items: [] };
 }
 
 export default function OrderCounter() {
-  const [columns, setColumns] = useState(
-    DEFAULT_COL_NAMES.map(name => makeColumn(name))
-  );
+  const [columns, setColumns] = useState(DEFAULT_COLS);
   const [itemCounts, setItemCounts] = useState({});
 
   const addColumn = useCallback(() => {
