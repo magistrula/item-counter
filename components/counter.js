@@ -70,9 +70,9 @@ export default function OrderCounter() {
         return;
       }
 
-      const updatedCols = [...categories];
-      updatedCols[catIdx].name = trimmedNewName;
-      setCategories(updatedCols);
+      const updatedCategories = [...categories];
+      updatedCategories[catIdx].name = trimmedNewName;
+      setCategories(updatedCategories);
     },
     [categories]
   );
@@ -89,9 +89,9 @@ export default function OrderCounter() {
         return;
       }
 
-      const updatedCols = [...categories];
-      updatedCols[catIdx].items.push(trimmedName);
-      setCategories(updatedCols);
+      const updatedCategories = [...categories];
+      updatedCategories[catIdx].items.push(trimmedName);
+      setCategories(updatedCategories);
     },
     [categories]
   );
@@ -102,9 +102,12 @@ export default function OrderCounter() {
         return;
       }
 
-      const updatedCols = [...categories];
-      updatedCols[catIdx].items = without(updatedCols[catIdx].items, itemName);
-      setCategories(updatedCols);
+      const updatedCategories = [...categories];
+      updatedCategories[catIdx].items = without(
+        updatedCategories[catIdx].items,
+        itemName
+      );
+      setCategories(updatedCategories);
 
       const updatedCounts = Object.assign({}, itemCounts);
       delete updatedCounts[itemName];
@@ -126,10 +129,10 @@ export default function OrderCounter() {
         return;
       }
 
-      const updatedCols = [...categories];
-      const items = updatedCols[catIdx].items;
+      const updatedCategories = [...categories];
+      const items = updatedCategories[catIdx].items;
       items[items.indexOf(oldName)] = newTrimmedName;
-      setCategories(updatedCols);
+      setCategories(updatedCategories);
 
       const updatedItemCounts = Object.assign({}, itemCounts, {
         [newTrimmedName]: itemCounts[oldName] || 0,
