@@ -2,10 +2,11 @@ import React, { useCallback } from 'react';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import MoreMenu from '../more-menu';
 
 import s from './styles.module.scss';
 
@@ -41,17 +42,18 @@ export default function OrderCounterItem({
         onClick={incrementCb}
       >
         <Box display="flex" justifyContent="space-between" width="100%">
+          <span>({itemCount || 0})</span>
           <span>{itemName}</span>
           <span>({itemCount || 0})</span>
         </Box>
       </Button>
+
       <Box display="flex" ml={1}>
-        <IconButton onClick={editItemCb}>
-          <EditIcon fontSize="small" />
-        </IconButton>
-        <IconButton onClick={removeCb}>
-          <DeleteIcon fontSize="small" />
-        </IconButton>
+        <MoreMenu>
+          <MenuItem onClick={editItemCb}>Edit</MenuItem>
+          <MenuItem onClick={removeCb}>Remove</MenuItem>
+        </MoreMenu>
+
         <IconButton variant="contained" onClick={decrementCb}>
           <IndeterminateCheckBoxIcon fontSize="small" />
         </IconButton>
