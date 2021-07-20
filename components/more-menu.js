@@ -17,7 +17,7 @@ export default function CounterItemMenu({ children }) {
 
   return (
     <>
-      <IconButton onClick={toggleMenu}>
+      <IconButton color="inherit" onClick={toggleMenu}>
         <MoreVertIcon fontSize="small" />
       </IconButton>
 

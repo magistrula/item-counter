@@ -1,12 +1,11 @@
 import { useCallback, useState } from 'react';
 
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { without } from 'lodash';
 
 import ColunterColumn from './counter/column';
+import CounterHeader from './counter/header';
 import { DEFAULT_COLS } from '../constants/columns';
 import s from './counter/styles.module.scss';
 
@@ -17,6 +16,20 @@ function makeColumn(name) {
 export default function OrderCounter() {
   const [columns, setColumns] = useState(DEFAULT_COLS);
   const [itemCounts, setItemCounts] = useState({});
+
+  const setDefaultColumns = useCallback(() => {
+    setColumns(DEFAULT_COLS);
+    setItemCounts({});
+  }, []);
+
+  const clearAllColumns = useCallback(() => {
+    setColumns([]);
+    setItemCounts({});
+  }, []);
+
+  const clearAllCounts = useCallback(() => {
+    setItemCounts({});
+  }, []);
 
   const addColumn = useCallback(() => {
     const colName = window.prompt('Enter column name');
@@ -152,26 +165,12 @@ export default function OrderCounter() {
 
   return (
     <>
-      <AppBar position="sticky">
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          px={2}
-          py={1.5}
-        >
-          Item Counter
-          <Button
-            variant="contained"
-            size="small"
-            color="default"
-            onClick={addColumn}
-          >
-            <AddCircleIcon />
-            <Box ml={0.5}>Add Column</Box>
-          </Button>
-        </Box>
-      </AppBar>
+      <CounterHeader
+        addColumn={addColumn}
+        clearAllColumns={clearAllColumns}
+        clearAllCounts={clearAllCounts}
+        setDefaultColumns={setDefaultColumns}
+      />
 
       <Box display="flex" justifyContent="center">
         <Box
