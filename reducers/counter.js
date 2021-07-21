@@ -1,11 +1,14 @@
 import { map, without, union } from 'lodash';
 
-export function init(preset) {
+import { FOOD_BANK_PRESET } from '../constants/presets';
+
+export function init(preset = {}) {
   return {
     error: null,
-    preset: preset.name || 'Custom',
+    name: preset.name || 'Custom',
     categories: preset.categories || [],
     itemCounts: initItemCounts(preset.categories),
+    presets: [FOOD_BANK_PRESET]
   };
 }
 
@@ -32,8 +35,15 @@ function usePreset(state, preset) {
   return init(preset);
 }
 
+function restoreState(state, savedState) {
+  return Object.assign({}, init(), savedState);
+}
+
 function clearCategories() {
-  return init({ categories: [] });
+  return init({
+    categories: [],
+    itemCounts: {}
+  });
 }
 
 function clearError(state) {
@@ -138,9 +148,7 @@ function assignItemCount(state, itemName, itemCount) {
 export default function reducer(state, action) {
   switch (action.type) {
     case 'restore-state':
-      return action.payload;
-    case 'reset':
-      return init(action.payload);
+      return restoreState(state, action.payload);
     case 'clear-error':
       return clearError(state);
     case 'use-preset':

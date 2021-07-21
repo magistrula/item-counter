@@ -87,27 +87,4 @@ function CounterCategory({
   );
 }
 
-function areCountsUnchanged(prev, next) {
-  return next.itemNames.every((itemName) => {
-    return next.itemCounts[itemName] === prev.itemCounts[itemName]
-  });
-}
-
-function areItemsUnchanged(prev, next) {
-  return isEmpty(difference(prev.itemNames, next.itemNames));
-}
-
-function arePropsEqual(prev, next) {
-  return (
-    prev.index === next.index &&
-    prev.name === next.name &&
-    prev.addItem === next.addItem &&
-    prev.editItem === next.editItem &&
-    prev.incrementItem === next.incrementItem &&
-    prev.removeItem === next.removeItem &&
-    prev.editCategory === next.editCategory &&
-    prev.removeCategory === next.removeCategory
-  ) && areCountsUnchanged(prev, next) && areItemsUnchanged(prev, next);
-}
-
-export default memo(CounterCategory, arePropsEqual);
+export default memo(CounterCategory);

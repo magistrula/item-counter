@@ -98,7 +98,7 @@ export default function Counter() {
   return (
     <>
       <CounterHeader
-        presets={[FOOD_BANK_PRESET]}
+        presets={state.presets}
         addCategory={addCategory}
         clearAllCategories={clearAllCategories}
         clearAllCounts={clearAllCounts}
