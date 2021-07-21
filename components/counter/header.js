@@ -61,7 +61,7 @@ export default function CounterHeader({
 
           <MenuItem onClick={clearAllCounts}>Clear Counts</MenuItem>
 
-          {presets.length && (
+          {!!presets.length && (
             <Box>
               <Box my={1}>
                 <Divider />
