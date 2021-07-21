@@ -56,7 +56,9 @@ export default function Counter() {
   }, []);
 
   const editCategory = useCallback((oldName, catIdx) => {
-    const newName = (window.prompt('Enter new category name') || '').trim();
+    const newName = (
+      window.prompt('Enter new category name', oldName) || ''
+    ).trim();
     if (newName && newName.toLowerCase() !== oldName.toLowerCase()) {
       dispatch({
         type: 'edit-category',
@@ -99,7 +101,7 @@ export default function Counter() {
   const incrementItem = useCallback((itemName, increment) => {
     dispatch({
       type: 'increment-item',
-      payload: { itemName, increment }
+      payload: { itemName, increment },
     });
   }, []);
 

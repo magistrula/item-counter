@@ -63,7 +63,7 @@ function CounterItem({
         <MoreMenu>
           <MenuItem onClick={editItemCb}>Rename</MenuItem>
           <MenuItem onClick={removeCb}>Remove</MenuItem>
-          <MenuItem onClick={clearCountCb}>Reset Count</MenuItem>
+          <MenuItem onClick={clearCountCb}>Clear Count</MenuItem>
         </MoreMenu>
 
         <IconButton disabled={!itemCount} variant="contained" onClick={decrementCb}>
