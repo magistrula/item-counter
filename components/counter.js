@@ -3,7 +3,7 @@ import { useCallback, useEffect, useReducer } from 'react';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import { without } from 'lodash';
+import { isEmpty, without } from 'lodash';
 
 import CounterCategory from './counter/category';
 import CounterHeader from './counter/header';
@@ -11,7 +11,20 @@ import { FOOD_BANK_PRESET } from '../constants/presets';
 import reducer, { init } from '../reducers/counter';
 
 export default function Counter() {
-  const [state, dispatch] = useReducer(reducer, FOOD_BANK_PRESET, init);
+  const [state, dispatch] = useReducer(reducer, {}, init);
+
+  useEffect(() => {
+    const savedState = JSON.parse(localStorage.getItem('counterState'));
+    if (savedState && !isEmpty(savedState.categories)) {
+      dispatch({ type: 'restore-state', payload: savedState });
+    } else {
+      dispatch({ type: 'use-preset', payload: FOOD_BANK_PRESET });
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('counterState', JSON.stringify(state));
+  }, [state]);
 
   useEffect(() => {
     if (state.error) {
@@ -22,10 +35,7 @@ export default function Counter() {
   }, [state.error]);
 
   const usePreset = useCallback(preset => {
-    dispatch({
-      type: 'use-preset',
-      payload: preset,
-    });
+    dispatch({ type: 'use-preset', payload: preset });
   }, []);
 
   const clearAllCategories = useCallback(() => {
@@ -39,19 +49,13 @@ export default function Counter() {
   const addCategory = useCallback(() => {
     const name = (window.prompt('Enter category name') || '').trim();
     if (name) {
-      dispatch({
-        type: 'add-category',
-        payload: name,
-      });
+      dispatch({ type: 'add-category', payload: name });
     }
   }, []);
 
   const removeCategory = useCallback(catIdx => {
     if (window.confirm('Delete category?')) {
-      dispatch({
-        type: 'remove-category',
-        payload: catIdx,
-      });
+      dispatch({ type: 'remove-category', payload: catIdx });
     }
   }, []);
 
@@ -60,10 +64,7 @@ export default function Counter() {
       window.prompt('Enter new category name', oldName) || ''
     ).trim();
     if (newName && newName.toLowerCase() !== oldName.toLowerCase()) {
-      dispatch({
-        type: 'edit-category',
-        payload: { catIdx, newName },
-      });
+      dispatch({ type: 'edit-category', payload: { catIdx, newName } });
     }
   }, []);
 
@@ -78,31 +79,20 @@ export default function Counter() {
   }, []);
 
   const removeItem = useCallback((itemName, catIdx) => {
-    if (!window.confirm('Remove item?')) {
-      return;
+    if (window.confirm('Remove item?')) {
+      dispatch({ type: 'remove-item', payload: { catIdx, itemName } });
     }
-
-    dispatch({
-      type: 'remove-item',
-      payload: { catIdx, itemName },
-    });
   }, []);
 
   const editItem = useCallback((oldName, catIdx) => {
     const newName = (window.prompt('Enter new name', oldName) || '').trim();
     if (newName && newName.toLowerCase() !== oldName.toLowerCase()) {
-      dispatch({
-        type: 'edit-item',
-        payload: { catIdx, oldName, newName },
-      });
+      dispatch({ type: 'edit-item', payload: { catIdx, oldName, newName } });
     }
   }, []);
 
   const incrementItem = useCallback((itemName, increment) => {
-    dispatch({
-      type: 'increment-item',
-      payload: { itemName, increment },
-    });
+    dispatch({ type: 'increment-item', payload: { itemName, increment } });
   }, []);
 
   return (

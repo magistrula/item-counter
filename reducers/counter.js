@@ -137,6 +137,8 @@ function assignItemCount(state, itemName, itemCount) {
 
 export default function reducer(state, action) {
   switch (action.type) {
+    case 'restore-state':
+      return action.payload;
     case 'reset':
       return init(action.payload);
     case 'clear-error':
