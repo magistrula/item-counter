@@ -18,9 +18,9 @@ export default function Counter() {
   useEffect(() => {
     const savedState = retrieveState();
     if (savedState) {
-      dispatch({ type: 'restore-state', payload: savedState });
+      dispatch({ type: 'restore-state', payload: { savedState } });
     } else {
-      dispatch({ type: 'use-preset', payload: FOOD_BANK_PRESET });
+      dispatch({ type: 'use-preset', payload: { preset: FOOD_BANK_PRESET } });
     }
   }, []);
 
@@ -38,7 +38,7 @@ export default function Counter() {
   }, [state.categories, state.items]);
 
   const usePreset = useCallback(preset => {
-    dispatch({ type: 'use-preset', payload: preset });
+    dispatch({ type: 'use-preset', payload: { preset } });
   }, []);
 
   const clearAllCategories = useCallback(() => {
@@ -52,13 +52,13 @@ export default function Counter() {
   const addCategory = useCallback(() => {
     const name = (window.prompt('Enter category name') || '').trim();
     if (name) {
-      dispatch({ type: 'add-category', payload: name });
+      dispatch({ type: 'add-category', payload: { name } });
     }
   }, []);
 
   const removeCategory = useCallback(catId => {
     if (window.confirm('Delete category?')) {
-      dispatch({ type: 'remove-category', payload: catId });
+      dispatch({ type: 'remove-category', payload: { catId } });
     }
   }, []);
 
@@ -69,12 +69,12 @@ export default function Counter() {
     }
   }, []);
 
-  const addItem = useCallback((itemName, catId) => {
-    const trimmedName = itemName.trim();
+  const addItem = useCallback((name, catId) => {
+    const trimmedName = name.trim();
     if (trimmedName) {
       dispatch({
         type: 'add-item',
-        payload: { catId, itemName: trimmedName },
+        payload: { catId, name: trimmedName },
       });
     }
   }, []);

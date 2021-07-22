@@ -72,11 +72,11 @@ function buildItem(name, categoryId) {
  */
 
 const ACTION_HANDLERS = {
-  'use-preset': (state, preset) => {
+  'use-preset': (state, { preset }) => {
     return init(preset);
   },
 
-  'restore-state': (state, savedState) => {
+  'restore-state': (state, { savedState }) => {
     return Object.assign({}, init(), savedState);
   },
 
@@ -96,7 +96,7 @@ const ACTION_HANDLERS = {
     return Object.assign({}, state, { error: null });
   },
 
-  'add-category': (state, name) => {
+  'add-category': (state, { name }) => {
     if (findCategory(state, name)) {
       return Object.assign({}, state, {
         error: `Category "${name}" already exists`
@@ -126,20 +126,20 @@ const ACTION_HANDLERS = {
     return updateCategories(state, updatedCategories);
   },
 
-  'remove-category': (state, catId) => {
+  'remove-category': (state, { catId }) => {
     const category = find(state.categories, { id: catId });
     const updatedCategories = without(state.categories, category);
     return updateCategories(state, updatedCategories);
   },
 
-  'add-item': (state, { catId, itemName }) => {
-    if (findItem(state, itemName)) {
+  'add-item': (state, { catId, name }) => {
+    if (findItem(state, name)) {
       return Object.assign({}, state, {
-        error: `Item "${itemName}" already exists`
+        error: `Item "${name}" already exists`
       });
     }
 
-    const item = buildItem(itemName.toLowerCase(), catId);
+    const item = buildItem(name.toLowerCase(), catId);
     const updatedItems = [...state.items, item];
     return updateItems(state, updatedItems);
   },
