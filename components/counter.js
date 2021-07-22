@@ -16,7 +16,7 @@ export default function Counter() {
   const [itemsByCategory, setItemsByCategory] = useState({});
 
   useEffect(() => {
-    const savedState = retrieveState();;
+    const savedState = retrieveState();
     if (savedState) {
       dispatch({ type: 'restore-state', payload: savedState });
     } else {
@@ -28,9 +28,8 @@ export default function Counter() {
 
   useEffect(() => {
     if (state.error) {
-      const error = state.error;
+      window.alert(state.error);
       dispatch({ type: 'clear-error' });
-      window.alert(error);
     }
   }, [state.error]);
 
