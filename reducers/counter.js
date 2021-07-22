@@ -86,9 +86,9 @@ const ACTION_HANDLERS = {
 
   'clear-categories': () => {
     return init({
+      name: 'Custom',
       categories: [],
-      itemCounts: {},
-      itemsByCategory: {},
+      items: [],
     });
   },
 
