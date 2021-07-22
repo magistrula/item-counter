@@ -98,7 +98,9 @@ const ACTION_HANDLERS = {
 
   'add-category': (state, name) => {
     if (findCategory(state, name)) {
-      return Object.assign({}, state, { error: 'Category already exists' });
+      return Object.assign({}, state, {
+        error: `Category "${name}" already exists`
+      });
     }
 
     const updatedCategories = state.categories.concat([buildCategory(name)]);
@@ -113,7 +115,9 @@ const ACTION_HANDLERS = {
 
     const existingCategory = findCategory(state, newName);
     if (existingCategory && existingCategory.id !== catId) {
-      return Object.assign({}, state, { error: 'Category already exists' });
+      return Object.assign({}, state, {
+        error: `Category "${newName}" already exists`
+      });
     }
 
     const updatedCategories = [...state.categories];
@@ -130,7 +134,9 @@ const ACTION_HANDLERS = {
 
   'add-item': (state, { catId, itemName }) => {
     if (findItem(state, itemName)) {
-      return Object.assign({}, state, { error: 'Item already exists' });
+      return Object.assign({}, state, {
+        error: `Item "${itemName}" already exists`
+      });
     }
 
     const item = buildItem(itemName.toLowerCase(), catId);
@@ -146,7 +152,9 @@ const ACTION_HANDLERS = {
 
     const existingItem = findItem(state, newName);
     if (existingItem && existingItem.id !== itemId) {
-      return Object.assign({}, state, { error: 'Item already exists' });
+      return Object.assign({}, state, {
+        error: `Item "${newName}" already exists`
+      });
     }
 
     const updatedItems = [...state.items];
