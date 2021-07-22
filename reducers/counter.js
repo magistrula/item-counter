@@ -68,122 +68,101 @@ function buildItem(name, categoryId) {
  * ACTION HANDLERS
  */
 
-function usePreset(state, preset) {
-  return init(preset);
-}
+const ACTION_HANDLERS = {
+  'use-preset': (state, preset) => {
+    return init(preset);
+  },
 
-function restoreState(state, savedState) {
-  return Object.assign({}, init(), savedState);
-}
+  'restore-state': (state, savedState) => {
+    return Object.assign({}, init(), savedState);
+  },
 
-function clearCategories() {
-  return init({
-    categories: [],
-    itemCounts: {},
-    itemsByCategory: {},
-  });
-}
+  'clear-counts': (state) => {
+    return updateItems(state, initItems(state.items));
+  },
 
-function clearError(state) {
-  return Object.assign({}, state, { error: null });
-}
+  'clear-categories': () => {
+    return init({
+      categories: [],
+      itemCounts: {},
+      itemsByCategory: {},
+    });
+  },
 
-function clearCounts(state) {
-  return updateItems(state, initItems(state.items));
-}
+  'clear-error': (state) => {
+    return Object.assign({}, state, { error: null });
+  },
 
-function addCategory(state, name) {
-  if (categoryExists(state, name)) {
-    return Object.assign({}, state, { error: 'Category already exists' });
+  'add-category': (state, name) => {
+    if (categoryExists(state, name)) {
+      return Object.assign({}, state, { error: 'Category already exists' });
+    }
+
+    const updatedCategories = state.categories.concat([buildCategory(name)]);
+    return updateCategories(state, updatedCategories);
+  },
+
+  'rename-category': (state, { catId, newName }) => {
+    if (categoryExists(state, newName)) {
+      return Object.assign({}, state, { error: 'Category already exists' });
+    }
+
+    const updatedCategories = [...state.categories];
+    const category = find(updatedCategories, { id: catId });
+    category.name = newName;
+    return updateCategories(state, updatedCategories);
+  },
+
+  'remove-category': (state, catId) => {
+    const category = find(state.categories, { id: catId });
+    const updatedCategories = without(state.categories, category);
+    return updateCategories(state, updatedCategories);
+  },
+
+  'add-item': (state, { catId, itemName }) => {
+    if (itemExists(state, itemName)) {
+      return Object.assign({}, state, { error: 'Item already exists' });
+    }
+
+    const item = buildItem(itemName.toLowerCase(), catId);
+    const updatedItems = [...state.items, item];
+    return updateItems(state, updatedItems);
+  },
+
+  'rename-item': (state, { itemId, newName }) => {
+    const isNotNameChange = !!find(state.items, { id: itemId, name: newName });
+    if (isNotNameChange) {
+      return state;
+    }
+
+    if (itemExists(state, newName)) {
+      return Object.assign({}, state, { error: 'Item already exists' });
+    }
+
+    const updatedItems = [...state.items];
+    const item = find(updatedItems, { id: itemId });
+    item.name = newName;
+    return updateItems(state, updatedItems);
+  },
+
+  'remove-item': (state, { itemId }) => {
+    const item = find(state.items, { id: itemId });
+    const updatedItems = without(state.items, item);
+    return updateItems(state, updatedItems);
+  },
+
+  'increment-item': (state, { itemId, increment }) => {
+    const updatedItems = [...state.items];
+    const item = find(updatedItems, { id: itemId });
+    item.count = (item.count || 0) + increment;
+    return updateItems(state, updatedItems);
   }
-
-  const updatedCategories = state.categories.concat([buildCategory(name)]);
-  return updateCategories(state, updatedCategories);
-}
-
-function renameCategory(state, { catId, newName }) {
-  if (categoryExists(state, newName)) {
-    return Object.assign({}, state, { error: 'Category already exists' });
-  }
-
-  const updatedCategories = [...state.categories];
-  const category = find(updatedCategories, { id: catId });
-  category.name = newName;
-  return updateCategories(state, updatedCategories);
-}
-
-function removeCategory(state, catId) {
-  const category = find(state.categories, { id: catId });
-  const updatedCategories = without(state.categories, category);
-  return updateCategories(state, updatedCategories);
-}
-
-function addItem(state, { catId, itemName }) {
-  if (itemExists(state, itemName)) {
-    return Object.assign({}, state, { error: 'Item already exists' });
-  }
-
-  const item = buildItem(itemName.toLowerCase(), catId);
-  const updatedItems = [...state.items, item];
-  return updateItems(state, updatedItems);
-}
-
-function renameItem(state, { itemId, newName }) {
-  const isNotNameChange = !!find(state.items, { id: itemId, name: newName });
-  if (isNotNameChange) {
-    return state;
-  }
-
-  if (itemExists(state, newName)) {
-    return Object.assign({}, state, { error: 'Item already exists' });
-  }
-
-  const updatedItems = [...state.items];
-  const item = find(updatedItems, { id: itemId });
-  item.name = newName;
-  return updateItems(state, updatedItems);
-}
-
-function removeItem(state, { itemId }) {
-  const item = find(state.items, { id: itemId });
-  const updatedItems = without(state.items, item);
-  return updateItems(state, updatedItems);
-}
-
-function incrementItem(state, { itemId, increment }) {
-  const updatedItems = [...state.items];
-  const item = find(updatedItems, { id: itemId });
-  item.count = (item.count || 0) + increment;
-  return updateItems(state, updatedItems);
-}
+};
 
 export default function reducer(state, action) {
-  switch (action.type) {
-    case 'restore-state':
-      return restoreState(state, action.payload);
-    case 'clear-error':
-      return clearError(state);
-    case 'use-preset':
-      return usePreset(state, action.payload);
-    case 'clear-categories':
-      return clearCategories(state);
-    case 'clear-counts':
-      return clearCounts(state);
-    case 'add-category':
-      return addCategory(state, action.payload);
-    case 'rename-category':
-      return renameCategory(state, action.payload);
-    case 'remove-category':
-      return removeCategory(state, action.payload);
-    case 'add-item':
-      return addItem(state, action.payload);
-    case 'rename-item':
-      return renameItem(state, action.payload);
-    case 'remove-item':
-      return removeItem(state, action.payload);
-    case 'increment-item':
-      return incrementItem(state, action.payload);
-    default:
-      throw new Error();
+  if (ACTION_HANDLERS[action.type]) {
+    return ACTION_HANDLERS[action.type](state, action.payload);
   }
+
+  throw new Error('Unhandled action');
 }
