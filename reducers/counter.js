@@ -64,7 +64,7 @@ function buildItem(name, categoryId) {
  }
 
  function buildCategory(name) {
-   return { name, id: `cat-${new Date()}` };
+   return { name, id: `cat-${Date.now()}` };
  }
 
 /**
