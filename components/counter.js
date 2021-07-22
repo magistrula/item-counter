@@ -3,29 +3,28 @@ import { useCallback, useEffect, useReducer, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import { isEmpty, without } from 'lodash';
+import without from 'lodash/without';
 
 import CounterCategory from './counter/category';
 import CounterHeader from './counter/header';
 import { FOOD_BANK_PRESET } from '../constants/presets';
 import reducer, { init, buildItemsByCategory } from '../reducers/counter';
+import { retrieveState, saveState } from '../utils/persist-state';
 
 export default function Counter() {
   const [state, dispatch] = useReducer(reducer, {}, init);
   const [itemsByCategory, setItemsByCategory] = useState({});
 
   useEffect(() => {
-    const savedState = JSON.parse(localStorage.getItem('counterState'));
-    if (savedState && !isEmpty(savedState.categories)) {
+    const savedState = retrieveState();;
+    if (savedState) {
       dispatch({ type: 'restore-state', payload: savedState });
     } else {
       dispatch({ type: 'use-preset', payload: FOOD_BANK_PRESET });
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('counterState', JSON.stringify(state));
-  }, [state]);
+  useEffect(() => saveState(state), [state]);
 
   useEffect(() => {
     if (state.error) {
