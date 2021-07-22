@@ -37,8 +37,11 @@ function updateItems(state, updatedItems) {
   return Object.assign({}, state, { items: updatedItems });
 }
 
-function itemExists(state, name) {
-  return name.toLowerCase() in state.items;
+function findItem(state, itemName) {
+  const lowerName = itemName.toLowerCase();
+  return state.items.find(({ name }) => {
+    return name.toLowerCase() === lowerName;
+  });
 }
 
 function buildItem(name, categoryId) {
@@ -53,7 +56,7 @@ function buildItem(name, categoryId) {
   return Object.assign({}, state, { categories: updatedCategories });
  }
 
- function categoryExists(state, catName) {
+ function findCategory(state, catName) {
    const lowerName = catName.toLowerCase();
    return state.categories.find(({ name }) => {
      return name.toLowerCase() === lowerName;
@@ -94,7 +97,7 @@ const ACTION_HANDLERS = {
   },
 
   'add-category': (state, name) => {
-    if (categoryExists(state, name)) {
+    if (findCategory(state, name)) {
       return Object.assign({}, state, { error: 'Category already exists' });
     }
 
@@ -103,7 +106,13 @@ const ACTION_HANDLERS = {
   },
 
   'rename-category': (state, { catId, newName }) => {
-    if (categoryExists(state, newName)) {
+    const isUnchanged = !!find(state.categories, { id: catId, name: newName });
+    if (isUnchanged) {
+      return state;
+    }
+
+    const existingCategory = findCategory(state, newName);
+    if (existingCategory && existingCategory.id !== catId) {
       return Object.assign({}, state, { error: 'Category already exists' });
     }
 
@@ -120,7 +129,7 @@ const ACTION_HANDLERS = {
   },
 
   'add-item': (state, { catId, itemName }) => {
-    if (itemExists(state, itemName)) {
+    if (findItem(state, itemName)) {
       return Object.assign({}, state, { error: 'Item already exists' });
     }
 
@@ -130,12 +139,13 @@ const ACTION_HANDLERS = {
   },
 
   'rename-item': (state, { itemId, newName }) => {
-    const isNotNameChange = !!find(state.items, { id: itemId, name: newName });
-    if (isNotNameChange) {
+    const isUnchanged = !!find(state.items, { id: itemId, name: newName });
+    if (isUnchanged) {
       return state;
     }
 
-    if (itemExists(state, newName)) {
+    const existingItem = findItem(state, newName);
+    if (existingItem && existingItem.id !== itemId) {
       return Object.assign({}, state, { error: 'Item already exists' });
     }
 

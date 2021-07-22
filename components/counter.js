@@ -65,10 +65,8 @@ export default function Counter() {
   }, []);
 
   const renameCategory = useCallback((oldName, catId) => {
-    const newName = (
-      window.prompt('Enter new category name', oldName) || ''
-    ).trim();
-    if (newName && newName.toLowerCase() !== oldName.toLowerCase()) {
+    const newName = (window.prompt('Enter new name', oldName) || '').trim();
+    if (newName) {
       dispatch({ type: 'rename-category', payload: { catId, newName } });
     }
   }, []);
