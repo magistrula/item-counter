@@ -9,31 +9,32 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MoreMenu from '../more-menu';
 
 function CounterItem({
+  itemId,
   itemName,
   itemCount,
-  editItem,
+  renameItem,
   incrementItem,
   removeItem,
 }) {
   const incrementCb = useCallback(() => {
-    incrementItem(itemName, 1);
-  }, [itemName, incrementItem]);
+    incrementItem(itemId, 1);
+  }, [itemId, incrementItem]);
 
   const decrementCb = useCallback(() => {
-    incrementItem(itemName, -1);
-  }, [itemName, incrementItem]);
+    incrementItem(itemId, -1);
+  }, [itemId, incrementItem]);
 
   const clearCountCb = useCallback(() => {
-    incrementItem(itemName, itemCount * -1);
-  }, [itemCount, itemName, incrementItem])
+    incrementItem(itemId, itemCount * -1);
+  }, [itemCount, itemId, incrementItem]);
 
   const removeCb = useCallback(() => {
-    removeItem(itemName);
-  }, [itemName, removeItem]);
+    removeItem(itemId);
+  }, [itemId, removeItem]);
 
-  const editItemCb = useCallback(() => {
-    editItem(itemName);
-  }, [itemName, editItem]);
+  const renameCb = useCallback(() => {
+    renameItem(itemId, itemName);
+  }, [itemId, itemName, renameItem]);
 
   return (
     <Box display="flex">
@@ -61,12 +62,18 @@ function CounterItem({
 
       <Box display="flex" ml={1}>
         <MoreMenu>
-          <MenuItem onClick={editItemCb}>Rename</MenuItem>
+          <MenuItem onClick={renameCb}>Rename</MenuItem>
           <MenuItem onClick={removeCb}>Remove</MenuItem>
-          {!!itemCount && <MenuItem onClick={clearCountCb}>Clear Count</MenuItem>}
+          {!!itemCount && (
+            <MenuItem onClick={clearCountCb}>Clear Count</MenuItem>
+          )}
         </MoreMenu>
 
-        <IconButton disabled={!itemCount} variant="contained" onClick={decrementCb}>
+        <IconButton
+          disabled={!itemCount}
+          variant="contained"
+          onClick={decrementCb}
+        >
           <ExposureNeg1Icon fontSize="small" />
         </IconButton>
       </Box>

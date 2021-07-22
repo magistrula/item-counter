@@ -1,4 +1,7 @@
-import { map, without, union } from 'lodash';
+import find from 'lodash/find';
+import groupBy from 'lodash/groupBy';
+import pick from 'lodash/pick';
+import without from 'lodash/without';
 
 import { FOOD_BANK_PRESET } from '../constants/presets';
 
@@ -7,29 +10,63 @@ export function init(preset = {}) {
     error: null,
     name: preset.name || 'Custom',
     categories: preset.categories || [],
-    itemCounts: initItemCounts(preset.categories),
-    presets: [FOOD_BANK_PRESET]
+    items: initItems(preset.items),
+    presets: [FOOD_BANK_PRESET],
   };
 }
 
-function initItemCounts(categories) {
-  const allItems = union(...map(categories || [], 'items'));
-  return allItems.reduce((acc, itemName) => {
-    acc[itemName] = 0;
-    return acc;
-  }, {});
+/**
+ * DERIVED DATA UTILS
+ */
+
+// TODO: implement using a selector after switch to redux
+export function buildItemsByCategory(categories, items) {
+  const validCategoryIds = (categories || []).map(cat => cat.id);
+  return pick(groupBy(items, 'categoryId'), validCategoryIds);
 }
 
-function categoryExists(state, catName) {
-  const lowerName = catName.toLowerCase();
-  return state.categories.find(({ name }) => {
-    return name.toLowerCase() === lowerName;
-  });
-};
+/**
+ * ITEM UTILS
+ */
+
+function initItems(items) {
+  return (items || []).map(item => Object.assign({}, item, { count: 0 }));
+}
+
+function updateItems(state, updatedItems) {
+  return Object.assign({}, state, { items: updatedItems });
+}
 
 function itemExists(state, name) {
-  return name.toLowerCase() in state.itemCounts;
-};
+  return name.toLowerCase() in state.items;
+}
+
+function buildItem(name, categoryId) {
+  return { categoryId, name, id: `item-${Date.now()}`, count: 0 };
+}
+
+/**
+ * CATEGORY UTILS
+ */
+
+ function updateCategories(state, updatedCategories) {
+  return Object.assign({}, state, { categories: updatedCategories });
+ }
+
+ function categoryExists(state, catName) {
+   const lowerName = catName.toLowerCase();
+   return state.categories.find(({ name }) => {
+     return name.toLowerCase() === lowerName;
+   });
+ }
+
+ function buildCategory(name) {
+   return { name, id: `cat-${new Date()}` };
+ }
+
+/**
+ * ACTION HANDLERS
+ */
 
 function usePreset(state, preset) {
   return init(preset);
@@ -42,7 +79,8 @@ function restoreState(state, savedState) {
 function clearCategories() {
   return init({
     categories: [],
-    itemCounts: {}
+    itemCounts: {},
+    itemsByCategory: {},
   });
 }
 
@@ -51,7 +89,7 @@ function clearError(state) {
 }
 
 function clearCounts(state) {
-  return updateItemCounts(state, initItemCounts(state.categories));
+  return updateItems(state, initItems(state.items));
 }
 
 function addCategory(state, name) {
@@ -59,90 +97,64 @@ function addCategory(state, name) {
     return Object.assign({}, state, { error: 'Category already exists' });
   }
 
-  const updatedCategories = state.categories.concat([makeCategory(name)]);
+  const updatedCategories = state.categories.concat([buildCategory(name)]);
   return updateCategories(state, updatedCategories);
 }
 
-function editCategory(state, { catIdx, newName }) {
+function renameCategory(state, { catId, newName }) {
   if (categoryExists(state, newName)) {
     return Object.assign({}, state, { error: 'Category already exists' });
   }
 
   const updatedCategories = [...state.categories];
-  updatedCategories[catIdx].name = newName;
+  const category = find(updatedCategories, { id: catId });
+  category.name = newName;
   return updateCategories(state, updatedCategories);
 }
 
-function removeCategory(state, catIdx) {
-  const updatedCategories = without(state.categories, state.categories[catIdx]);
+function removeCategory(state, catId) {
+  const category = find(state.categories, { id: catId });
+  const updatedCategories = without(state.categories, category);
   return updateCategories(state, updatedCategories);
 }
 
-function addItem(state, { catIdx, itemName }) {
+function addItem(state, { catId, itemName }) {
   if (itemExists(state, itemName)) {
     return Object.assign({}, state, { error: 'Item already exists' });
   }
 
-  const lowerName = itemName.toLowerCase();
-  const updatedCategories = [...state.categories];
-  updatedCategories[catIdx].items = updatedCategories[catIdx].items.concat([lowerName]);
-  const newState = updateCategories(state, updatedCategories);
-
-  const updatedCounts = assignItemCount(newState, lowerName, 0);
-  return updateItemCounts(newState, updatedCounts);
+  const item = buildItem(itemName.toLowerCase(), catId);
+  const updatedItems = [...state.items, item];
+  return updateItems(state, updatedItems);
 }
 
-function editItem(state, { catIdx, oldName, newName }) {
+function renameItem(state, { itemId, newName }) {
+  const isNotNameChange = !!find(state.items, { id: itemId, name: newName });
+  if (isNotNameChange) {
+    return state;
+  }
+
   if (itemExists(state, newName)) {
     return Object.assign({}, state, { error: 'Item already exists' });
   }
 
-  const updatedCategories = [...state.categories];
-  const items = updatedCategories[catIdx].items;
-  items[items.indexOf(oldName)] = newName;
-  const newState = updateCategories(state, updatedCategories);
-
-  const count = state.itemCounts[oldName.toLowerCase()] || 0;
-  const updatedCounts = assignItemCount(newState, newName, count);
-  delete updatedCounts[oldName];
-  return updateItemCounts(newState, updatedCounts);
+  const updatedItems = [...state.items];
+  const item = find(updatedItems, { id: itemId });
+  item.name = newName;
+  return updateItems(state, updatedItems);
 }
 
-function removeItem(state, { catIdx, itemName }) {
-  const updatedCategories = [...state.categories];
-  updatedCategories[catIdx].items = without(
-    updatedCategories[catIdx].items,
-    itemName
-  );
-  const newState = updateCategories(state, updatedCategories);
-
-  const updatedCounts = Object.assign({}, state.itemCounts);
-  delete updatedCounts[itemName.toLowerCase()];
-  return updateItemCounts(newState, updatedCounts);
+function removeItem(state, { itemId }) {
+  const item = find(state.items, { id: itemId });
+  const updatedItems = without(state.items, item);
+  return updateItems(state, updatedItems);
 }
 
-function incrementItem(state, { itemName, increment }) {
-  const count = (state.itemCounts[itemName.toLowerCase()] || 0) + increment;
-  const updatedCounts = assignItemCount(state, itemName, count);
-  return updateItemCounts(state, updatedCounts);
-}
-
-function makeCategory(name) {
-  return { name, items: [] };
-}
-
-function updateCategories(state, updatedCategories) {
-  return Object.assign({}, state, { categories: updatedCategories });
-}
-
-function updateItemCounts(state, updatedCounts) {
-  return Object.assign({}, state, { itemCounts: updatedCounts });
-}
-
-function assignItemCount(state, itemName, itemCount) {
-  return Object.assign({}, state.itemCounts, {
-    [itemName.toLowerCase()]: itemCount >= 0 ? itemCount : 0
-  });
+function incrementItem(state, { itemId, increment }) {
+  const updatedItems = [...state.items];
+  const item = find(updatedItems, { id: itemId });
+  item.count = (item.count || 0) + increment;
+  return updateItems(state, updatedItems);
 }
 
 export default function reducer(state, action) {
@@ -159,14 +171,14 @@ export default function reducer(state, action) {
       return clearCounts(state);
     case 'add-category':
       return addCategory(state, action.payload);
-    case 'edit-category':
-      return editCategory(state, action.payload);
+    case 'rename-category':
+      return renameCategory(state, action.payload);
     case 'remove-category':
       return removeCategory(state, action.payload);
     case 'add-item':
       return addItem(state, action.payload);
-    case 'edit-item':
-      return editItem(state, action.payload);
+    case 'rename-item':
+      return renameItem(state, action.payload);
     case 'remove-item':
       return removeItem(state, action.payload);
     case 'increment-item':

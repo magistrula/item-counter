@@ -10,48 +10,33 @@ import TextField from '@material-ui/core/TextField';
 import CounterItem from './item';
 
 function CounterCategory({
-  index,
-  name,
-  itemCounts,
-  itemNames,
+  categoryId,
+  categoryName,
+  items,
   addItem,
-  editItem,
+  renameItem,
   incrementItem,
   removeItem,
-  editCategory,
+  renameCategory,
   removeCategory,
 }) {
   const onKeyDownAddItemInput = useCallback(
     event => {
       if (event.keyCode === 13) {
-        addItem(event.target.value, index);
+        addItem(event.target.value, categoryId);
         event.target.value = '';
       }
     },
-    [index, addItem]
+    [categoryId, addItem]
   );
 
-  const editCategoryCb = useCallback(() => {
-    editCategory(name, index);
-  }, [name, index, editCategory]);
+  const renameCategoryCb = useCallback(() => {
+    renameCategory(categoryName, categoryId);
+  }, [categoryName, categoryId, renameCategory]);
 
   const removeCategoryCb = useCallback(() => {
-    removeCategory(index);
-  }, [index, removeCategory]);
-
-  const removeItemCb = useCallback(
-    itemName => {
-      removeItem(itemName, index);
-    },
-    [index, removeItem]
-  );
-
-  const editItemCb = useCallback(
-    itemName => {
-      editItem(itemName, index);
-    },
-    [index, editItem]
-  );
+    removeCategory(categoryId);
+  }, [categoryId, removeCategory]);
 
   return (
     <>
@@ -59,12 +44,12 @@ function CounterCategory({
         <Box flexGrow={1} mr={1}>
           <TextField
             className="u-full-width"
-            placeholder={name}
+            placeholder={categoryName}
             onKeyDown={onKeyDownAddItemInput}
           />
         </Box>
 
-        <IconButton onClick={editCategoryCb}>
+        <IconButton onClick={renameCategoryCb}>
           <EditIcon fontSize="small" />
         </IconButton>
         <IconButton onClick={removeCategoryCb}>
@@ -72,14 +57,15 @@ function CounterCategory({
         </IconButton>
       </Box>
 
-      {itemNames.map(itemName => (
-        <Box key={itemName} mb={2}>
+      {(items || []).map(item => (
+        <Box key={item.id} mb={2}>
           <CounterItem
-            itemName={itemName}
-            itemCount={itemCounts[itemName]}
-            editItem={editItemCb}
+            itemId={item.id}
+            itemName={item.name}
+            itemCount={item.count}
+            renameItem={renameItem}
             incrementItem={incrementItem}
-            removeItem={removeItemCb}
+            removeItem={removeItem}
           />
         </Box>
       ))}

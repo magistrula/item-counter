@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -8,10 +8,11 @@ import { isEmpty, without } from 'lodash';
 import CounterCategory from './counter/category';
 import CounterHeader from './counter/header';
 import { FOOD_BANK_PRESET } from '../constants/presets';
-import reducer, { init } from '../reducers/counter';
+import reducer, { init, buildItemsByCategory } from '../reducers/counter';
 
 export default function Counter() {
   const [state, dispatch] = useReducer(reducer, {}, init);
+  const [itemsByCategory, setItemsByCategory] = useState({});
 
   useEffect(() => {
     const savedState = JSON.parse(localStorage.getItem('counterState'));
@@ -34,6 +35,10 @@ export default function Counter() {
     }
   }, [state.error]);
 
+  useEffect(() => {
+    setItemsByCategory(buildItemsByCategory(state.categories, state.items));
+  }, [state.categories, state.items]);
+
   const usePreset = useCallback(preset => {
     dispatch({ type: 'use-preset', payload: preset });
   }, []);
@@ -53,46 +58,46 @@ export default function Counter() {
     }
   }, []);
 
-  const removeCategory = useCallback(catIdx => {
+  const removeCategory = useCallback(catId => {
     if (window.confirm('Delete category?')) {
-      dispatch({ type: 'remove-category', payload: catIdx });
+      dispatch({ type: 'remove-category', payload: catId });
     }
   }, []);
 
-  const editCategory = useCallback((oldName, catIdx) => {
+  const renameCategory = useCallback((oldName, catId) => {
     const newName = (
       window.prompt('Enter new category name', oldName) || ''
     ).trim();
     if (newName && newName.toLowerCase() !== oldName.toLowerCase()) {
-      dispatch({ type: 'edit-category', payload: { catIdx, newName } });
+      dispatch({ type: 'rename-category', payload: { catId, newName } });
     }
   }, []);
 
-  const addItem = useCallback((itemName, catIdx) => {
+  const addItem = useCallback((itemName, catId) => {
     const trimmedName = itemName.trim();
     if (trimmedName) {
       dispatch({
         type: 'add-item',
-        payload: { catIdx, itemName: trimmedName },
+        payload: { catId, itemName: trimmedName },
       });
     }
   }, []);
 
-  const removeItem = useCallback((itemName, catIdx) => {
+  const removeItem = useCallback((itemId) => {
     if (window.confirm('Remove item?')) {
-      dispatch({ type: 'remove-item', payload: { catIdx, itemName } });
+      dispatch({ type: 'remove-item', payload: { itemId } });
     }
   }, []);
 
-  const editItem = useCallback((oldName, catIdx) => {
+  const renameItem = useCallback((itemId, oldName) => {
     const newName = (window.prompt('Enter new name', oldName) || '').trim();
-    if (newName && newName.toLowerCase() !== oldName.toLowerCase()) {
-      dispatch({ type: 'edit-item', payload: { catIdx, oldName, newName } });
+    if (newName) {
+      dispatch({ type: 'rename-item', payload: { itemId, newName } });
     }
   }, []);
 
-  const incrementItem = useCallback((itemName, increment) => {
-    dispatch({ type: 'increment-item', payload: { itemName, increment } });
+  const incrementItem = useCallback((itemId, increment) => {
+    dispatch({ type: 'increment-item', payload: { itemId, increment } });
   }, []);
 
   return (
@@ -107,18 +112,17 @@ export default function Counter() {
 
       <Box mt={3} mx={2}>
         <Grid container spacing={4}>
-          {state.categories.map((category, idx) => (
+          {state.categories.map((category) => (
             <Grid item key={category.name} xs={12} sm={6} md={4} lg={3}>
               <CounterCategory
-                index={idx}
-                name={category.name}
-                itemCounts={state.itemCounts}
-                itemNames={category.items}
+                categoryId={category.id}
+                categoryName={category.name}
+                items={itemsByCategory[category.id]}
                 addItem={addItem}
-                editItem={editItem}
+                renameItem={renameItem}
                 incrementItem={incrementItem}
                 removeItem={removeItem}
-                editCategory={editCategory}
+                renameCategory={renameCategory}
                 removeCategory={removeCategory}
               />
             </Grid>
