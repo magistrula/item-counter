@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p $PORT"
+    "start": "next start -p $PORT",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "pretty": "prettier -c . --ignore-path .gitignore",
+    "pretty:fix": "prettier -w . --ignore-path .gitignore"
   },
   "dependencies": {
     "@fontsource/roboto": "^4.5.0",
