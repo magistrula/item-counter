@@ -9,7 +9,11 @@ import { FOOD_BANK_PRESET } from '../constants/presets';
 
 const DEFAULT_PRESETS = [FOOD_BANK_PRESET];
 
-export function buildState({ allPresets = [], currPreset = null, isInitialized = false }) {
+export function buildCounterState({
+  allPresets = [],
+  currPreset = null,
+  isInitialized = false
+}) {
   return {
     isInitialized,
     isSaved: true,
@@ -92,7 +96,7 @@ const ACTION_HANDLERS = {
   init: (state, { presets, savedState }) => {
     const savedName = savedState ? savedState.name : null;
     const currPreset = savedName ? find(presets, { name: savedName }) : presets[0];
-    const newState = buildState({
+    const newState = buildCounterState({
       currPreset,
       allPresets: presets,
       isInitialized: true
@@ -129,9 +133,9 @@ const ACTION_HANDLERS = {
     });
   },
 
-  'rename-preset': (state, { name }) => {
-    const isExistingPreset = presetExistsWithName(state.presets, state.name);
-    if (isExistingPreset) {
+  'rename-curr-preset': (state, { name }) => {
+    const isStoredPreset = presetExistsWithName(state.presets, state.name);
+    if (isStoredPreset) {
       const presets = state.presets.map((preset) => {
         return preset.name === state.name ?
           Object.assign({}, preset, { name }) :
@@ -144,13 +148,13 @@ const ACTION_HANDLERS = {
     return Object.assign({}, state, { name });
   },
 
-  'save-preset': (state) => {
+  'save-curr-preset': (state) => {
     const categories = state.categories;
     const items = initItems(state.items);
     let presets = null;
 
-    const isExistingPreset = presetExistsWithName(state.presets, state.name);
-    if (isExistingPreset) {
+    const isStoredPreset = presetExistsWithName(state.presets, state.name);
+    if (isStoredPreset) {
       presets = state.presets.map((preset) => {
         return preset.name === state.name ?
           Object.assign({}, preset, { categories, items }) :
@@ -168,11 +172,11 @@ const ACTION_HANDLERS = {
     return Object.assign({}, state, { presets });
   },
 
-  'delete-preset': (state) => {
+  'delete-curr-preset': (state) => {
     const currPresetName = state.name;
     const presets = state.presets.filter(pre => pre.name !== currPresetName);
 
-    return buildState({
+    return buildCounterState({
       allPresets: presets,
       currPreset: presets[0],
       isInitialized: true,

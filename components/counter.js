@@ -7,7 +7,10 @@ import Grid from '@material-ui/core/Grid';
 import CounterCategory from './counter/category';
 import CounterHeader from './counter/header';
 import { FOOD_BANK_PRESET } from '../constants/presets';
-import reducer, { buildState, buildItemsByCategory } from '../reducers/counter';
+import reducer, {
+  buildCounterState,
+  buildItemsByCategory
+} from '../reducers/counter';
 import {
   retrievePresets,
   retrieveState,
@@ -16,7 +19,7 @@ import {
 } from '../utils/persist';
 
 export default function Counter() {
-  const [state, dispatch] = useReducer(reducer, {}, buildState);
+  const [state, dispatch] = useReducer(reducer, {}, buildCounterState);
   const [itemsByCategory, setItemsByCategory] = useState({});
 
   useEffect(() => {
@@ -69,18 +72,18 @@ export default function Counter() {
   const renamePreset = useCallback(() => {
     const name = window.prompt('Enter name for preset.', state.name);
     if (name) {
-      dispatch({ type: 'rename-preset', payload: { name } });
+      dispatch({ type: 'rename-curr-preset', payload: { name } });
     }
   }, [state.name]);
 
   const savePreset = useCallback(() => {
-    dispatch({ type: 'save-preset' });
+    dispatch({ type: 'save-curr-preset' });
   }, [])
 
   const deletePreset = useCallback(() => {
     const confirmed = window.confirm(`Delete preset "${state.name}"?`);
     if (confirmed) {
-      dispatch({ type: 'delete-preset' });
+      dispatch({ type: 'delete-curr-preset' });
     }
   }, [state.name]);
 
