@@ -22,7 +22,7 @@ export function confirmDeleteItem(name) {
   return window.confirm(`Delete item "${name}"?`)
 }
 
-export function confirmLeaveCurrPreset({ hasCounts, isSaved, items, name }) {
+export function confirmLeaveCurrPreset({ hasCounts, isSaved, name }) {
   if (!name) {
     return true;
   }

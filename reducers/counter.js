@@ -1,15 +1,10 @@
 import find from 'lodash/find';
 import groupBy from 'lodash/groupBy';
-import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import isEqualWith from 'lodash/isEqualWith';
 import pick from 'lodash/pick';
 import sortBy from 'lodash/sortBy';
 import without from 'lodash/without';
-
-import { FOOD_BANK_PRESET } from '../constants/presets';
-
-const DEFAULT_PRESETS = [FOOD_BANK_PRESET];
 
 export function buildCounterState({
   allPresets = [],
@@ -51,13 +46,6 @@ function initItems(items) {
 
 function updateItems(state, updatedItems, extraStateProps) {
   return Object.assign({}, state, { items: updatedItems }, extraStateProps);
-}
-
-function findItem(state, itemName) {
-  const lowerName = itemName.toLowerCase();
-  return state.items.find(({ name }) => {
-    return name.toLowerCase() === lowerName;
-  });
 }
 
 function buildItem(name, categoryId) {

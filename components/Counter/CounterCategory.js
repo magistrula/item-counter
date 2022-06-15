@@ -2,7 +2,6 @@ import React, { memo, useCallback } from 'react';
 
 import Box from '@material-ui/core/Box';
 import ClearIcon from '@material-ui/icons/Clear';
-import { difference, isEmpty } from 'lodash';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';

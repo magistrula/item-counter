@@ -1,5 +1,3 @@
-import isEmpty from 'lodash/isEmpty';
-
 export function storeState(state) {
   localStorage.setItem(
     'counterState',
