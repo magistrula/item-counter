@@ -6,15 +6,12 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import Divider from '@material-ui/core/Divider';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import MenuItem from '@material-ui/core/MenuItem';
 import SaveIcon from '@material-ui/icons/Save';
 
-import CounterPresetMenuItem from './CounterPresetMenuItem';
-import MoreMenu from '../MoreMenu';
+import CounterHeaderMenu from './CounterHeaderMenu';
 import { INSTRUCTIONS_TEXT } from '../../constants/strings';
 import styles from './CounterHeader.module.scss';
 
@@ -92,56 +89,19 @@ export default function CounterHeader({
             </Box>
           )}
 
-          <MoreMenu>
-            <MenuItem dense onClick={clearAllCategories}>
-              Clear Categories
-            </MenuItem>
-            <MenuItem dense onClick={clearAllCounts}>
-              Clear Counts
-            </MenuItem>
-            <MenuItem dense onClick={showHelp} className="u-HiddenNotXs">
-              Instructions
-            </MenuItem>
-            <Divider />
-
-            <Box my={1} px={2}>
-              <small>
-                <strong>Counters</strong>
-              </small>
-            </Box>
-
-            {presets.map(preset => (
-              <CounterPresetMenuItem
-                key={preset.name}
-                preset={preset}
-                usePreset={usePreset}
-              />
-            ))}
-
-            <MenuItem dense onClick={createPreset}>
-              New ...
-            </MenuItem>
-
-            {currPresetTitle && (
-              <Box>
-                <Divider />
-                <Box my={1} px={2}>
-                  <small>
-                    <strong>Current Counter</strong>
-                  </small>
-                </Box>
-                <MenuItem dense onClick={renameCurrPreset}>
-                  Rename
-                </MenuItem>
-                <MenuItem dense onClick={saveCurrPreset} disabled={isCurrPresetSaved}>
-                  Save
-                </MenuItem>
-                <MenuItem dense onClick={deleteCurrPreset}>
-                  Delete
-                </MenuItem>
-              </Box>
-            )}
-          </MoreMenu>
+          <CounterHeaderMenu
+            canEditCurrPreset={!!currPresetTitle}
+            isCurrPresetSaved={isCurrPresetSaved}
+            presets={presets}
+            clearAllCategories={clearAllCategories}
+            clearAllCounts={clearAllCounts}
+            createPreset={createPreset}
+            deleteCurrPreset={deleteCurrPreset}
+            renameCurrPreset={renameCurrPreset}
+            saveCurrPreset={saveCurrPreset}
+            showHelp={showHelp}
+            usePreset={usePreset}
+          />
         </Box>
       </Box>
     </AppBar>
