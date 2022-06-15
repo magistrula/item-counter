@@ -13,10 +13,10 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import MenuItem from '@material-ui/core/MenuItem';
 import SaveIcon from '@material-ui/icons/Save';
 
-import CounterPresetMenuItem from './preset-menu-item';
-import MoreMenu from '../more-menu';
+import CounterPresetMenuItem from './CounterPresetMenuItem';
+import MoreMenu from '../MoreMenu';
 import { INSTRUCTIONS_TEXT } from '../../constants/strings';
-import styles from './header.module.scss';
+import styles from './CounterHeader.module.scss';
 
 export default function CounterHeader({
   isSaved,

@@ -4,8 +4,8 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
-import CounterCategory from './counter/category';
-import CounterHeader from './counter/header';
+import CounterCategory from './Counter/CounterCategory';
+import CounterHeader from './Counter/CounterHeader';
 import { FOOD_BANK_PRESET } from '../constants/presets';
 import reducer, {
   buildCounterState,

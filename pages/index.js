@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Head from 'next/head'
 import Link from 'next/link';
-import Counter from '../components/counter';
+import Counter from '../components/Counter';
 
 export default function Home() {
   return (

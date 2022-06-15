@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import MenuItem from '@material-ui/core/MenuItem';
 
-import styles from './PresetMenuItem.module.scss';
+import styles from './CounterPresetMenuItem.module.scss';
 
 export default function CounterPresetMenuItem({
   preset,
@@ -17,7 +17,7 @@ export default function CounterPresetMenuItem({
     <MenuItem
       dense
       key={preset.name}
-      className={styles['CounterMoreMenu-presetItem']}
+      className={styles.CounterPresetMenuItem}
       onClick={usePresetCb}
     >
       <div className="u-Ellipsized">{preset.name}</div>

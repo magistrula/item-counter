@@ -7,7 +7,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 
-import CounterItem from './item';
+import CounterItem from './CounterItem';
 
 function CounterCategory({
   categoryId,
