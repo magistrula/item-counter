@@ -2,6 +2,7 @@ import find from 'lodash/find';
 import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
+import isEqualWith from 'lodash/isEqualWith';
 import pick from 'lodash/pick';
 import sortBy from 'lodash/sortBy';
 import without from 'lodash/without';
@@ -57,6 +58,21 @@ function findItem(state, itemName) {
 
 function buildItem(name, categoryId) {
   return { categoryId, name, id: `item-${Date.now()}`, count: 0 };
+}
+
+function areItemsEqual(itemsA, itemsB) {
+  if (itemsA.length !== itemsB.length) {
+    return false;
+  }
+
+  return isEqualWith(itemsA, itemsB, (item, otherItem) => {
+    // Compare everything except item counts
+    return (
+      item.categoryId === otherItem.categoryId &&
+      item.id === otherItem.id &&
+      item.name === otherItem.name
+    );
+  });
 }
 
 /**
@@ -204,7 +220,7 @@ const ACTION_HANDLERS = {
     const currPreset = find(state.presets, { name: state.name });
     if (
       currPreset &&
-      isEqual(state.items, currPreset.items) &&
+      areItemsEqual(state.items, currPreset.items) &&
       isEqual(state.categories, currPreset.categories)
     ) {
       return Object.assign({}, state, { isCurrPresetSaved: true });
