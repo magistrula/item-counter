@@ -23,6 +23,10 @@ export function confirmDeleteItem(name) {
 }
 
 export function confirmLeaveCurrPreset({ hasCounts, isSaved, items, name }) {
+  if (!name) {
+    return true;
+  }
+
   if (hasCounts && !window.confirm(`Discard "${name}" counts?`)) {
     return false;
   }
