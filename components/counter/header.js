@@ -81,8 +81,8 @@ export default function CounterHeader({
           )}
 
           <MoreMenu>
-            <MenuItem onClick={clearAllCategories}>Clear Categories</MenuItem>
-            <MenuItem onClick={clearAllCounts}>Clear Counts</MenuItem>
+            <MenuItem dense onClick={clearAllCategories}>Clear Categories</MenuItem>
+            <MenuItem dense onClick={clearAllCounts}>Clear Counts</MenuItem>
 
             <Divider />
 
@@ -100,8 +100,8 @@ export default function CounterHeader({
               />
             ))}
 
-            <MenuItem onClick={createPreset}>
-              <small>New ...</small>
+            <MenuItem dense onClick={createPreset}>
+              New ...
             </MenuItem>
           </MoreMenu>
         </Box>

@@ -12,7 +12,7 @@ export default function CounterPresetMenuItem({
   }, [preset, usePreset]);
 
   return (
-    <MenuItem key={preset.name} onClick={usePresetCb}>
+    <MenuItem dense key={preset.name} onClick={usePresetCb}>
       {preset.name}
     </MenuItem>
   );
