@@ -6,7 +6,6 @@ import Grid from '@material-ui/core/Grid';
 
 import CounterCategory from './Counter/CounterCategory';
 import CounterHeader from './Counter/CounterHeader';
-import { FOOD_BANK_PRESET } from '../constants/presets';
 import reducer, {
   buildCounterState,
   buildItemsByCategory,
@@ -39,20 +38,16 @@ export default function Counter() {
   }, []);
 
   useEffect(() => {
-    if (!state.isInitialized) {
-      return;
+    if (state.isInitialized) {
+      storePresets(state.presets);
+      dispatch({ type: 'did-store-presets' });
     }
-
-    storePresets(state.presets);
-    dispatch({ type: 'did-store-presets' });
   }, [state.presets, state.isInitialized]);
 
   useEffect(() => {
-    if (!state.isInitialized) {
-      return;
+    if (state.isInitialized) {
+      storeState(state);
     }
-
-    storeState(state);
   }, [state, state.isInitialized]);
 
   useEffect(() => {
