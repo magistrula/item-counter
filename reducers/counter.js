@@ -1,6 +1,7 @@
 import find from 'lodash/find';
 import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 import pick from 'lodash/pick';
 import sortBy from 'lodash/sortBy';
 import without from 'lodash/without';
@@ -16,7 +17,7 @@ export function buildCounterState({
 }) {
   return {
     isInitialized,
-    isSaved: true,
+    isCurrPresetSaved: true,
     presets: sortBy(allPresets, ['name']),
     name: currPreset ? currPreset.name : null,
     categories: currPreset ? currPreset.categories : [],
@@ -65,7 +66,7 @@ function buildItem(name, categoryId) {
 function updateCategories(state, updatedCategories) {
   return Object.assign({}, state, {
     categories: updatedCategories,
-    isSaved: false,
+    isCurrPresetSaved: false,
   });
 }
 
@@ -109,7 +110,7 @@ const ACTION_HANDLERS = {
         name: savedState.name,
         categories: savedState.categories,
         items: savedState.items,
-        isSaved: savedState.isSaved,
+        isCurrPresetSaved: savedState.isCurrPresetSaved,
       });
     }
 
@@ -121,7 +122,7 @@ const ACTION_HANDLERS = {
       name: preset.name,
       categories: preset.categories,
       items: initItems(preset.items),
-      isSaved: true,
+      isCurrPresetSaved: true,
     });
   },
 
@@ -138,7 +139,7 @@ const ACTION_HANDLERS = {
       id: `preset-${Date.now()}`,
       categories: [],
       items: [],
-      isSaved: false,
+      isCurrPresetSaved: false,
     });
   },
 
@@ -205,9 +206,16 @@ const ACTION_HANDLERS = {
   },
 
   'did-store-presets': state => {
-    const isCurrPresetUnsaved =
-      state.name && !presetExistsWithName(state.presets, state.name);
-    return Object.assign({}, state, { isSaved: !isCurrPresetUnsaved });
+    const currPreset = find(state.presets, { name: state.name });
+    const currPresetHasChanges = (
+      !currPreset ||
+      !isEqual(state.items, currPreset.items) ||
+      !isEqual(state.categories, currPreset.categories)
+    );
+
+    return Object.assign({}, state, {
+      isCurrPresetSaved: !currPresetHasChanges
+    });
   },
 
   'clear-counts': state => {
@@ -218,7 +226,7 @@ const ACTION_HANDLERS = {
     return Object.assign({}, state, {
       categories: [],
       items: [],
-      isSaved: false,
+      isCurrPresetSaved: false,
     });
   },
 
@@ -270,7 +278,7 @@ const ACTION_HANDLERS = {
   'add-item': (state, { catId, name }) => {
     const item = buildItem(name.toLowerCase(), catId);
     const updatedItems = [...state.items, item];
-    return updateItems(state, updatedItems, { isSaved: false });
+    return updateItems(state, updatedItems, { isCurrPresetSaved: false });
   },
 
   'rename-item': (state, { itemId, newName }) => {
@@ -282,13 +290,13 @@ const ACTION_HANDLERS = {
     const updatedItems = [...state.items];
     const item = find(updatedItems, { id: itemId });
     item.name = newName;
-    return updateItems(state, updatedItems, { isSaved: false });
+    return updateItems(state, updatedItems, { isCurrPresetSaved: false });
   },
 
   'remove-item': (state, { itemId }) => {
     const item = find(state.items, { id: itemId });
     const updatedItems = without(state.items, item);
-    return updateItems(state, updatedItems, { isSaved: false });
+    return updateItems(state, updatedItems, { isCurrPresetSaved: false });
   },
 
   'increment-item': (state, { itemId, increment }) => {

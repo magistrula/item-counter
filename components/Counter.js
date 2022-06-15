@@ -58,11 +58,14 @@ export default function Counter() {
 
   const usePreset = useCallback(
     preset => {
-      if (state.isSaved || window.confirm('Discard unsaved changes?')) {
+      if (
+        state.isCurrPresetSaved ||
+        window.confirm('Discard unsaved changes?')
+      ) {
         dispatch({ type: 'use-preset', payload: { preset } });
       }
     },
-    [state.isSaved]
+    [state.isCurrPresetSaved]
   );
 
   const createPreset = useCallback(() => {
@@ -148,7 +151,7 @@ export default function Counter() {
   return (
     <>
       <CounterHeader
-        isSaved={state.isSaved}
+        isSaved={state.isCurrPresetSaved}
         presets={state.presets}
         presetTitle={state.name}
         addCategory={addCategory}
