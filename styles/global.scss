@@ -6,3 +6,9 @@ body {
 .u-full-width {
   width: 100%;
 }
+
+.u-ellipsis {
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}

@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 
 import MenuItem from '@material-ui/core/MenuItem';
 
+import styles from './PresetMenuItem.module.scss';
+
 export default function CounterPresetMenuItem({
   preset,
   deletePreset,
@@ -12,8 +14,13 @@ export default function CounterPresetMenuItem({
   }, [preset, usePreset]);
 
   return (
-    <MenuItem dense key={preset.name} onClick={usePresetCb}>
-      {preset.name}
+    <MenuItem
+      dense
+      key={preset.name}
+      className={styles['CounterMoreMenu-presetItem']}
+      onClick={usePresetCb}
+    >
+      <div className="u-ellipsis">{preset.name}</div>
     </MenuItem>
   );
 }

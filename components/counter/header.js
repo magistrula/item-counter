@@ -16,6 +16,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import CounterPresetMenuItem from './preset-menu-item';
 import MoreMenu from '../more-menu';
 import { INSTRUCTIONS_TEXT } from '../../constants/strings';
+import styles from './header.module.scss';
 
 export default function CounterHeader({
   isSaved,
@@ -64,7 +65,9 @@ export default function CounterHeader({
         </Box>
 
         <Box display="flex" alignItems="center">
-          <Box mr={2}>{presetTitle}</Box>
+          <Box mr={2} className={styles['CounterHeader-title']}>
+            <div class="u-ellipsis">{presetTitle}</div>
+          </Box>
 
           {presetTitle && (
             <ButtonGroup variant="text" color="inherit">
