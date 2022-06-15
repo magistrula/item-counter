@@ -127,19 +127,25 @@ const ACTION_HANDLERS = {
   },
 
   'create-preset': (state, { name }) => {
-    const isNameConflict = presetExistsWithName(state.presets, name);
-    if (isNameConflict) {
+    if (presetExistsWithName(state.presets, name)) {
       return Object.assign({}, state, {
-        error: `Preset "${name}" already exists`,
+        error: `Counter "${name}" already exists`,
       });
     }
 
-    return Object.assign({}, state, {
+    const newPreset = {
       name,
       id: `preset-${Date.now()}`,
       categories: [],
       items: [],
-      isCurrPresetSaved: false,
+    };
+
+    return Object.assign({}, state, {
+      presets: state.presets.concat([newPreset]),
+      name: newPreset.name,
+      categories: newPreset.categories,
+      items: newPreset.items,
+      isCurrPresetSaved: true,
     });
   },
 
@@ -173,23 +179,12 @@ const ACTION_HANDLERS = {
   'save-curr-preset': state => {
     const categories = state.categories;
     const items = initItems(state.items);
-    let presets = null;
 
-    const isCurrPresetStored = presetExistsWithName(state.presets, state.name);
-    if (isCurrPresetStored) {
-      presets = state.presets.map(preset => {
-        return preset.name === state.name
-          ? Object.assign({}, preset, { categories, items })
-          : preset;
-      });
-    } else {
-      const newPreset = {
-        categories,
-        name: state.name,
-        items: initItems(items),
-      };
-      presets = state.presets.concat([newPreset]);
-    }
+    const presets = state.presets.map(preset => {
+      return preset.name === state.name
+        ? Object.assign({}, preset, { categories, items })
+        : preset;
+    });
 
     return Object.assign({}, state, { presets });
   },
