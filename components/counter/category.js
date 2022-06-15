@@ -41,7 +41,9 @@ function CounterCategory({
   return (
     <>
       <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Box><strong>{categoryName}</strong></Box>
+        <Box>
+          <strong>{categoryName}</strong>
+        </Box>
 
         <Box display="flex">
           <IconButton onClick={renameCategoryCb}>

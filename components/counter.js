@@ -9,7 +9,7 @@ import CounterHeader from './counter/header';
 import { FOOD_BANK_PRESET } from '../constants/presets';
 import reducer, {
   buildCounterState,
-  buildItemsByCategory
+  buildItemsByCategory,
 } from '../reducers/counter';
 import {
   retrievePresets,
@@ -56,11 +56,14 @@ export default function Counter() {
     setItemsByCategory(buildItemsByCategory(state.categories, state.items));
   }, [state.categories, state.items]);
 
-  const usePreset = useCallback(preset => {
-    if (state.isSaved || window.confirm('Discard unsaved changes?')) {
-      dispatch({ type: 'use-preset', payload: { preset } });
-    }
-  }, [state.isSaved]);
+  const usePreset = useCallback(
+    preset => {
+      if (state.isSaved || window.confirm('Discard unsaved changes?')) {
+        dispatch({ type: 'use-preset', payload: { preset } });
+      }
+    },
+    [state.isSaved]
+  );
 
   const createPreset = useCallback(() => {
     const name = (window.prompt('Enter name for preset.') || '').trim();
@@ -78,7 +81,7 @@ export default function Counter() {
 
   const savePreset = useCallback(() => {
     dispatch({ type: 'save-curr-preset' });
-  }, [])
+  }, []);
 
   const deletePreset = useCallback(() => {
     const confirmed = window.confirm(`Delete preset "${state.name}"?`);
@@ -125,7 +128,7 @@ export default function Counter() {
     }
   }, []);
 
-  const removeItem = useCallback((itemId) => {
+  const removeItem = useCallback(itemId => {
     if (window.confirm('Remove item?')) {
       dispatch({ type: 'remove-item', payload: { itemId } });
     }
@@ -160,7 +163,7 @@ export default function Counter() {
 
       <Box mt={3} mx={2}>
         <Grid container spacing={4}>
-          {state.categories.map((category) => (
+          {state.categories.map(category => (
             <Grid item key={category.name} xs={12} sm={6} md={4} lg={3}>
               <CounterCategory
                 categoryId={category.id}

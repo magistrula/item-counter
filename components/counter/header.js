@@ -48,7 +48,7 @@ export default function CounterHeader({
             <InfoOutlinedIcon />
           </IconButton>
 
-          {presetTitle &&
+          {presetTitle && (
             <Box mx={1}>
               <Button
                 variant="contained"
@@ -60,13 +60,13 @@ export default function CounterHeader({
                 <Box ml={0.5}>Add Category</Box>
               </Button>
             </Box>
-          }
+          )}
         </Box>
 
         <Box display="flex" alignItems="center">
           <Box mr={2}>{presetTitle}</Box>
 
-          {presetTitle &&
+          {presetTitle && (
             <ButtonGroup variant="text" color="inherit">
               <Button onClick={renamePreset}>
                 <EditIcon fontSize="small" />
@@ -75,10 +75,10 @@ export default function CounterHeader({
                 <SaveIcon fontSize="small" />
               </Button>
               <Button onClick={deletePreset}>
-                <DeleteForeverIcon fontSize="small"/>
+                <DeleteForeverIcon fontSize="small" />
               </Button>
             </ButtonGroup>
-          }
+          )}
 
           <MoreMenu>
             <MenuItem onClick={clearAllCategories}>Clear Categories</MenuItem>

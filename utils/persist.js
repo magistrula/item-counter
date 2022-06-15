@@ -1,12 +1,15 @@
 import isEmpty from 'lodash/isEmpty';
 
 export function storeState(state) {
-  localStorage.setItem('counterState', JSON.stringify({
-    categories: state.categories,
-    items: state.items,
-    name: state.name,
-    isSaved: state.isSaved,
-  }));
+  localStorage.setItem(
+    'counterState',
+    JSON.stringify({
+      categories: state.categories,
+      items: state.items,
+      name: state.name,
+      isSaved: state.isSaved,
+    })
+  );
 }
 
 export function retrieveState() {

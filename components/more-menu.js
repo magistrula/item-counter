@@ -7,7 +7,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 export default function CounterItemMenu({ children, closeOnClick = true }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const toggleMenu = useCallback((event) => {
+  const toggleMenu = useCallback(event => {
     setAnchorEl(event.currentTarget);
   }, []);
 

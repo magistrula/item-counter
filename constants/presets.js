@@ -6,7 +6,7 @@ export const FOOD_BANK_PRESET = {
   name: 'Food Bank',
   id: 'preset-1655295602043',
   categories: [
-    { id: PRODUCE_ID, name: 'Produce'},
+    { id: PRODUCE_ID, name: 'Produce' },
     { id: ESSENTIALS_ID, name: 'Essentials' },
     { id: PANTRY_ID, name: 'Pantry' },
   ],
@@ -32,5 +32,5 @@ export const FOOD_BANK_PRESET = {
     { id: 'item-19', name: 'garbanzo', categoryId: PANTRY_ID },
     { id: 'item-20', name: 'maseca', categoryId: PANTRY_ID },
     { id: 'item-21', name: 'oil', categoryId: PANTRY_ID },
-  ]
+  ],
 };

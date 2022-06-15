@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 export default function CounterPresetMenuItem({
   preset,
   deletePreset,
-  usePreset
+  usePreset,
 }) {
   const usePresetCb = useCallback(() => {
     usePreset(preset);
@@ -15,5 +15,5 @@ export default function CounterPresetMenuItem({
     <MenuItem key={preset.name} onClick={usePresetCb}>
       {preset.name}
     </MenuItem>
-  )
+  );
 }
