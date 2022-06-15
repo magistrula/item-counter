@@ -123,7 +123,7 @@ export default function CounterHeader({
             </MenuItem>
 
             {presetTitle && (
-              <>
+              <Box>
                 <Divider />
                 <Box my={1} px={2}>
                   <small>
@@ -139,7 +139,7 @@ export default function CounterHeader({
                 <MenuItem dense onClick={deletePreset}>
                   Delete
                 </MenuItem>
-              </>
+              </Box>
             )}
           </MoreMenu>
         </Box>
