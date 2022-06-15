@@ -213,21 +213,26 @@ const ACTION_HANDLERS = {
   },
 
   'rename-category': (state, { catId, newName }) => {
-    const isUnchanged = !!find(state.categories, { id: catId, name: newName });
+    const trimmedName = newName.trim();
+    const existingCategory = findCategory(state, trimmedName);
+
+    const isUnchanged = !!existingCategory && existingCategory.id === catId;
     if (isUnchanged) {
       return state;
     }
 
-    const existingCategory = findCategory(state, newName);
-    if (existingCategory && existingCategory.id !== catId) {
+    const isNameConflict = !!existingCategory && existingCategory.id !== catId;
+    if (isNameConflict) {
       return Object.assign({}, state, {
-        error: `Category "${newName}" already exists`
+        error: `Category "${trimmedName}" already exists`
       });
     }
 
-    const updatedCategories = [...state.categories];
-    const category = find(updatedCategories, { id: catId });
-    category.name = newName;
+    const updatedCategories = state.categories.map((category) => {
+      return category.id === catId ?
+        Object.assign({}, category, { name: trimmedName }) :
+        category;
+    });
     return updateCategories(state, updatedCategories);
   },
 

@@ -113,7 +113,7 @@ export default function Counter() {
   }, []);
 
   const addItem = useCallback((name, catId) => {
-    const trimmedName = name.trim();
+    const trimmedName = (name || '').trim();
     if (trimmedName) {
       dispatch({
         type: 'add-item',
