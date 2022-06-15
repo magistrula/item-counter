@@ -63,7 +63,7 @@ export default function Counter() {
   }, [state.isSaved]);
 
   const createPreset = useCallback(() => {
-    const name = window.prompt('Enter name for preset.');
+    const name = (window.prompt('Enter name for preset.') || '').trim();
     if (name) {
       dispatch({ type: 'create-preset', payload: { name } });
     }
