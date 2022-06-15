@@ -66,14 +66,14 @@ export default function Counter() {
   );
 
   const createPreset = useCallback(() => {
-    const name = (window.prompt('Enter name for preset.') || '').trim();
+    const name = (window.prompt('Enter name for counter.') || '').trim();
     if (name) {
       dispatch({ type: 'create-preset', payload: { name } });
     }
   }, []);
 
   const renamePreset = useCallback(() => {
-    const name = window.prompt('Enter name for preset.', state.name);
+    const name = window.prompt('Enter name for counter.', state.name);
     if (name) {
       dispatch({ type: 'rename-curr-preset', payload: { name } });
     }
@@ -84,7 +84,7 @@ export default function Counter() {
   }, []);
 
   const deletePreset = useCallback(() => {
-    const confirmed = window.confirm(`Delete preset "${state.name}"?`);
+    const confirmed = window.confirm(`Delete counter "${state.name}"?`);
     if (confirmed) {
       dispatch({ type: 'delete-curr-preset' });
     }
