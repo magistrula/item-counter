@@ -1,3 +1,7 @@
 .CounterHeader-title {
   max-width: 200px;
+
+  @media (max-width: 599px) {
+    max-width: 100px;
+  }
 }

@@ -45,12 +45,8 @@ export default function CounterHeader({
         py={0.5}
       >
         <Box display="flex" alignItems="center">
-          <IconButton color="inherit" onClick={showHelp}>
-            <InfoOutlinedIcon />
-          </IconButton>
-
           {presetTitle && (
-            <Box mx={1}>
+            <Box mr={1}>
               <Button
                 variant="contained"
                 size="small"
@@ -62,6 +58,12 @@ export default function CounterHeader({
               </Button>
             </Box>
           )}
+
+          <Box mr={1} className="display-none-xs">
+            <IconButton color="inherit" onClick={showHelp}>
+              <InfoOutlinedIcon />
+            </IconButton>
+          </Box>
         </Box>
 
         <Box display="flex" alignItems="center">
@@ -70,23 +72,36 @@ export default function CounterHeader({
           </Box>
 
           {presetTitle && (
-            <ButtonGroup variant="text" color="inherit">
-              <Button onClick={renamePreset}>
-                <EditIcon fontSize="small" />
-              </Button>
-              <Button onClick={savePreset} disabled={isSaved}>
-                <SaveIcon fontSize="small" />
-              </Button>
-              <Button onClick={deletePreset}>
-                <DeleteForeverIcon fontSize="small" />
-              </Button>
-            </ButtonGroup>
+            <Box
+              display="flex"
+              alignItems="center"
+              flexShrink={0}
+              className="display-none-xs"
+            >
+              <ButtonGroup variant="text" color="inherit">
+                <Button onClick={renamePreset}>
+                  <EditIcon fontSize="small" />
+                </Button>
+                <Button onClick={savePreset} disabled={isSaved}>
+                  <SaveIcon fontSize="small" />
+                </Button>
+                <Button onClick={deletePreset}>
+                  <DeleteForeverIcon fontSize="small" />
+                </Button>
+              </ButtonGroup>
+            </Box>
           )}
 
           <MoreMenu>
-            <MenuItem dense onClick={clearAllCategories}>Clear Categories</MenuItem>
-            <MenuItem dense onClick={clearAllCounts}>Clear Counts</MenuItem>
-
+            <MenuItem dense onClick={clearAllCategories}>
+              Clear Categories
+            </MenuItem>
+            <MenuItem dense onClick={clearAllCounts}>
+              Clear Counts
+            </MenuItem>
+            <MenuItem dense onClick={showHelp} className="display-none-sm">
+              Instructions
+            </MenuItem>
             <Divider />
 
             <Box my={1} px={2}>
@@ -106,6 +121,22 @@ export default function CounterHeader({
             <MenuItem dense onClick={createPreset}>
               New ...
             </MenuItem>
+
+            <Divider />
+              <Box my={1} px={2}>
+                <small>
+                  <strong>Current Preset</strong>
+                </small>
+              </Box>
+              <MenuItem dense onClick={renamePreset}>
+                Rename
+              </MenuItem>
+              <MenuItem dense onClick={savePreset} disabled={isSaved}>
+                Save
+              </MenuItem>
+              <MenuItem dense onClick={deletePreset}>
+                Delete
+              </MenuItem>
           </MoreMenu>
         </Box>
       </Box>

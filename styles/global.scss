@@ -12,3 +12,15 @@ body {
   overflow-x: hidden;
   text-overflow: ellipsis;
 }
+
+.display-none-xs {
+  @media (max-width: 599px) {
+    display: none !important;
+  }
+}
+
+.display-none-sm {
+  @media (min-width: 600px) {
+    display: none !important;
+  }
+}
