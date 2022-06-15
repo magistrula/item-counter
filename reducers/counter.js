@@ -122,6 +122,7 @@ const ACTION_HANDLERS = {
   'create-preset': (state, { name }) => {
     return Object.assign({}, state, {
       name,
+      id: `preset-${Date.now()}`,
       categories: [],
       items: [],
       isSaved: false,

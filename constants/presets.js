@@ -4,6 +4,7 @@ const PANTRY_ID = 'category-3';
 
 export const FOOD_BANK_PRESET = {
   name: 'Food Bank',
+  id: 'preset-1655295602043',
   categories: [
     { id: PRODUCE_ID, name: 'Produce'},
     { id: ESSENTIALS_ID, name: 'Essentials' },
