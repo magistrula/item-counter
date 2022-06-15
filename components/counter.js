@@ -3,28 +3,44 @@ import { useCallback, useEffect, useReducer, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import without from 'lodash/without';
 
 import CounterCategory from './counter/category';
 import CounterHeader from './counter/header';
 import { FOOD_BANK_PRESET } from '../constants/presets';
-import reducer, { init, buildItemsByCategory } from '../reducers/counter';
-import { retrieveState, saveState } from '../utils/persist-state';
+import reducer, { buildState, buildItemsByCategory } from '../reducers/counter';
+import {
+  retrievePresets,
+  retrieveState,
+  storePresets,
+  storeState,
+} from '../utils/persist';
 
 export default function Counter() {
-  const [state, dispatch] = useReducer(reducer, {}, init);
+  const [state, dispatch] = useReducer(reducer, {}, buildState);
   const [itemsByCategory, setItemsByCategory] = useState({});
 
   useEffect(() => {
     const savedState = retrieveState();
-    if (savedState) {
-      dispatch({ type: 'restore-state', payload: { savedState } });
-    } else {
-      dispatch({ type: 'use-preset', payload: { preset: FOOD_BANK_PRESET } });
-    }
+    const presets = retrievePresets();
+    dispatch({ type: 'init', payload: { presets, savedState } });
   }, []);
 
-  useEffect(() => saveState(state), [state]);
+  useEffect(() => {
+    if (!state.isInitialized) {
+      return;
+    }
+
+    storePresets(state.presets);
+    dispatch({ type: 'did-store-presets' });
+  }, [state.presets, state.isInitialized]);
+
+  useEffect(() => {
+    if (!state.isInitialized) {
+      return;
+    }
+
+    storeState(state);
+  }, [state, state.isInitialized]);
 
   useEffect(() => {
     if (state.error) {
@@ -38,8 +54,35 @@ export default function Counter() {
   }, [state.categories, state.items]);
 
   const usePreset = useCallback(preset => {
-    dispatch({ type: 'use-preset', payload: { preset } });
+    if (state.isSaved || window.confirm('Discard unsaved changes?')) {
+      dispatch({ type: 'use-preset', payload: { preset } });
+    }
+  }, [state.isSaved]);
+
+  const createPreset = useCallback(() => {
+    const name = window.prompt('Enter name for preset.');
+    if (name) {
+      dispatch({ type: 'create-preset', payload: { name } });
+    }
   }, []);
+
+  const renamePreset = useCallback(() => {
+    const name = window.prompt('Enter name for preset.', state.name);
+    if (name) {
+      dispatch({ type: 'rename-preset', payload: { name } });
+    }
+  }, [state.name]);
+
+  const savePreset = useCallback(() => {
+    dispatch({ type: 'save-preset' });
+  }, [])
+
+  const deletePreset = useCallback(() => {
+    const confirmed = window.confirm(`Delete preset "${state.name}"?`);
+    if (confirmed) {
+      dispatch({ type: 'delete-preset' });
+    }
+  }, [state.name]);
 
   const clearAllCategories = useCallback(() => {
     dispatch({ type: 'clear-categories' });
@@ -99,10 +142,16 @@ export default function Counter() {
   return (
     <>
       <CounterHeader
+        isSaved={state.isSaved}
         presets={state.presets}
+        presetTitle={state.name}
         addCategory={addCategory}
         clearAllCategories={clearAllCategories}
         clearAllCounts={clearAllCounts}
+        createPreset={createPreset}
+        deletePreset={deletePreset}
+        renamePreset={renamePreset}
+        savePreset={savePreset}
         usePreset={usePreset}
       />
 

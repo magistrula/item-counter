@@ -1,17 +1,23 @@
 import find from 'lodash/find';
 import groupBy from 'lodash/groupBy';
+import isEmpty from 'lodash/isEmpty';
 import pick from 'lodash/pick';
+import sortBy from 'lodash/sortBy';
 import without from 'lodash/without';
 
 import { FOOD_BANK_PRESET } from '../constants/presets';
 
-export function init(preset = {}) {
+const DEFAULT_PRESETS = [FOOD_BANK_PRESET];
+
+export function buildState({ allPresets = [], currPreset = null, isInitialized = false }) {
   return {
+    isInitialized,
+    isSaved: true,
+    presets: sortBy(allPresets, ['name']),
+    name: currPreset ? currPreset.name : null,
+    categories: currPreset ? currPreset.categories : [],
+    items: initItems(currPreset ? currPreset.items : []),
     error: null,
-    name: preset.name || 'Custom',
-    categories: preset.categories || [],
-    items: initItems(preset.items),
-    presets: [FOOD_BANK_PRESET],
   };
 }
 
@@ -30,11 +36,11 @@ export function buildItemsByCategory(categories, items) {
  */
 
 function initItems(items) {
-  return (items || []).map(item => Object.assign({}, item, { count: 0 }));
+  return items.map(item => Object.assign({}, item, { count: 0 }));
 }
 
-function updateItems(state, updatedItems) {
-  return Object.assign({}, state, { items: updatedItems });
+function updateItems(state, updatedItems, extraStateProps) {
+  return Object.assign({}, state, { items: updatedItems }, extraStateProps);
 }
 
 function findItem(state, itemName) {
@@ -53,7 +59,10 @@ function buildItem(name, categoryId) {
  */
 
  function updateCategories(state, updatedCategories) {
-  return Object.assign({}, state, { categories: updatedCategories });
+  return Object.assign({}, state, {
+    categories: updatedCategories,
+    isSaved: false,
+  });
  }
 
  function findCategory(state, catName) {
@@ -67,28 +76,124 @@ function buildItem(name, categoryId) {
    return { name, id: `cat-${Date.now()}` };
  }
 
+ /**
+  * PRESET UTILS
+  */
+
+function presetExistsWithName(presets, name) {
+  return presets.some(preset => preset.name === name);
+}
+
 /**
  * ACTION HANDLERS
  */
 
 const ACTION_HANDLERS = {
-  'use-preset': (state, { preset }) => {
-    return init(preset);
+  init: (state, { presets, savedState }) => {
+    const savedName = savedState ? savedState.name : null;
+    const currPreset = savedName ? find(presets, { name: savedName }) : presets[0];
+    const newState = buildState({
+      currPreset,
+      allPresets: presets,
+      isInitialized: true
+    });
+
+    if (savedState) {
+      Object.assign(newState, {
+        name: savedState.name,
+        categories: savedState.categories,
+        items: savedState.items,
+        isSaved: savedState.isSaved,
+      });
+    }
+
+    return newState;
   },
 
-  'restore-state': (state, { savedState }) => {
-    return Object.assign({}, init(), savedState);
+  'use-preset': (state, { preset }) => {
+    return Object.assign({}, state, {
+      name: preset.name,
+      categories: preset.categories,
+      items: initItems(preset.items),
+      isSaved: true,
+    });
+  },
+
+  'create-preset': (state, { name }) => {
+    return Object.assign({}, state, {
+      name,
+      categories: [],
+      items: [],
+      isSaved: false,
+    });
+  },
+
+  'rename-preset': (state, { name }) => {
+    const isExistingPreset = presetExistsWithName(state.presets, state.name);
+    if (isExistingPreset) {
+      const presets = state.presets.map((preset) => {
+        return preset.name === state.name ?
+          Object.assign({}, preset, { name }) :
+          preset;
+      });
+
+      return Object.assign({}, state, { name, presets });
+    }
+
+    return Object.assign({}, state, { name });
+  },
+
+  'save-preset': (state) => {
+    const categories = state.categories;
+    const items = initItems(state.items);
+    let presets = null;
+
+    const isExistingPreset = presetExistsWithName(state.presets, state.name);
+    if (isExistingPreset) {
+      presets = state.presets.map((preset) => {
+        return preset.name === state.name ?
+          Object.assign({}, preset, { categories, items }) :
+          preset;
+      });
+    } else {
+      const newPreset = {
+        categories,
+        name: state.name,
+        items: initItems(items),
+      };
+      presets = state.presets.concat([newPreset]);
+    }
+
+    return Object.assign({}, state, { presets });
+  },
+
+  'delete-preset': (state) => {
+    const currPresetName = state.name;
+    const presets = state.presets.filter(pre => pre.name !== currPresetName);
+
+    return buildState({
+      allPresets: presets,
+      currPreset: presets[0],
+      isInitialized: true,
+    });
+  },
+
+  'did-store-presets': (state) => {
+    const isCurrPresetUnsaved = (
+      state.name && !presetExistsWithName(state.presets, state.name)
+    );
+    return Object.assign({}, state, { isSaved: !isCurrPresetUnsaved });
   },
 
   'clear-counts': (state) => {
     return updateItems(state, initItems(state.items));
   },
 
-  'clear-categories': () => {
-    return init({
-      name: 'Custom',
+  'clear-categories': (state) => {
+    return Object.assign({}, state, {
       categories: [],
       items: [],
+      isSaved: false,
     });
   },
 
@@ -133,15 +238,9 @@ const ACTION_HANDLERS = {
   },
 
   'add-item': (state, { catId, name }) => {
-    if (findItem(state, name)) {
-      return Object.assign({}, state, {
-        error: `Item "${name}" already exists`
-      });
-    }
-
     const item = buildItem(name.toLowerCase(), catId);
     const updatedItems = [...state.items, item];
-    return updateItems(state, updatedItems);
+    return updateItems(state, updatedItems, { isSaved: false });
   },
 
   'rename-item': (state, { itemId, newName }) => {
@@ -150,23 +249,16 @@ const ACTION_HANDLERS = {
       return state;
     }
 
-    const existingItem = findItem(state, newName);
-    if (existingItem && existingItem.id !== itemId) {
-      return Object.assign({}, state, {
-        error: `Item "${newName}" already exists`
-      });
-    }
-
     const updatedItems = [...state.items];
     const item = find(updatedItems, { id: itemId });
     item.name = newName;
-    return updateItems(state, updatedItems);
+    return updateItems(state, updatedItems, { isSaved: false });
   },
 
   'remove-item': (state, { itemId }) => {
     const item = find(state.items, { id: itemId });
     const updatedItems = without(state.items, item);
-    return updateItems(state, updatedItems);
+    return updateItems(state, updatedItems, { isSaved: false });
   },
 
   'increment-item': (state, { itemId, increment }) => {
@@ -179,6 +271,7 @@ const ACTION_HANDLERS = {
 
 export default function reducer(state, action) {
   if (ACTION_HANDLERS[action.type]) {
+    console.log('Received action', action.type);
     return ACTION_HANDLERS[action.type](state, action.payload);
   }
 

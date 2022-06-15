@@ -2,13 +2,17 @@ import { useCallback } from 'react';
 
 import MenuItem from '@material-ui/core/MenuItem';
 
-export default function CounterPresetMenuItem({ preset, usePreset }) {
+export default function CounterPresetMenuItem({
+  preset,
+  deletePreset,
+  usePreset
+}) {
   const usePresetCb = useCallback(() => {
     usePreset(preset);
   }, [preset, usePreset]);
 
   return (
-    <MenuItem key={preset.name} onClick={() => usePresetCb(preset)}>
+    <MenuItem key={preset.name} onClick={usePresetCb}>
       {preset.name}
     </MenuItem>
   )

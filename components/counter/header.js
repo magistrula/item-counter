@@ -4,32 +4,35 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import MenuItem from '@material-ui/core/MenuItem';
+import SaveIcon from '@material-ui/icons/Save';
 
-import MoreMenu from '../more-menu';
 import CounterPresetMenuItem from './preset-menu-item';
+import MoreMenu from '../more-menu';
 import { INSTRUCTIONS_TEXT } from '../../constants/strings';
 
 export default function CounterHeader({
+  isSaved,
+  presets,
+  presetTitle,
   addCategory,
   clearAllCategories,
   clearAllCounts,
+  createPreset,
+  deletePreset,
+  renamePreset,
+  savePreset,
   usePreset,
-  presets = [],
 }) {
   const showHelp = useCallback(() => {
     window.alert(INSTRUCTIONS_TEXT);
   }, []);
-
-  const usePresetCb = useCallback(
-    preset => {
-      usePreset(preset);
-    },
-    [usePreset]
-  );
 
   return (
     <AppBar position="sticky">
@@ -40,49 +43,68 @@ export default function CounterHeader({
         px={2}
         py={0.5}
       >
-        <IconButton color="inherit" onClick={showHelp}>
-          <InfoOutlinedIcon />
-        </IconButton>
+        <Box display="flex" alignItems="center">
+          <IconButton color="inherit" onClick={showHelp}>
+            <InfoOutlinedIcon />
+          </IconButton>
 
-        <Box mx={1}>
-          <Button
-            variant="contained"
-            size="small"
-            color="default"
-            onClick={addCategory}
-          >
-            <AddCircleIcon fontSize="small" />
-            <Box ml={0.5}>Add Category</Box>
-          </Button>
+          {presetTitle &&
+            <Box mx={1}>
+              <Button
+                variant="contained"
+                size="small"
+                color="default"
+                onClick={addCategory}
+              >
+                <AddCircleIcon fontSize="small" />
+                <Box ml={0.5}>Add Category</Box>
+              </Button>
+            </Box>
+          }
         </Box>
 
-        <MoreMenu>
-          <MenuItem onClick={clearAllCategories}>Clear Categories</MenuItem>
+        <Box display="flex" alignItems="center">
+          <Box mr={2}>{presetTitle}</Box>
 
-          <MenuItem onClick={clearAllCounts}>Clear Counts</MenuItem>
+          {presetTitle &&
+            <ButtonGroup variant="text" color="inherit">
+              <Button onClick={renamePreset}>
+                <EditIcon fontSize="small" />
+              </Button>
+              <Button onClick={savePreset} disabled={isSaved}>
+                <SaveIcon fontSize="small" />
+              </Button>
+              <Button onClick={deletePreset}>
+                <DeleteForeverIcon fontSize="small"/>
+              </Button>
+            </ButtonGroup>
+          }
 
-          {!!presets.length && (
-            <Box>
-              <Box my={1}>
-                <Divider />
-              </Box>
+          <MoreMenu>
+            <MenuItem onClick={clearAllCategories}>Clear Categories</MenuItem>
+            <MenuItem onClick={clearAllCounts}>Clear Counts</MenuItem>
 
-              <Box mb={1} px={2}>
-                <small>
-                  <strong>Presets</strong>
-                </small>
-              </Box>
+            <Divider />
 
-              {presets.map(preset => (
-                <CounterPresetMenuItem
-                  key={preset.name}
-                  preset={preset}
-                  usePreset={usePreset}
-                />
-              ))}
+            <Box my={1} px={2}>
+              <small>
+                <strong>Presets</strong>
+              </small>
             </Box>
-          )}
-        </MoreMenu>
+
+            {presets.map(preset => (
+              <CounterPresetMenuItem
+                key={preset.name}
+                preset={preset}
+                usePreset={usePreset}
+              />
+            ))}
+
+            <MenuItem onClick={createPreset}>
+              <small>New ...</small>
+            </MenuItem>
+          </MoreMenu>
+        </Box>
       </Box>
     </AppBar>
   );
