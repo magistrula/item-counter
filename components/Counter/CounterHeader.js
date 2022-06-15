@@ -122,21 +122,25 @@ export default function CounterHeader({
               New ...
             </MenuItem>
 
-            <Divider />
-              <Box my={1} px={2}>
-                <small>
-                  <strong>Current Counter</strong>
-                </small>
-              </Box>
-              <MenuItem dense onClick={renamePreset}>
-                Rename
-              </MenuItem>
-              <MenuItem dense onClick={savePreset} disabled={isSaved}>
-                Save
-              </MenuItem>
-              <MenuItem dense onClick={deletePreset}>
-                Delete
-              </MenuItem>
+            {presetTitle && (
+              <>
+                <Divider />
+                <Box my={1} px={2}>
+                  <small>
+                    <strong>Current Counter</strong>
+                  </small>
+                </Box>
+                <MenuItem dense onClick={renamePreset}>
+                  Rename
+                </MenuItem>
+                <MenuItem dense onClick={savePreset} disabled={isSaved}>
+                  Save
+                </MenuItem>
+                <MenuItem dense onClick={deletePreset}>
+                  Delete
+                </MenuItem>
+              </>
+            )}
           </MoreMenu>
         </Box>
       </Box>
