@@ -158,7 +158,7 @@ const ACTION_HANDLERS = {
     const isNameConflict = presetExistsWithName(state.presets, name);
     if (isNameConflict) {
       return Object.assign({}, state, {
-        error: `Preset "${name}" already exists`,
+        error: `Counter "${name}" already exists`,
       });
     }
 

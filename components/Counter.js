@@ -59,21 +59,30 @@ export default function Counter() {
   const usePreset = useCallback(
     preset => {
       if (
-        state.isCurrPresetSaved ||
-        window.confirm('Discard unsaved changes?')
+        !state.isCurrPresetSaved &&
+        !window.confirm(`Proceed without saving changes to "${state.name}"?`)
       ) {
-        dispatch({ type: 'use-preset', payload: { preset } });
+        return;
       }
+
+      dispatch({ type: 'use-preset', payload: { preset } });
     },
-    [state.isCurrPresetSaved]
+    [state.isCurrPresetSaved, state.name]
   );
 
   const createPreset = useCallback(() => {
+    if (
+      !state.isCurrPresetSaved &&
+      !window.confirm(`Proceed without saving changes to "${state.name}"?`)
+    ) {
+      return;
+    }
+
     const name = (window.prompt('Enter name for counter.') || '').trim();
     if (name) {
       dispatch({ type: 'create-preset', payload: { name } });
     }
-  }, []);
+  }, [state.isCurrPresetSaved, state.name]);
 
   const renameCurrPreset = useCallback(() => {
     const name = window.prompt('Enter name for counter.', state.name);
