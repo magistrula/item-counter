@@ -89,6 +89,6 @@ CounterCategory.propTypes = {
   removeItem: PropTypes.func.isRequired,
   renameCategory: PropTypes.func.isRequired,
   removeCategory: PropTypes.func.isRequired,
-}
+};
 
 export default memo(CounterCategory);

@@ -19,7 +19,7 @@ export function confirmDeleteCategory(name) {
 }
 
 export function confirmDeleteItem(name) {
-  return window.confirm(`Delete item "${name}"?`)
+  return window.confirm(`Delete item "${name}"?`);
 }
 
 export function confirmLeaveCurrPreset({ hasCounts, isSaved, name }) {
