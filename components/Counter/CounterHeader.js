@@ -19,16 +19,16 @@ import { INSTRUCTIONS_TEXT } from '../../constants/strings';
 import styles from './CounterHeader.module.scss';
 
 export default function CounterHeader({
-  isSaved,
+  isCurrPresetSaved,
   presets,
-  presetTitle,
+  currPresetTitle,
   addCategory,
   clearAllCategories,
   clearAllCounts,
   createPreset,
-  deletePreset,
-  renamePreset,
-  savePreset,
+  deleteCurrPreset,
+  renameCurrPreset,
+  saveCurrPreset,
   usePreset,
 }) {
   const showHelp = useCallback(() => {
@@ -45,7 +45,7 @@ export default function CounterHeader({
         py={0.5}
       >
         <Box display="flex" alignItems="center">
-          {presetTitle && (
+          {currPresetTitle && (
             <Box mr={1}>
               <Button
                 variant="contained"
@@ -68,10 +68,10 @@ export default function CounterHeader({
 
         <Box display="flex" alignItems="center">
           <Box mr={2} className={styles['CounterHeader-title']}>
-            <div className="u-Ellipsized">{presetTitle}</div>
+            <div className="u-Ellipsized">{currPresetTitle}</div>
           </Box>
 
-          {presetTitle && (
+          {currPresetTitle && (
             <Box
               display="flex"
               alignItems="center"
@@ -79,13 +79,13 @@ export default function CounterHeader({
               className="u-HiddenXs"
             >
               <ButtonGroup variant="text" color="inherit">
-                <Button onClick={renamePreset}>
+                <Button onClick={renameCurrPreset}>
                   <EditIcon fontSize="small" />
                 </Button>
-                <Button onClick={savePreset} disabled={isSaved}>
+                <Button onClick={saveCurrPreset} disabled={isCurrPresetSaved}>
                   <SaveIcon fontSize="small" />
                 </Button>
-                <Button onClick={deletePreset}>
+                <Button onClick={deleteCurrPreset}>
                   <DeleteForeverIcon fontSize="small" />
                 </Button>
               </ButtonGroup>
@@ -122,7 +122,7 @@ export default function CounterHeader({
               New ...
             </MenuItem>
 
-            {presetTitle && (
+            {currPresetTitle && (
               <Box>
                 <Divider />
                 <Box my={1} px={2}>
@@ -130,13 +130,13 @@ export default function CounterHeader({
                     <strong>Current Counter</strong>
                   </small>
                 </Box>
-                <MenuItem dense onClick={renamePreset}>
+                <MenuItem dense onClick={renameCurrPreset}>
                   Rename
                 </MenuItem>
-                <MenuItem dense onClick={savePreset} disabled={isSaved}>
+                <MenuItem dense onClick={saveCurrPreset} disabled={isCurrPresetSaved}>
                   Save
                 </MenuItem>
-                <MenuItem dense onClick={deletePreset}>
+                <MenuItem dense onClick={deleteCurrPreset}>
                   Delete
                 </MenuItem>
               </Box>

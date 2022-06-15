@@ -75,18 +75,18 @@ export default function Counter() {
     }
   }, []);
 
-  const renamePreset = useCallback(() => {
+  const renameCurrPreset = useCallback(() => {
     const name = window.prompt('Enter name for counter.', state.name);
     if (name) {
       dispatch({ type: 'rename-curr-preset', payload: { name } });
     }
   }, [state.name]);
 
-  const savePreset = useCallback(() => {
+  const saveCurrPreset = useCallback(() => {
     dispatch({ type: 'save-curr-preset' });
   }, []);
 
-  const deletePreset = useCallback(() => {
+  const deleteCurrPreset = useCallback(() => {
     const confirmed = window.confirm(`Delete counter "${state.name}"?`);
     if (confirmed) {
       dispatch({ type: 'delete-curr-preset' });
@@ -151,16 +151,16 @@ export default function Counter() {
   return (
     <>
       <CounterHeader
-        isSaved={state.isCurrPresetSaved}
+        currPresetTitle={state.name}
+        isCurrPresetSaved={state.isCurrPresetSaved}
         presets={state.presets}
-        presetTitle={state.name}
         addCategory={addCategory}
         clearAllCategories={clearAllCategories}
         clearAllCounts={clearAllCounts}
         createPreset={createPreset}
-        deletePreset={deletePreset}
-        renamePreset={renamePreset}
-        savePreset={savePreset}
+        deleteCurrPreset={deleteCurrPreset}
+        renameCurrPreset={renameCurrPreset}
+        saveCurrPreset={saveCurrPreset}
         usePreset={usePreset}
       />
 
