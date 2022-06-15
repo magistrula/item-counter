@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
@@ -7,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CounterPresetMenuItem from './CounterPresetMenuItem';
 import MoreMenu from '../MoreMenu';
 
-export default function CounterHeaderMenu({
+function CounterHeaderMenu({
   canEditCurrPreset,
   isCurrPresetSaved,
   presets,
@@ -73,3 +74,19 @@ export default function CounterHeaderMenu({
     </MoreMenu>
   );
 }
+
+CounterHeaderMenu.propTypes = {
+  canEditCurrPreset: PropTypes.bool.isRequired,
+  isCurrPresetSaved: PropTypes.bool.isRequired,
+  presets: PropTypes.array.isRequired,
+  clearAllCategories: PropTypes.func.isRequired,
+  clearAllCounts: PropTypes.func.isRequired,
+  createPreset: PropTypes.func.isRequired,
+  deleteCurrPreset: PropTypes.func.isRequired,
+  renameCurrPreset: PropTypes.func.isRequired,
+  saveCurrPreset: PropTypes.func.isRequired,
+  showHelp: PropTypes.func.isRequired,
+  usePreset: PropTypes.func.isRequired,
+};
+
+export default CounterHeaderMenu;

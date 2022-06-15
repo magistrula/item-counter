@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from 'react';
+import PropTypes from 'prop-types';
 
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-export default function CounterItemMenu({ children, closeOnClick = true }) {
+function MoreMenu({ children, closeOnClick = true }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const toggleMenu = useCallback(event => {
@@ -37,3 +38,10 @@ export default function CounterItemMenu({ children, closeOnClick = true }) {
     </>
   );
 }
+
+MoreMenu.propTypes = {
+  children: PropTypes.any.isRequired,
+  closeOnClick: PropTypes.bool,
+};
+
+export default MoreMenu;

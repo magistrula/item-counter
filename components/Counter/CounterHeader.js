@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,7 +16,7 @@ import CounterHeaderMenu from './CounterHeaderMenu';
 import { INSTRUCTIONS_TEXT } from '../../constants/strings';
 import styles from './CounterHeader.module.scss';
 
-export default function CounterHeader({
+function CounterHeader({
   isCurrPresetSaved,
   presets,
   currPresetTitle,
@@ -107,3 +108,19 @@ export default function CounterHeader({
     </AppBar>
   );
 }
+
+CounterHeader.propTypes = {
+  isCurrPresetSaved: PropTypes.bool.isRequired,
+  presets: PropTypes.array.isRequired,
+  currPresetTitle: PropTypes.string,
+  addCategory: PropTypes.func.isRequired,
+  clearAllCategories: PropTypes.func.isRequired,
+  clearAllCounts: PropTypes.func.isRequired,
+  createPreset: PropTypes.func.isRequired,
+  deleteCurrPreset: PropTypes.func.isRequired,
+  renameCurrPreset: PropTypes.func.isRequired,
+  saveCurrPreset: PropTypes.func.isRequired,
+  usePreset: PropTypes.func.isRequired,
+};
+
+export default CounterHeader;

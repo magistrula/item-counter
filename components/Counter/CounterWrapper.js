@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -7,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import CounterCategory from './CounterCategory';
 import CounterHeader from './CounterHeader';
 
-export default function CounterWrapper({
+function CounterWrapper({
   categories,
   currPresetName,
   isCurrPresetSaved,
@@ -59,7 +60,7 @@ export default function CounterWrapper({
               <CounterCategory
                 categoryId={category.id}
                 categoryName={category.name}
-                items={itemsByCategory[category.id]}
+                items={itemsByCategory[category.id] || []}
                 addItem={addItem}
                 renameItem={renameItem}
                 incrementItem={incrementItem}
@@ -74,3 +75,27 @@ export default function CounterWrapper({
     </>
   );
 }
+
+CounterWrapper.propTypes = {
+  categories: PropTypes.array.isRequired,
+  currPresetName: PropTypes.string,
+  isCurrPresetSaved: PropTypes.bool.isRequired,
+  itemsByCategory: PropTypes.object.isRequired,
+  presets: PropTypes.array.isRequired,
+  addCategory: PropTypes.func.isRequired,
+  addItem: PropTypes.func.isRequired,
+  clearAllCategories: PropTypes.func.isRequired,
+  clearAllCounts: PropTypes.func.isRequired,
+  createPreset: PropTypes.func.isRequired,
+  deleteCurrPreset: PropTypes.func.isRequired,
+  incrementItem: PropTypes.func.isRequired,
+  removeCategory: PropTypes.func.isRequired,
+  removeItem: PropTypes.func.isRequired,
+  renameCategory: PropTypes.func.isRequired,
+  renameCurrPreset: PropTypes.func.isRequired,
+  renameItem: PropTypes.func.isRequired,
+  saveCurrPreset: PropTypes.func.isRequired,
+  usePreset: PropTypes.func.isRequired,
+};
+
+export default CounterWrapper;

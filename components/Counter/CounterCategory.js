@@ -1,4 +1,5 @@
 import React, { memo, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -76,6 +77,18 @@ function CounterCategory({
       ))}
     </>
   );
+}
+
+CounterCategory.propTypes = {
+  categoryId: PropTypes.string.isRequired,
+  categoryName: PropTypes.string.isRequired,
+  items: PropTypes.array.isRequired,
+  addItem: PropTypes.func.isRequired,
+  renameItem: PropTypes.func.isRequired,
+  incrementItem: PropTypes.func.isRequired,
+  removeItem: PropTypes.func.isRequired,
+  renameCategory: PropTypes.func.isRequired,
+  removeCategory: PropTypes.func.isRequired,
 }
 
 export default memo(CounterCategory);

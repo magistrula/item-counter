@@ -1,4 +1,5 @@
 import React, { memo, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -80,5 +81,14 @@ function CounterItem({
     </Box>
   );
 }
+
+CounterItem.propTypes = {
+  itemId: PropTypes.string.isRequired,
+  itemName: PropTypes.string.isRequired,
+  itemCount: PropTypes.number.isRequired,
+  renameItem: PropTypes.func.isRequired,
+  incrementItem: PropTypes.func.isRequired,
+  removeItem: PropTypes.func.isRequired,
+};
 
 export default memo(CounterItem);

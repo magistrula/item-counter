@@ -1,14 +1,11 @@
 import React, { useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 import MenuItem from '@material-ui/core/MenuItem';
 
 import styles from './CounterPresetMenuItem.module.scss';
 
-export default function CounterPresetMenuItem({
-  preset,
-  deletePreset,
-  usePreset,
-}) {
+function CounterPresetMenuItem({ preset, usePreset }) {
   const usePresetCb = useCallback(() => {
     usePreset(preset);
   }, [preset, usePreset]);
@@ -24,3 +21,10 @@ export default function CounterPresetMenuItem({
     </MenuItem>
   );
 }
+
+CounterPresetMenuItem.propTypes = {
+  preset: PropTypes.object.isRequired,
+  usePreset: PropTypes.func.isRequired,
+};
+
+export default CounterPresetMenuItem;
