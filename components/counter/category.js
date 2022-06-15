@@ -57,7 +57,7 @@ function CounterCategory({
 
       <Box mb={1}>
         <TextField
-          className="u-full-width"
+          className="u-FullWidth"
           placeholder="Enter item"
           onKeyDown={onKeyDownAddItemInput}
         />

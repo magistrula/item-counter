@@ -59,7 +59,7 @@ export default function CounterHeader({
             </Box>
           )}
 
-          <Box mr={1} className="display-none-xs">
+          <Box mr={1} className="u-HiddenXs">
             <IconButton color="inherit" onClick={showHelp}>
               <InfoOutlinedIcon />
             </IconButton>
@@ -68,7 +68,7 @@ export default function CounterHeader({
 
         <Box display="flex" alignItems="center">
           <Box mr={2} className={styles['CounterHeader-title']}>
-            <div class="u-ellipsis">{presetTitle}</div>
+            <div className="u-Ellipsized">{presetTitle}</div>
           </Box>
 
           {presetTitle && (
@@ -76,7 +76,7 @@ export default function CounterHeader({
               display="flex"
               alignItems="center"
               flexShrink={0}
-              className="display-none-xs"
+              className="u-HiddenXs"
             >
               <ButtonGroup variant="text" color="inherit">
                 <Button onClick={renamePreset}>
@@ -99,7 +99,7 @@ export default function CounterHeader({
             <MenuItem dense onClick={clearAllCounts}>
               Clear Counts
             </MenuItem>
-            <MenuItem dense onClick={showHelp} className="display-none-sm">
+            <MenuItem dense onClick={showHelp} className="u-HiddenNotXs">
               Instructions
             </MenuItem>
             <Divider />

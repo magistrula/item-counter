@@ -42,7 +42,7 @@ function CounterItem({
         <Button
           variant="contained"
           size="large"
-          className="u-full-width"
+          className="u-FullWidth"
           onClick={incrementCb}
         >
           <Box

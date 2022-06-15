@@ -20,7 +20,7 @@ export default function CounterPresetMenuItem({
       className={styles['CounterMoreMenu-presetItem']}
       onClick={usePresetCb}
     >
-      <div className="u-ellipsis">{preset.name}</div>
+      <div className="u-Ellipsized">{preset.name}</div>
     </MenuItem>
   );
 }
