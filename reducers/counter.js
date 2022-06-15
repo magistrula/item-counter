@@ -202,15 +202,15 @@ const ACTION_HANDLERS = {
 
   'did-store-presets': state => {
     const currPreset = find(state.presets, { name: state.name });
-    const currPresetHasChanges = (
-      !currPreset ||
-      !isEqual(state.items, currPreset.items) ||
-      !isEqual(state.categories, currPreset.categories)
-    );
+    if (
+      currPreset &&
+      isEqual(state.items, currPreset.items) &&
+      isEqual(state.categories, currPreset.categories)
+    ) {
+      return Object.assign({}, state, { isCurrPresetSaved: true });
+    }
 
-    return Object.assign({}, state, {
-      isCurrPresetSaved: !currPresetHasChanges
-    });
+    return Object.assign({}, state, { isCurrPresetSaved: false });
   },
 
   'clear-counts': state => {
