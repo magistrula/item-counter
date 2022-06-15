@@ -162,6 +162,14 @@ export default function Counter() {
       />
 
       <Box mt={3} mx={2}>
+        {!state.name && (
+          <Box my={5} display="flex" justifyContent="center">
+            <Button variant="contained" onClick={createPreset}>
+              Create New Counter
+            </Button>
+          </Box>
+        )}
+
         <Grid container spacing={4}>
           {state.categories.map(category => (
             <Grid item key={category.name} xs={12} sm={6} md={4} lg={3}>

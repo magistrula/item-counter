@@ -106,7 +106,7 @@ export default function CounterHeader({
 
             <Box my={1} px={2}>
               <small>
-                <strong>Presets</strong>
+                <strong>Counters</strong>
               </small>
             </Box>
 
@@ -125,7 +125,7 @@ export default function CounterHeader({
             <Divider />
               <Box my={1} px={2}>
                 <small>
-                  <strong>Current Preset</strong>
+                  <strong>Current Counter</strong>
                 </small>
               </Box>
               <MenuItem dense onClick={renamePreset}>
