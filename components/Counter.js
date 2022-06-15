@@ -10,7 +10,11 @@ import { FOOD_BANK_PRESET } from '../constants/presets';
 import reducer, {
   buildCounterState,
   buildItemsByCategory,
+  hasNonZeroItemCounts,
 } from '../reducers/counter';
+import {
+  confirmLeaveCurrPreset,
+} from '../utils/dialogs';
 import {
   retrievePresets,
   retrieveState,
@@ -58,31 +62,35 @@ export default function Counter() {
 
   const usePreset = useCallback(
     preset => {
-      if (
-        !state.isCurrPresetSaved &&
-        !window.confirm(`Proceed without saving changes to "${state.name}"?`)
-      ) {
-        return;
-      }
+      const canLeaveCurrPreset = confirmLeaveCurrPreset({
+        hasCounts: hasNonZeroItemCounts(state.items),
+        isSaved: state.isCurrPresetSaved,
+        items: state.items,
+        name: state.name,
+      });
 
-      dispatch({ type: 'use-preset', payload: { preset } });
+      if (canLeaveCurrPreset) {
+        dispatch({ type: 'use-preset', payload: { preset } });
+      }
     },
-    [state.isCurrPresetSaved, state.name]
+    [state.isCurrPresetSaved, state.items, state.name]
   );
 
   const createPreset = useCallback(() => {
-    if (
-      !state.isCurrPresetSaved &&
-      !window.confirm(`Proceed without saving changes to "${state.name}"?`)
-    ) {
-      return;
-    }
+    const canLeaveCurrPreset = confirmLeaveCurrPreset({
+      hasCounts: hasNonZeroItemCounts(state.items),
+      isSaved: state.isCurrPresetSaved,
+      items: state.items,
+      name: state.name,
+    });
 
-    const name = (window.prompt('Enter name for counter.') || '').trim();
-    if (name) {
-      dispatch({ type: 'create-preset', payload: { name } });
+    if (canLeaveCurrPreset) {
+      const name = promptCounterName();
+      if (name) {
+        dispatch({ type: 'create-preset', payload: { name } });
+      }
     }
-  }, [state.isCurrPresetSaved, state.name]);
+  }, [state.isCurrPresetSaved, state.items, state.name]);
 
   const renameCurrPreset = useCallback(() => {
     const name = window.prompt('Enter name for counter.', state.name);

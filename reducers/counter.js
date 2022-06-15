@@ -29,12 +29,16 @@ export function buildCounterState({
 
 /**
  * DERIVED DATA UTILS
+ * TODO: implement using a selector after switch to redux
  */
 
-// TODO: implement using a selector after switch to redux
 export function buildItemsByCategory(categories, items) {
   const validCategoryIds = (categories || []).map(cat => cat.id);
   return pick(groupBy(items, 'categoryId'), validCategoryIds);
+}
+
+export function hasNonZeroItemCounts(items) {
+  return items.some(item => item.count > 0);
 }
 
 /**
