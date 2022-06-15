@@ -13,7 +13,13 @@ import reducer, {
   hasNonZeroItemCounts,
 } from '../reducers/counter';
 import {
+  confirmDeleteCategory,
+  confirmDeleteCounter,
+  confirmDeleteItem,
   confirmLeaveCurrPreset,
+  promptCategoryName,
+  promptCounterName,
+  promptItemName,
 } from '../utils/dialogs';
 import {
   retrievePresets,
@@ -93,7 +99,7 @@ export default function Counter() {
   }, [state.isCurrPresetSaved, state.items, state.name]);
 
   const renameCurrPreset = useCallback(() => {
-    const name = window.prompt('Enter name for counter.', state.name);
+    const name = promptCounterName(state.name);
     if (name) {
       dispatch({ type: 'rename-curr-preset', payload: { name } });
     }
@@ -104,8 +110,7 @@ export default function Counter() {
   }, []);
 
   const deleteCurrPreset = useCallback(() => {
-    const confirmed = window.confirm(`Delete counter "${state.name}"?`);
-    if (confirmed) {
+    if (confirmDeleteCounter(state.name)) {
       dispatch({ type: 'delete-curr-preset' });
     }
   }, [state.name]);
@@ -119,20 +124,20 @@ export default function Counter() {
   }, []);
 
   const addCategory = useCallback(() => {
-    const name = (window.prompt('Enter category name') || '').trim();
+    const name = promptCategoryName();
     if (name) {
       dispatch({ type: 'add-category', payload: { name } });
     }
   }, []);
 
-  const removeCategory = useCallback(catId => {
-    if (window.confirm('Delete category?')) {
+  const removeCategory = useCallback((catId, catName) => {
+    if (confirmDeleteCategory(catName)) {
       dispatch({ type: 'remove-category', payload: { catId } });
     }
   }, []);
 
   const renameCategory = useCallback((oldName, catId) => {
-    const newName = (window.prompt('Enter new name', oldName) || '').trim();
+    const newName = promptCategoryName(oldName);
     if (newName) {
       dispatch({ type: 'rename-category', payload: { catId, newName } });
     }
@@ -148,14 +153,14 @@ export default function Counter() {
     }
   }, []);
 
-  const removeItem = useCallback(itemId => {
-    if (window.confirm('Remove item?')) {
+  const removeItem = useCallback((itemId, itemName) => {
+    if (confirmDeleteItem(itemName)) {
       dispatch({ type: 'remove-item', payload: { itemId } });
     }
   }, []);
 
   const renameItem = useCallback((itemId, oldName) => {
-    const newName = (window.prompt('Enter new name', oldName) || '').trim();
+    const newName = promptItemName(oldName);
     if (newName) {
       dispatch({ type: 'rename-item', payload: { itemId, newName } });
     }

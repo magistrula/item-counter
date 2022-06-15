@@ -35,8 +35,8 @@ function CounterCategory({
   }, [categoryName, categoryId, renameCategory]);
 
   const removeCategoryCb = useCallback(() => {
-    removeCategory(categoryId);
-  }, [categoryId, removeCategory]);
+    removeCategory(categoryId, categoryName);
+  }, [categoryName, categoryId, removeCategory]);
 
   return (
     <>

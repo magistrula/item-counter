@@ -29,8 +29,8 @@ function CounterItem({
   }, [itemCount, itemId, incrementItem]);
 
   const removeCb = useCallback(() => {
-    removeItem(itemId);
-  }, [itemId, removeItem]);
+    removeItem(itemId, itemName);
+  }, [itemId, itemName, removeItem]);
 
   const renameCb = useCallback(() => {
     renameItem(itemId, itemName);
