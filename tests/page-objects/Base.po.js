@@ -37,4 +37,8 @@ export default class BasePageObject {
   isTestIdVisible(testId, { resetScope = false } = {}) {
     return this.queryByTestId(testId, { resetScope }) !== null;
   }
+
+  textForTestId(testId, { resetScope = false } = {}) {
+    return this.getByTestId(testId, { resetScope}).textContent;
+  }
 }

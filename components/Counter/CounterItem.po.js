@@ -17,46 +17,44 @@ export default class CounterItemPO extends BasePO {
   constructor() {
     super(...arguments);
 
+    // Related Components
     this.moreMenu = new MoreMenuPO({
       scope: this.getByTestId(TEST_IDS.MORE_MENU),
     });
   }
 
-  get hasClearItemCountOption() {
-    this.moreMenu.toggleMenu();
-    return this.isTestIdVisible(TEST_IDS.CLEAR_OPTION, { resetScope: true });
-  }
+  // Main Button
 
   get nameText() {
-    return this.getByTestId(TEST_IDS.NAME_TEXT).textContent;
+    return this.textForTestId(TEST_IDS.NAME_TEXT);
   }
-
   get countTextL() {
-    return this.getByTestId(TEST_IDS.COUNT_TEXT_L).textContent;
+    return this.textForTestId(TEST_IDS.COUNT_TEXT_L);
   }
-
   get countTextR() {
-    return this.getByTestId(TEST_IDS.COUNT_TEXT_R).textContent;
+    return this.textForTestId(TEST_IDS.COUNT_TEXT_R);
   }
-
   clickMainButton() {
     this.clickByTestId(TEST_IDS.MAIN_BUTTON);
   }
-
   decrementCount() {
     this.clickByTestId(TEST_IDS.DECREMENT_BUTTON);
   }
 
+  // More Menu
+
+  get hasClearItemCountOption() {
+    this.moreMenu.toggleMenu();
+    return this.isTestIdVisible(TEST_IDS.CLEAR_OPTION, { resetScope: true });
+  }
   removeItem() {
     this.moreMenu.toggleMenu();
     this.clickByTestId(TEST_IDS.REMOVE_OPTION, { resetScope: true });
   }
-
   renameItem() {
     this.moreMenu.toggleMenu();
     this.clickByTestId(TEST_IDS.RENAME_OPTION, { resetScope: true });
   }
-
   clearItemCount() {
     this.moreMenu.toggleMenu();
     this.clickByTestId(TEST_IDS.CLEAR_OPTION, { resetScope: true });
