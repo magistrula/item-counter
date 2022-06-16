@@ -6,7 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-function MoreMenu({ children, testId, closeOnClick = true }) {
+function MoreMenu({ children, closeOnClick = true, testId="MoreMenu" }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const toggleMenu = useCallback(event => {

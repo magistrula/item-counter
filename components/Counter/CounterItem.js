@@ -16,6 +16,7 @@ function CounterItem({
   renameItem,
   incrementItem,
   removeItem,
+  testId="CounterItem"
 }) {
   const incrementCb = useCallback(() => {
     incrementItem(itemId, 1);
@@ -38,7 +39,7 @@ function CounterItem({
   }, [itemId, itemName, renameItem]);
 
   return (
-    <Box display="flex">
+    <Box display="flex" data-testid={testId}>
       <Box display="flex" flexGrow={1}>
         <Button
           variant="contained"
@@ -63,7 +64,7 @@ function CounterItem({
       </Box>
 
       <Box display="flex" ml={1}>
-        <MoreMenu testId="CounterItem-moreMenu">
+        <MoreMenu>
           <MenuItem onClick={renameCb} data-testid="CounterItem-rename">
             Rename
           </MenuItem>
@@ -97,6 +98,7 @@ CounterItem.propTypes = {
   renameItem: PropTypes.func.isRequired,
   incrementItem: PropTypes.func.isRequired,
   removeItem: PropTypes.func.isRequired,
+  testId: PropTypes.string,
 };
 
 export default memo(CounterItem);

@@ -7,7 +7,7 @@ const TEST_IDS = {
   COUNT_TEXT_R: 'CounterItem-countR',
   DECREMENT_BUTTON: 'CounterItem-decrement',
   MAIN_BUTTON: 'CounterItem-mainButton',
-  MORE_MENU: 'CounterItem-moreMenu',
+  MORE_MENU: 'MoreMenu',
   NAME_TEXT: 'CounterItem-name',
   REMOVE_OPTION: 'CounterItem-remove',
   RENAME_OPTION: 'CounterItem-rename',

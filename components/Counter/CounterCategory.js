@@ -19,6 +19,7 @@ function CounterCategory({
   removeItem,
   renameCategory,
   removeCategory,
+  testId="CounterCategory"
 }) {
   const onKeyDownAddItemInput = useCallback(
     event => {
@@ -39,7 +40,7 @@ function CounterCategory({
   }, [categoryName, categoryId, removeCategory]);
 
   return (
-    <>
+    <Box data-testid={testId}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box>
           <strong>{categoryName}</strong>
@@ -75,7 +76,7 @@ function CounterCategory({
           />
         </Box>
       ))}
-    </>
+    </Box>
   );
 }
 
@@ -89,6 +90,7 @@ CounterCategory.propTypes = {
   removeItem: PropTypes.func.isRequired,
   renameCategory: PropTypes.func.isRequired,
   removeCategory: PropTypes.func.isRequired,
+  testId: PropTypes.string,
 };
 
 export default memo(CounterCategory);
