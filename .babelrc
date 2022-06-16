@@ -17,6 +17,7 @@
       {
         "root": ["./"],
         "alias": {
+          "app": "./",
           "Components": "./components",
           "PageObjects": "./__page-objects__"
         }
