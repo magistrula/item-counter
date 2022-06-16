@@ -45,6 +45,7 @@ function CounterItem({
           size="large"
           className="u-FullWidth"
           onClick={incrementCb}
+          data-testid="CounterItem-mainButton"
         >
           <Box
             display="flex"
@@ -52,21 +53,27 @@ function CounterItem({
             justifyContent="space-between"
             width="100%"
           >
-            <small>{itemCount || 0}</small>
+            <small data-testid="CounterItem-countL">{itemCount || 0}</small>
             <Box px={1}>
-              <small>{itemName}</small>
+              <small data-testid="CounterItem-name">{itemName}</small>
             </Box>
-            <small>{itemCount || 0}</small>
+            <small data-testid="CounterItem-countR">{itemCount || 0}</small>
           </Box>
         </Button>
       </Box>
 
       <Box display="flex" ml={1}>
-        <MoreMenu>
-          <MenuItem onClick={renameCb}>Rename</MenuItem>
-          <MenuItem onClick={removeCb}>Remove</MenuItem>
+        <MoreMenu testId="CounterItem-moreMenu">
+          <MenuItem onClick={renameCb} data-testid="CounterItem-rename">
+            Rename
+          </MenuItem>
+          <MenuItem onClick={removeCb} data-testid="CounterItem-remove">
+            Remove
+          </MenuItem>
           {!!itemCount && (
-            <MenuItem onClick={clearCountCb}>Clear Count</MenuItem>
+            <MenuItem onClick={clearCountCb} data-testid="CounterItem-reset">
+              Clear Count
+            </MenuItem>
           )}
         </MoreMenu>
 
@@ -74,6 +81,7 @@ function CounterItem({
           disabled={!itemCount}
           variant="contained"
           onClick={decrementCb}
+          data-testid="CounterItem-decrement"
         >
           <ExposureNeg1Icon fontSize="small" />
         </IconButton>

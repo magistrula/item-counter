@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
+import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-function MoreMenu({ children, closeOnClick = true }) {
+function MoreMenu({ children, testId, closeOnClick = true }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const toggleMenu = useCallback(event => {
@@ -17,8 +18,12 @@ function MoreMenu({ children, closeOnClick = true }) {
   }, []);
 
   return (
-    <>
-      <IconButton color="inherit" onClick={toggleMenu}>
+    <Box data-testid={testId}>
+      <IconButton
+        color="inherit"
+        onClick={toggleMenu}
+        data-testid="MoreMenu-toggle"
+      >
         <MoreVertIcon fontSize="small" />
       </IconButton>
 
@@ -35,13 +40,14 @@ function MoreMenu({ children, closeOnClick = true }) {
       >
         {children}
       </Menu>
-    </>
+    </Box>
   );
 }
 
 MoreMenu.propTypes = {
   children: PropTypes.any.isRequired,
   closeOnClick: PropTypes.bool,
+  testId: PropTypes.string,
 };
 
 export default MoreMenu;
