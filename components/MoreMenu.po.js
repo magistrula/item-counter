@@ -1,4 +1,4 @@
-import BasePO from 'PageObjects/Base';
+import BasePO from 'tests/Base.po';
 
 const TEST_IDS = {
   TOGGLE_BUTTON: 'MoreMenu-toggle',

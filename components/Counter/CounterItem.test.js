@@ -5,8 +5,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import CounterItem from 'Components/Counter/CounterItem';
-import CIPO from 'PageObjects/components/Counter/CounterItem';
+import CounterItem from 'app/components/Counter/CounterItem';
+import CIPO from 'app/components/Counter/CounterItem.po';
 
 const ITEM_ID = 'foo-id';
 const ITEM_NAME = 'Foo Item';

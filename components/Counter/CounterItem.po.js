@@ -1,5 +1,5 @@
-import BasePO from 'PageObjects/Base';
-import MoreMenuPO from 'PageObjects/components/MoreMenu';
+import BasePO from 'tests/Base.po';
+import MoreMenuPO from 'app/components/MoreMenu.po';
 
 const TEST_IDS = {
   CLEAR_OPTION: 'CounterItem-reset',
