@@ -1,6 +1,14 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 
+function query(queryMethod) {
+  return function (testId, { resetScope } = {}) {
+    return resetScope ?
+      screen[queryMethod](testId) :
+      within(this.scope)[queryMethod](testId);
+  }
+}
+
 export default class BasePageObject {
   constructor({ scope }) {
     if (!scope) {
@@ -8,22 +16,18 @@ export default class BasePageObject {
     }
 
     this.scope = scope;
+    this.getByTestId = query('getByTestId');
+    this.queryByTestId = query('queryByTestId');
+    this.findByTestId = query('findByTestId');
+    this.getAllByTestId = query('getAllByTestId');
+    this.queryAllByTestId = query('queryAllByTestId');
+    this.findAllByTestId = query('findAllByTestId');
   }
 
-  getByTestId(testId, { resetScope } = {}) {
-    if (resetScope) {
-      return screen.getByTestId(testId);
-    }
-
-    return within(this.scope).getByTestId(testId);
-  }
-
-  queryByTestId(testId, { resetScope } = {}) {
-    if (resetScope) {
-      return screen.queryByTestId(testId);
-    }
-
-    return within(this.scope).queryByTestId(testId);
+  collection(testId, { PageObject, resetScope = false } = {}) {
+    return this.queryAllByTestId(testId, { resetScope }).map(element => (
+      new PageObject({ scope: element })
+    ));
   }
 
   fireEventOnTestId(eventName, testId, { resetScope = false } = {}) {
