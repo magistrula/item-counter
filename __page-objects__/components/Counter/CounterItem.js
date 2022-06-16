@@ -22,6 +22,23 @@ export default class CounterItemPO extends BasePO {
     });
   }
 
+  get hasClearItemCountOption() {
+    this.moreMenu.toggleMenu();
+    return this.isTestIdVisible(TEST_IDS.CLEAR_OPTION, { resetScope: true });
+  }
+
+  get nameText() {
+    return this.getByTestId(TEST_IDS.NAME_TEXT).textContent;
+  }
+
+  get countTextL() {
+    return this.getByTestId(TEST_IDS.COUNT_TEXT_L).textContent;
+  }
+
+  get countTextR() {
+    return this.getByTestId(TEST_IDS.COUNT_TEXT_R).textContent;
+  }
+
   clickMainButton() {
     this.clickByTestId(TEST_IDS.MAIN_BUTTON);
   }
@@ -43,22 +60,5 @@ export default class CounterItemPO extends BasePO {
   clearItemCount() {
     this.moreMenu.toggleMenu();
     this.clickByTestId(TEST_IDS.CLEAR_OPTION, { resetScope: true });
-  }
-
-  get hasClearItemCountOption() {
-    this.moreMenu.toggleMenu();
-    return this.isTestIdVisible(TEST_IDS.CLEAR_OPTION, { resetScope: true });
-  }
-
-  get nameText() {
-    return this.getByTestId(TEST_IDS.NAME_TEXT).textContent;
-  }
-
-  get countTextL() {
-    return this.getByTestId(TEST_IDS.COUNT_TEXT_L).textContent;
-  }
-
-  get countTextR() {
-    return this.getByTestId(TEST_IDS.COUNT_TEXT_R).textContent;
   }
 }
