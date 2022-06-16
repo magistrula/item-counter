@@ -16,8 +16,9 @@
       "module-resolver",
       {
         "root": ["./"],
-        alias: {
-          components: './components'
+        "alias": {
+          "Components": "./components",
+          "PageObjects": "./__page-objects__"
         }
       }
     ]
