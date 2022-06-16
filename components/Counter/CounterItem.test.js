@@ -6,7 +6,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 
 import CounterItem from 'app/components/Counter/CounterItem';
-import CIPO from 'app/components/Counter/CounterItem.po';
+import CounterItemPO from 'app/components/Counter/CounterItem.po';
 
 const ITEM_ID = 'foo-id';
 const ITEM_NAME = 'Foo Item';
@@ -30,7 +30,7 @@ function doRender({
     />
   );
 
-  return new CIPO({ scope: container });
+  return new CounterItemPO({ scope: container });
 }
 
 it('displays item name', () => {
@@ -45,63 +45,60 @@ it('displays item counts', () => {
 });
 
 it('can increment item count', () => {
-  const increment = jest.fn();
+  const incrementStub = jest.fn();
 
-  const page = doRender({ increment });
+  const page = doRender({ increment: incrementStub });
   page.clickMainButton();
 
-  expect(increment).toHaveBeenCalledWith(ITEM_ID, 1);
+  expect(incrementStub).toHaveBeenCalledWith(ITEM_ID, 1);
 });
 
 it('disables decrement button if count = 0', () => {
-  const increment = jest.fn();
+  const incrementStub = jest.fn();
 
-  const page = doRender({ increment, itemCount: 0 });
+  const page = doRender({ itemCount: 0, increment: incrementStub });
   page.decrementCount();
 
-  expect(increment).not.toHaveBeenCalled();
+  expect(incrementStub).not.toHaveBeenCalled();
 });
 
 it('can decrement item count if count > 0', () => {
-  const increment = jest.fn();
+  const incrementStub = jest.fn();
 
-  const page = doRender({ increment, itemCount: 5 });
+  const page = doRender({ itemCount: 5, increment: incrementStub });
   page.decrementCount();
 
-  expect(increment).toHaveBeenCalledWith(ITEM_ID, -1);
+  expect(incrementStub).toHaveBeenCalledWith(ITEM_ID, -1);
 });
 
 it('hides clear count option if count = 0', async () => {
-  const increment = jest.fn();
-
-  const page = doRender({ increment, itemCount: 0 });
-
+  const page = doRender({ itemCount: 0 });
   expect(page.hasClearItemCountOption).toEqual(false);
 });
 
 it('can clear count if count is > 0', async () => {
-  const increment = jest.fn();
+  const incrementStub = jest.fn();
 
-  const page = doRender({ increment, itemCount: 5 });
+  const page = doRender({ increment: incrementStub, itemCount: 5 });
   page.clearItemCount();
 
-  expect(increment).toHaveBeenCalledWith(ITEM_ID, -5);
+  expect(incrementStub).toHaveBeenCalledWith(ITEM_ID, -5);
 });
 
 it('can rename item', async () => {
-  const rename = jest.fn();
+  const renameStub = jest.fn();
 
-  const page = doRender({ rename, itemCount: 5 });
+  const page = doRender({ itemCount: 5,  rename: renameStub });
   page.renameItem();
 
-  expect(rename).toHaveBeenCalledWith(ITEM_ID, ITEM_NAME);
+  expect(renameStub).toHaveBeenCalledWith(ITEM_ID, ITEM_NAME);
 });
 
 it('can remove item', async () => {
-  const remove = jest.fn();
+  const removeStub = jest.fn();
 
-  const page = doRender({ remove, itemCount: 5 });
+  const page = doRender({ itemCount: 5, remove: removeStub });
   page.removeItem();
 
-  expect(remove).toHaveBeenCalledWith(ITEM_ID, ITEM_NAME);
+  expect(removeStub).toHaveBeenCalledWith(ITEM_ID, ITEM_NAME);
 });

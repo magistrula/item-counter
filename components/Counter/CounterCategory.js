@@ -32,7 +32,7 @@ function CounterCategory({
   );
 
   const renameCategoryCb = useCallback(() => {
-    renameCategory(categoryName, categoryId);
+    renameCategory(categoryId, categoryName);
   }, [categoryName, categoryId, renameCategory]);
 
   const removeCategoryCb = useCallback(() => {
@@ -43,14 +43,14 @@ function CounterCategory({
     <Box data-testid={testId}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box>
-          <strong>{categoryName}</strong>
+          <strong data-testid="CounterCategory-name">{categoryName}</strong>
         </Box>
 
         <Box display="flex">
-          <IconButton onClick={renameCategoryCb}>
+          <IconButton onClick={renameCategoryCb} data-testid="CounterCategory-rename">
             <EditIcon fontSize="small" />
           </IconButton>
-          <IconButton onClick={removeCategoryCb}>
+          <IconButton onClick={removeCategoryCb} data-testid="CounterCategory-remove">
             <ClearIcon />
           </IconButton>
         </Box>
@@ -61,6 +61,7 @@ function CounterCategory({
           className="u-FullWidth"
           placeholder="Enter item"
           onKeyDown={onKeyDownAddItemInput}
+          inputProps={{ "data-testid": "CounterCategory-itemInput" }}
         />
       </Box>
 

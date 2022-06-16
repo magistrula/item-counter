@@ -29,7 +29,6 @@ function MoreMenu({ children, closeOnClick = true, testId="MoreMenu" }) {
 
       <Menu
         anchorEl={anchorEl}
-        keepMounted
         open={Boolean(anchorEl)}
         transformOrigin={{
           vertical: 'top',
