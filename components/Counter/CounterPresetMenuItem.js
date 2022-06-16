@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import MenuItem from '@material-ui/core/MenuItem';
 
-import styles from './CounterPresetMenuItem.module.scss';
+import styles from 'app/components/Counter/CounterPresetMenuItem.module.scss';
 
 function CounterPresetMenuItem({ preset, usePreset }) {
   const usePresetCb = useCallback(() => {

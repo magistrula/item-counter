@@ -1,4 +1,4 @@
-import BasePO from 'tests/Base.po';
+import BasePO from 'tests/page-objects/Base.po';
 import MoreMenuPO from 'app/components/MoreMenu.po';
 
 const TEST_IDS = {

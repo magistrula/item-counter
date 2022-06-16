@@ -19,8 +19,6 @@
         "alias": {
           "app": "./",
           "tests": "./tests",
-          "Components": "./components",
-          "PageObjects": "./__page-objects__"
         }
       }
     ]

@@ -5,8 +5,8 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
-import CounterCategory from './CounterCategory';
-import CounterHeader from './CounterHeader';
+import CounterCategory from 'app/components/Counter/CounterCategory';
+import CounterHeader from 'app/components/Counter/CounterHeader';
 
 function CounterWrapper({
   categories,

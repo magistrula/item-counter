@@ -7,7 +7,7 @@ import ExposureNeg1Icon from '@material-ui/icons/ExposureNeg1';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import MoreMenu from '../MoreMenu';
+import MoreMenu from 'app/components/MoreMenu';
 
 function CounterItem({
   itemId,

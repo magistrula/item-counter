@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import '@fontsource/roboto';
 
-import '../styles/global.scss';
+import 'app/styles/global.scss';
 
 function App({ Component, pageProps }) {
   useEffect(() => {

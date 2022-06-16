@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 
-import CounterWrapper from './Counter/CounterWrapper';
+import CounterWrapper from 'app/components/Counter/CounterWrapper';
 
 import reducer, {
   buildCounterState,
   buildItemsByCategory,
   hasNonZeroItemCounts,
-} from '../reducers/counter';
+} from 'app/reducers/counter';
 import {
   confirmDeleteCategory,
   confirmDeleteCounter,
@@ -15,13 +15,13 @@ import {
   promptCategoryName,
   promptCounterName,
   promptItemName,
-} from '../utils/dialogs';
+} from 'app/utils/dialogs';
 import {
   retrievePresets,
   retrieveState,
   storePresets,
   storeState,
-} from '../utils/persist';
+} from 'app/utils/persist';
 
 export default function Counter() {
   const [state, dispatch] = useReducer(reducer, {}, buildCounterState);

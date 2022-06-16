@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Head from 'next/head';
-import Counter from '../components/Counter';
+import Counter from 'app/components/Counter';
 
 export default function Home() {
   return (

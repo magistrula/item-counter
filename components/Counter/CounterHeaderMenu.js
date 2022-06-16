@@ -5,8 +5,8 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import CounterPresetMenuItem from './CounterPresetMenuItem';
-import MoreMenu from '../MoreMenu';
+import CounterPresetMenuItem from 'app/components/Counter/CounterPresetMenuItem';
+import MoreMenu from 'app/components/MoreMenu';
 
 function CounterHeaderMenu({
   canEditCurrPreset,

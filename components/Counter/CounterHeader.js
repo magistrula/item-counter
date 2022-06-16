@@ -12,9 +12,9 @@ import IconButton from '@material-ui/core/IconButton';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 
-import CounterHeaderMenu from './CounterHeaderMenu';
-import { INSTRUCTIONS_TEXT } from '../../constants/strings';
-import styles from './CounterHeader.module.scss';
+import CounterHeaderMenu from 'app/components/Counter/CounterHeaderMenu';
+import { INSTRUCTIONS_TEXT } from 'app/constants/strings';
+import styles from 'app/components/Counter/CounterHeader.module.scss';
 
 function CounterHeader({
   isCurrPresetSaved,
