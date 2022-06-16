@@ -30,8 +30,15 @@
     "eslint": "^8.17.0",
     "eslint-plugin-jest": "^26.5.3",
     "eslint-plugin-react": "^7.30.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^28.1.1",
     "jest-environment-jsdom": "^28.1.1",
     "prettier": "^2.3.2"
-  }
+  },
+  "jest": {
+      "moduleNameMapper": {
+        "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+        "\\.(css|scss)$": "identity-obj-proxy"
+      }
+    }
 }
