@@ -30,8 +30,9 @@ export default class BasePageObject {
     ));
   }
 
-  fireEventOnTestId(eventName, testId, { resetScope = false } = {}) {
-    fireEvent[eventName](this.getByTestId(testId, { resetScope }));
+  fireEventOnTestId(eventName, testId, options = {}) {
+    const { resetScope, ...eventProps } = options;
+    fireEvent[eventName](this.getByTestId(testId, { resetScope }), eventProps);
   }
 
   clickByTestId(testId, { resetScope = false } = {}) {
