@@ -10,7 +10,6 @@ import { buildStateFromPreset } from 'tests/counter-state';
 import Counter from 'app/components/Counter';
 import CounterPageObject from 'app/components/Counter.po';
 
-const FOO_PRESET_NAME = 'Foo Counter';
 const FOO_CAT1_ID = 'foo-cat-1-id';
 const FOO_CAT1_NAME = 'Foo Category 1';
 const FOO_CAT2_ID = 'foo-cat-2-id';
@@ -37,7 +36,7 @@ const FOO_ITEM_2D = {
 };
 const FOO_PRESET = {
   id: 'foo-preset',
-  name: FOO_PRESET_NAME,
+  name: 'Foo Counter',
   categories: [
     { id: FOO_CAT1_ID, name: FOO_CAT1_NAME },
     { id: FOO_CAT2_ID, name: FOO_CAT2_NAME },
@@ -46,7 +45,6 @@ const FOO_PRESET = {
 };
 const FOO_STATE = buildStateFromPreset(FOO_PRESET);
 
-const BAR_PRESET_NAME = 'Bar Counter';
 const BAR_CAT3_ID = 'bar-cat-3-id';
 const BAR_CAT3_NAME = 'Bar Category 3';
 const BAR_ITEM_3E = {
@@ -61,15 +59,14 @@ const BAR_ITEM_3F = {
 };
 const BAR_PRESET = {
   id: 'bar-preset',
-  name: BAR_PRESET_NAME,
+  name: 'Bar Counter',
   categories: [{ id: BAR_CAT3_ID, name: BAR_CAT3_NAME }],
   items: [BAR_ITEM_3E, BAR_ITEM_3F],
 };
 
-const BAZ_PRESET_NAME = 'Baz Counter';
 const BAZ_PRESET = {
   id: 'baz-preset',
-  name: BAZ_PRESET_NAME,
+  name: 'Baz Counter',
   categories: [],
   items: [],
 };
@@ -141,7 +138,7 @@ describe('header interactions', () => {
 
     const view = doRender();
 
-    expect(view.headerTitleText).toEqual(FOO_PRESET_NAME);
+    expect(view.headerTitleText).toEqual(FOO_PRESET.name);
   });
 
   it('can add a category', () => {
@@ -205,7 +202,7 @@ describe('header interactions', () => {
     const view = doRender();
     view.deleteViaHeaderButton();
 
-    expect(view.headerTitleText).toEqual(BAR_PRESET_NAME);
+    expect(view.headerTitleText).toEqual(BAR_PRESET.name);
   });
 });
 
@@ -246,9 +243,9 @@ describe('header menu interactions', () => {
     const view = doRender();
 
     expect(view.menuPresetOptionLabels).toEqual([
-      BAR_PRESET_NAME,
-      BAZ_PRESET_NAME,
-      FOO_PRESET_NAME,
+      BAR_PRESET.name,
+      BAZ_PRESET.name,
+      FOO_PRESET.name,
     ]);
   });
 
@@ -259,9 +256,9 @@ describe('header menu interactions', () => {
     });
 
     const view = doRender();
-    await view.selectPreset(BAR_PRESET_NAME);
+    await view.selectPreset(BAR_PRESET.name);
 
-    expect(view.headerTitleText).toEqual(BAR_PRESET_NAME);
+    expect(view.headerTitleText).toEqual(BAR_PRESET.name);
     expect(view.categoryLabels).toEqual([BAR_CAT3_NAME]);
   });
 
@@ -300,12 +297,35 @@ describe('header menu interactions', () => {
     const view = doRender();
     view.deleteViaMenuOption();
 
-    expect(view.headerTitleText).toEqual(BAR_PRESET_NAME);
+    expect(view.headerTitleText).toEqual(BAR_PRESET.name);
+  });
+});
+
+describe('categories', () => {
+  it('can rename a category', () => {
+    const state = buildStateFromPreset(FOO_PRESET);
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    jest.spyOn(window, 'prompt').mockReturnValue('Renamed Category');
+
+    const view = doRender();
+    view.renameCategory(FOO_CAT1_NAME);
+
+    expect(view.categoryLabels).toEqual(['Renamed Category', FOO_CAT2_NAME ]);
+  });
+
+  it('can delete a category', () => {
+    const state = buildStateFromPreset(FOO_PRESET);
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.removeCategory(FOO_CAT1_NAME);
+
+    expect(view.categoryLabels).toEqual([FOO_CAT2_NAME ]);
   });
 });
 
 describe('items', () => {
-  it('can shows item counts', () => {
+  it('shows item counts', () => {
     const state = buildStateFromPreset(FOO_PRESET, {
       itemCounts: {
         [FOO_ITEM_1A.id]: 1,
@@ -320,5 +340,65 @@ describe('items', () => {
 
     expect(view.itemCountsForCategory(FOO_CAT1_NAME)).toEqual(['1', '2', '0']);
     expect(view.itemCountsForCategory(FOO_CAT2_NAME)).toEqual(['3']);
+  });
+
+  it('can add an item', function() {
+    const state = buildStateFromPreset(FOO_PRESET);
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.addItemForCategory('New Item', FOO_CAT2_NAME);
+
+    expect(view.itemNamesForCategory(FOO_CAT1_NAME)).toEqual([
+      FOO_ITEM_1A.name,
+      FOO_ITEM_1B.name,
+      FOO_ITEM_1C.name,
+    ]);
+    expect(view.itemNamesForCategory(FOO_CAT2_NAME)).toEqual([
+      FOO_ITEM_2D.name,
+      'New Item',
+    ]);
+  });
+
+  it('can increment item', () => {
+    const state = buildStateFromPreset(FOO_PRESET, {
+      itemCounts: { [FOO_ITEM_1A.id]: 1 },
+    });
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    expect(view.itemCountsForCategory(FOO_CAT1_NAME)).toEqual(['1', '0', '0']);
+
+    view.incrementItemForCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+    expect(view.itemCountsForCategory(FOO_CAT1_NAME)).toEqual(['2', '0', '0']);
+  });
+
+  it('can rename item', () => {
+    const state = buildStateFromPreset(FOO_PRESET);
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    jest.spyOn(window, 'prompt').mockReturnValue('New Item A Name');
+
+    const view = doRender();
+    view.renameItemInCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+
+    expect(view.itemNamesForCategory(FOO_CAT1_NAME)).toEqual([
+      'New Item A Name',
+      FOO_ITEM_1B.name,
+      FOO_ITEM_1C.name,
+    ]);
+  });
+
+  it('can delete item', () => {
+    const state = buildStateFromPreset(FOO_PRESET);
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    jest.spyOn(window, 'prompt').mockReturnValue('New Item A Name');
+
+    const view = doRender();
+    view.removeItemInCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+
+    expect(view.itemNamesForCategory(FOO_CAT1_NAME)).toEqual([
+      FOO_ITEM_1B.name,
+      FOO_ITEM_1C.name,
+    ]);
   });
 });

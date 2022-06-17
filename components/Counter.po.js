@@ -85,11 +85,38 @@ export default class CounterPO extends BasePO {
   get categoryLabels() {
     return this.categories.map(item => item.nameText);
   }
+  renameCategory(currName) {
+    this._findCategory(currName).renameCategory();
+  }
+  removeCategory(currName) {
+    this._findCategory(currName).removeCategory();
+  }
+  _findCategory(categoryName) {
+    return find(this.categories, { nameText: categoryName });
+  }
+
+  //  Items
+
   itemCountsForCategory(categoryName) {
     return this._findCategory(categoryName).itemCounts;
   }
-
-  _findCategory(categoryName) {
-    return find(this.categories, { nameText: categoryName });
+  itemNamesForCategory(categoryName) {
+    return this._findCategory(categoryName).itemNames;
+  }
+  addItemForCategory(itemName, categoryName) {
+    const category = this._findCategory(categoryName);
+    category.addItem(itemName);
+  }
+  incrementItemForCategory(itemName, categoryName) {
+    const category = this._findCategory(categoryName);
+    category.incrementItemCount(itemName);
+  }
+  renameItemInCategory(itemName, categoryName) {
+    const category = this._findCategory(categoryName);
+    category.renameItem(itemName);
+  }
+  removeItemInCategory(itemName, categoryName) {
+    const category = this._findCategory(categoryName);
+    category.removeItem(itemName);
   }
 }
