@@ -48,7 +48,11 @@ function CounterWrapper({
       <Box mt={3} mx={2}>
         {!currPresetName && (
           <Box my={5} display="flex" justifyContent="center">
-            <Button variant="contained" onClick={createPreset}>
+            <Button
+              variant="contained"
+              onClick={createPreset}
+              data-testid="Counter-createNew"
+            >
               Create New Counter
             </Button>
           </Box>

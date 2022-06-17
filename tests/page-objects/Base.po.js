@@ -16,12 +16,14 @@ export default class BasePageObject {
     }
 
     this.scope = scope;
-    this.getByTestId = query('getByTestId');
-    this.queryByTestId = query('queryByTestId');
-    this.findByTestId = query('findByTestId');
-    this.getAllByTestId = query('getAllByTestId');
-    this.queryAllByTestId = query('queryAllByTestId');
-    this.findAllByTestId = query('findAllByTestId');
+
+    // Map react testing library query methods onto page object
+    ['get', 'find', 'query'].forEach((verb) => {
+      ['TestId', 'Text'].forEach((target) => {
+        this[`${verb}By${target}`] = query(`${verb}By${target}`);
+        this[`${verb}AllBy${target}`] = query(`${verb}AllBy${target}`);
+      });
+    });
   }
 
   collection(testId, { PageObject, resetScope = false } = {}) {
