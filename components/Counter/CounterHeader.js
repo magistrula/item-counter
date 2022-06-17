@@ -50,6 +50,7 @@ function CounterHeader({
                 size="small"
                 color="default"
                 onClick={addCategory}
+                data-testid="CounterHeader-addCategory"
               >
                 <AddCircleIcon fontSize="small" />
                 <Box ml={0.5}>Add Category</Box>
@@ -66,7 +67,9 @@ function CounterHeader({
 
         <Box display="flex" alignItems="center">
           <Box mr={2} className={styles['CounterHeader-title']}>
-            <div className="u-Ellipsized">{currPresetTitle}</div>
+            <div className="u-Ellipsized" data-testid="CounterHeader-title">
+              {currPresetTitle}
+            </div>
           </Box>
 
           {currPresetTitle && (
@@ -77,13 +80,23 @@ function CounterHeader({
               className="u-HiddenXs"
             >
               <ButtonGroup variant="text" color="inherit">
-                <Button onClick={renameCurrPreset}>
+                <Button
+                  onClick={renameCurrPreset}
+                  data-testid="CounterHeader-rename"
+                >
                   <EditIcon fontSize="small" />
                 </Button>
-                <Button onClick={saveCurrPreset} disabled={isCurrPresetSaved}>
+                <Button
+                  onClick={saveCurrPreset}
+                  disabled={isCurrPresetSaved}
+                  data-testid="CounterHeader-save"
+                >
                   <SaveIcon fontSize="small" />
                 </Button>
-                <Button onClick={deleteCurrPreset}>
+                <Button
+                  onClick={deleteCurrPreset}
+                  data-testid="CounterHeader-delete"
+                >
                   <DeleteForeverIcon fontSize="small" />
                 </Button>
               </ButtonGroup>

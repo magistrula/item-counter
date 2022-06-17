@@ -16,6 +16,7 @@ function CounterPresetMenuItem({ preset, usePreset }) {
       key={preset.name}
       className={styles.CounterPresetMenuItem}
       onClick={usePresetCb}
+      data-testid="CounterHeaderMenu-presetItem"
     >
       <div className="u-Ellipsized">{preset.name}</div>
     </MenuItem>
