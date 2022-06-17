@@ -40,15 +40,15 @@ function doRender({
 }
 
 it('displays category name', () => {
-  const page = doRender({ categoryName: 'My Category' });
-  expect(page.nameText).toEqual('My Category');
+  const view = doRender({ categoryName: 'My Category' });
+  expect(view.nameText).toEqual('My Category');
 });
 
 it('can rename the category', () => {
   const renameStub = jest.fn();
 
-  const page = doRender({ renameCategory: renameStub });
-  page.renameCategory();
+  const view = doRender({ renameCategory: renameStub });
+  view.renameCategory();
 
   expect(renameStub).toHaveBeenCalledWith(CATEGORY_ID, CATEGORY_NAME);
 });
@@ -56,8 +56,8 @@ it('can rename the category', () => {
 it('can remove the category', () => {
   const removeStub = jest.fn();
 
-  const page = doRender({ removeCategory: removeStub });
-  page.removeCategory();
+  const view = doRender({ removeCategory: removeStub });
+  view.removeCategory();
 
   expect(removeStub).toHaveBeenCalledWith(CATEGORY_ID, CATEGORY_NAME);
 });
@@ -65,14 +65,14 @@ it('can remove the category', () => {
 it('can add an item', () => {
   const addStub = jest.fn();
 
-  const page = doRender({ addItem: addStub });
-  page.addItem('Foo Item');
+  const view = doRender({ addItem: addStub });
+  view.addItem('Foo Item');
 
   expect(addStub).toHaveBeenCalledWith('Foo Item', CATEGORY_ID);
 });
 
 it('displays item names', () => {
-  const page = doRender({
+  const view = doRender({
     items: [
       { id: 'item-a-id', catId: CATEGORY_ID, name: 'Item A', count: 2 },
       { id: 'item-b-id', catId: CATEGORY_ID, name: 'Item B', count: 0 },
@@ -80,11 +80,11 @@ it('displays item names', () => {
     ],
   });
 
-  expect(page.itemNames).toEqual(['Item A', 'Item B', 'Item C']);
+  expect(view.itemNames).toEqual(['Item A', 'Item B', 'Item C']);
 });
 
 it('displays item counts', () => {
-  const page = doRender({
+  const view = doRender({
     items: [
       { id: 'item-a-id', catId: CATEGORY_ID, name: 'Item A', count: 2 },
       { id: 'item-b-id', catId: CATEGORY_ID, name: 'Item B', count: 0 },
@@ -92,20 +92,20 @@ it('displays item counts', () => {
     ],
   });
 
-  expect(page.itemCounts).toEqual(['2', '0', '10']);
+  expect(view.itemCounts).toEqual(['2', '0', '10']);
 });
 
 it('can increment item count', () => {
   const incrementStub = jest.fn();
 
-  const page = doRender({
+  const view = doRender({
     items: [
       { id: 'item-a-id', catId: CATEGORY_ID, name: 'Item A', count: 2 },
       { id: 'item-b-id', catId: CATEGORY_ID, name: 'Item B', count: 0 },
     ],
     incrementItem: incrementStub,
   });
-  page.incrementItemCount('Item A');
+  view.incrementItemCount('Item A');
 
   expect(incrementStub).toHaveBeenCalledWith('item-a-id', 1);
 });
@@ -113,14 +113,14 @@ it('can increment item count', () => {
 it('can decrement item count', () => {
   const incrementStub = jest.fn();
 
-  const page = doRender({
+  const view = doRender({
     items: [
       { id: 'item-a-id', catId: CATEGORY_ID, name: 'Item A', count: 2 },
       { id: 'item-b-id', catId: CATEGORY_ID, name: 'Item B', count: 0 },
     ],
     incrementItem: incrementStub,
   });
-  page.decrementItemCount('Item A');
+  view.decrementItemCount('Item A');
 
   expect(incrementStub).toHaveBeenCalledWith('item-a-id', -1);
 });
@@ -128,14 +128,14 @@ it('can decrement item count', () => {
 it('can clear item count', async () => {
   const incrementStub = jest.fn();
 
-  const page = doRender({
+  const view = doRender({
     items: [
       { id: 'item-a-id', catId: CATEGORY_ID, name: 'Item A', count: 2 },
       { id: 'item-b-id', catId: CATEGORY_ID, name: 'Item B', count: 0 },
     ],
     incrementItem: incrementStub,
   });
-  page.clearItemCount('Item A');
+  view.clearItemCount('Item A');
 
   expect(incrementStub).toHaveBeenCalledWith('item-a-id', -2);
 });
@@ -143,14 +143,14 @@ it('can clear item count', async () => {
 it('can rename item', async () => {
   const renameStub = jest.fn();
 
-  const page = doRender({
+  const view = doRender({
     items: [
       { id: 'item-a-id', catId: CATEGORY_ID, name: 'Item A', count: 2 },
       { id: 'item-b-id', catId: CATEGORY_ID, name: 'Item B', count: 0 },
     ],
     renameItem: renameStub,
   });
-  page.renameItem('Item A');
+  view.renameItem('Item A');
 
   expect(renameStub).toHaveBeenCalledWith('item-a-id', 'Item A');
 });
@@ -158,14 +158,14 @@ it('can rename item', async () => {
 it('can remove item', async () => {
   const removeStub = jest.fn();
 
-  const page = doRender({
+  const view = doRender({
     items: [
       { id: 'item-a-id', catId: CATEGORY_ID, name: 'Item A', count: 2 },
       { id: 'item-b-id', catId: CATEGORY_ID, name: 'Item B', count: 0 },
     ],
     removeItem: removeStub,
   });
-  page.removeItem('Item A');
+  view.removeItem('Item A');
 
   expect(removeStub).toHaveBeenCalledWith('item-a-id', 'Item A');
 });
