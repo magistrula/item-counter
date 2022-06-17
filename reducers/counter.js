@@ -67,6 +67,13 @@ function areItemsEqual(itemsA, itemsB) {
   });
 }
 
+function findItemInCategory(state, itemName, catId) {
+  const lowerName = itemName.toLowerCase();
+  return state.items.find(item => {
+    return item.name.toLowerCase() === lowerName && item.categoryId === catId;
+  });
+}
+
 /**
  * CATEGORY UTILS
  */
@@ -279,20 +286,35 @@ const ACTION_HANDLERS = {
   },
 
   'add-item': (state, { catId, name }) => {
-    const item = buildItem(name.toLowerCase(), catId);
+    if (findItemInCategory(state, name, catId)) {
+      return Object.assign({}, state, {
+        error: `Item "${name}" already exists in this category`,
+      });
+    }
+
+    const item = buildItem(name, catId);
     const updatedItems = [...state.items, item];
     return updateItems(state, updatedItems, { isCurrPresetSaved: false });
   },
 
   'rename-item': (state, { itemId, newName }) => {
-    const isUnchanged = !!find(state.items, { id: itemId, name: newName });
-    if (isUnchanged) {
-      return state;
+    const item = find(state.items, { id: itemId });
+    const isSameName = item.name.toLowerCase() === newName.toLowerCase();
+
+    if (
+      !isSameName &&
+      findItemInCategory(state, newName, item.categoryId)
+    ) {
+      return Object.assign({}, state, {
+        error: `Item "${newName}" already exists in this category`,
+      });
     }
 
-    const updatedItems = [...state.items];
-    const item = find(updatedItems, { id: itemId });
-    item.name = newName;
+    const updatedItems = state.items.map(item => {
+      return item.id === itemId ?
+        Object.assign({}, item, { name: newName }) :
+        item;
+    });
     return updateItems(state, updatedItems, { isCurrPresetSaved: false });
   },
 
