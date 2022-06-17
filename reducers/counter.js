@@ -125,7 +125,6 @@ const ACTION_HANDLERS = {
         name: savedState.name,
         categories: savedState.categories,
         items: savedState.items,
-        isCurrPresetSaved: savedState.isCurrPresetSaved,
       });
     }
 

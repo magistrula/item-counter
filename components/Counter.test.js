@@ -97,6 +97,63 @@ beforeEach(() => {
   jest.spyOn(window, 'confirm').mockReturnValue(true);
 });
 
+describe('initial load', () => {
+  it('does not clear existing presets', () => {
+    const state = buildStateFromPreset(FOO_PRESET);
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+
+    doRender();
+
+    expect(localStorage.setItem).not.toHaveBeenCalledWith(
+      'counterPresets',
+      '[]'
+    );
+  });
+
+  it('does not clear existing state', () => {
+    const state = buildStateFromPreset(FOO_PRESET);
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+
+    doRender();
+
+    expect(localStorage.setItem).not.toHaveBeenCalledWith(
+      'counterState',
+      expect.stringContaining('"items":[]')
+    );
+  });
+
+  // This should not happen; need redux saga or thunk to avoid this
+  it('resaves existing presets', () => {
+    const state = buildStateFromPreset(FOO_PRESET);
+    const presets = [FOO_PRESET];
+    mockLocalStorage({ state, presets });
+
+    doRender();
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'counterPresets',
+      JSON.stringify(presets)
+    );
+  });
+
+  // This should not happen; need redux saga or thunk to avoid this
+  it('resaves existing state', () => {
+    const state = buildStateFromPreset(FOO_PRESET);
+    mockLocalStorage({ state, presets: [FOO_PRESET] });
+
+    doRender();
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'counterState',
+      JSON.stringify({
+        categories: state.categories,
+        items: state.items,
+        name: state.name,
+      })
+    );
+  });
+});
+
 describe('blank state', () => {
   it('shows blank state if stored presets is an empty array', () => {
     mockLocalStorage({ presets: [] });
@@ -126,7 +183,7 @@ describe('blank state', () => {
     jest.spyOn(window, 'prompt').mockReturnValue('My Counter');
 
     const view = doRender();
-    view.createNewCounterFromBlankState();
+    view.createNewCounterViaBlankState();
 
     expect(view.headerTitleText).toEqual('My Counter');
   });
@@ -160,7 +217,7 @@ describe('header interactions', () => {
     jest.spyOn(window, 'prompt').mockReturnValue('New Counter Name');
 
     const view = doRender();
-    view.renameViaHeaderButton();
+    view.renameCounterViaHeaderButton();
 
     expect(view.headerTitleText).toEqual('New Counter Name');
   });
@@ -173,7 +230,7 @@ describe('header interactions', () => {
     view.addCategory();
     expect(view.isSaveButtonDisabled).toEqual(false);
 
-    view.saveViaHeaderButton();
+    view.saveCounterViaHeaderButton();
     expect(view.isSaveButtonDisabled).toEqual(true);
   });
 
@@ -188,7 +245,7 @@ describe('header interactions', () => {
     mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
-    view.deleteViaHeaderButton();
+    view.deleteCounterViaHeaderButton();
 
     expect(view.isBlankStateVisible).toEqual(true);
   });
@@ -200,7 +257,7 @@ describe('header interactions', () => {
     });
 
     const view = doRender();
-    view.deleteViaHeaderButton();
+    view.deleteCounterViaHeaderButton();
 
     expect(view.headerTitleText).toEqual(BAR_PRESET.name);
   });
@@ -262,6 +319,16 @@ describe('header menu interactions', () => {
     expect(view.categoryLabels).toEqual([BAR_CAT3_NAME]);
   });
 
+  it('can create a new counter', () => {
+    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
+    jest.spyOn(window, 'prompt').mockReturnValue('My Counter');
+
+    const view = doRender();
+    view.createNewCounterViaMenuOption();
+
+    expect(view.headerTitleText).toEqual('My Counter');
+  });
+
   it('can rename current preset', () => {
     mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
     jest.spyOn(window, 'prompt').mockReturnValue('New Counter Name');
@@ -310,7 +377,7 @@ describe('categories', () => {
     const view = doRender();
     view.renameCategory(FOO_CAT1_NAME);
 
-    expect(view.categoryLabels).toEqual(['Renamed Category', FOO_CAT2_NAME ]);
+    expect(view.categoryLabels).toEqual(['Renamed Category', FOO_CAT2_NAME]);
   });
 
   it('can delete a category', () => {
@@ -320,7 +387,7 @@ describe('categories', () => {
     const view = doRender();
     view.removeCategory(FOO_CAT1_NAME);
 
-    expect(view.categoryLabels).toEqual([FOO_CAT2_NAME ]);
+    expect(view.categoryLabels).toEqual([FOO_CAT2_NAME]);
   });
 });
 
@@ -342,7 +409,7 @@ describe('items', () => {
     expect(view.itemCountsForCategory(FOO_CAT2_NAME)).toEqual(['3']);
   });
 
-  it('can add an item', function() {
+  it('can add an item', () => {
     const state = buildStateFromPreset(FOO_PRESET);
     mockLocalStorage({ state, presets: [FOO_PRESET] });
 
@@ -400,5 +467,67 @@ describe('items', () => {
       FOO_ITEM_1B.name,
       FOO_ITEM_1C.name,
     ]);
+  });
+});
+
+describe('saving presets', () => {
+  it('saves presets to localStorage when counter is created', () => {
+    mockLocalStorage({ presets: [] });
+    jest.spyOn(window, 'prompt').mockReturnValue('My Counter');
+
+    const view = doRender();
+    localStorage.setItem.mockClear();
+    view.createNewCounterViaBlankState();
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'counterPresets',
+      expect.stringContaining('My Counter')
+    );
+  });
+
+  it('saves presets to localStorage when counter is saved', () => {
+    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
+    jest.spyOn(window, 'prompt').mockReturnValue('New Category');
+
+    const view = doRender();
+    view.addCategory();
+    localStorage.setItem.mockClear();
+    view.saveCounterViaHeaderButton();
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'counterPresets',
+      expect.stringContaining('New Category')
+    );
+  });
+
+  it('saves presets to localStorage when counter is renamed', () => {
+    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
+    jest.spyOn(window, 'prompt').mockReturnValue('New Counter Name');
+
+    const view = doRender();
+    localStorage.setItem.mockClear();
+    view.renameCounterViaHeaderButton();
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'counterPresets',
+      expect.stringContaining('New Counter Name')
+    );
+  });
+
+  it('saves presets to localStorage when counter is deleted', () => {
+    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+
+    const view = doRender();
+    localStorage.setItem.mockClear();
+    view.deleteCounterViaHeaderButton();
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'counterPresets',
+      expect.stringContaining(BAR_PRESET.name)
+    );
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'counterPresets',
+      expect.not.stringContaining(FOO_PRESET.name)
+    );
   });
 });

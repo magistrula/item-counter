@@ -5,7 +5,6 @@ export function storeState(state) {
       categories: state.categories,
       items: state.items,
       name: state.name,
-      isCurrPresetSaved: state.isCurrPresetSaved,
     })
   );
 }

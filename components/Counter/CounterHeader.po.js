@@ -87,6 +87,12 @@ export default class CounterHeaderPO extends BasePO {
       this._findPreset(presetName).click();
     });
   }
+  clickNewCounterMenuOption() {
+    this.moreMenu.toggleMenu();
+    this.clickByTestId(TEST_IDS.CREATE_NEW_MENU_OPTION, {
+      resetScope: true,
+    });
+  }
   clickRenameMenuOption() {
     this.moreMenu.toggleMenu();
     this.clickByTestId(TEST_IDS.RENAME_MENU_OPTION, {

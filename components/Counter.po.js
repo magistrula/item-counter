@@ -34,13 +34,13 @@ export default class CounterPO extends BasePO {
   addCategory() {
     this.header.addCategory();
   }
-  renameViaHeaderButton() {
+  renameCounterViaHeaderButton() {
     this.header.clickRenameButton();
   }
-  saveViaHeaderButton() {
+  saveCounterViaHeaderButton() {
     this.header.clickSaveButton();
   }
-  deleteViaHeaderButton() {
+  deleteCounterViaHeaderButton() {
     this.header.clickDeleteButton();
   }
 
@@ -61,6 +61,9 @@ export default class CounterPO extends BasePO {
   selectPreset(presetName) {
     this.header.selectPreset(presetName);
   }
+  createNewCounterViaMenuOption() {
+    this.header.clickNewCounterMenuOption();
+  }
   renameViaMenuOption() {
     this.header.clickRenameMenuOption();
   }
@@ -76,7 +79,7 @@ export default class CounterPO extends BasePO {
   get isBlankStateVisible() {
     return this.isTestIdVisible(TEST_IDS.BLANK_STATE_CREATE_BUTTON);
   }
-  createNewCounterFromBlankState() {
+  createNewCounterViaBlankState() {
     this.clickByTestId(TEST_IDS.BLANK_STATE_CREATE_BUTTON);
   }
 
