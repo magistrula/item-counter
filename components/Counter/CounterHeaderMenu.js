@@ -23,10 +23,18 @@ function CounterHeaderMenu({
 }) {
   return (
     <MoreMenu testId="CounterHeaderMenu-MoreMenu">
-      <MenuItem dense onClick={clearAllCategories} data-testid="CounterHeaderMenu-clearCategories">
+      <MenuItem
+        dense
+        onClick={clearAllCategories}
+        data-testid="CounterHeaderMenu-clearCategories"
+      >
         Clear Categories
       </MenuItem>
-      <MenuItem dense onClick={clearAllCounts} data-testid="CounterHeaderMenu-clearCounts">
+      <MenuItem
+        dense
+        onClick={clearAllCounts}
+        data-testid="CounterHeaderMenu-clearCounts"
+      >
         Clear Counts
       </MenuItem>
       <MenuItem dense onClick={showHelp} className="u-HiddenNotXs">
@@ -48,7 +56,11 @@ function CounterHeaderMenu({
         />
       ))}
 
-      <MenuItem dense onClick={createPreset} data-testid="CounterHeaderMenu-createNew">
+      <MenuItem
+        dense
+        onClick={createPreset}
+        data-testid="CounterHeaderMenu-createNew"
+      >
         New ...
       </MenuItem>
 
@@ -60,13 +72,26 @@ function CounterHeaderMenu({
               <strong>Current Counter</strong>
             </small>
           </Box>
-          <MenuItem dense onClick={renameCurrPreset} data-testid="CounterHeaderMenu-rename">
+          <MenuItem
+            dense
+            onClick={renameCurrPreset}
+            data-testid="CounterHeaderMenu-rename"
+          >
             Rename
           </MenuItem>
-          <MenuItem dense onClick={saveCurrPreset} disabled={isCurrPresetSaved} data-testid="CounterHeaderMenu-save">
+          <MenuItem
+            dense
+            onClick={saveCurrPreset}
+            disabled={isCurrPresetSaved}
+            data-testid="CounterHeaderMenu-save"
+          >
             Save
           </MenuItem>
-          <MenuItem dense onClick={deleteCurrPreset} data-testid="CounterHeaderMenu-delete">
+          <MenuItem
+            dense
+            onClick={deleteCurrPreset}
+            data-testid="CounterHeaderMenu-delete"
+          >
             Delete
           </MenuItem>
         </Box>

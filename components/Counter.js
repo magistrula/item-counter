@@ -127,7 +127,7 @@ export default function Counter() {
     }
   }, []);
 
-  const renameCategory = useCallback((catId, oldName,) => {
+  const renameCategory = useCallback((catId, oldName) => {
     const newName = promptCategoryName(oldName);
     if (newName) {
       dispatch({ type: 'rename-category', payload: { catId, newName } });

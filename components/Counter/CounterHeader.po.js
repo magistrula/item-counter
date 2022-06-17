@@ -66,7 +66,7 @@ export default class CounterHeaderPO extends BasePO {
   get saveMenuOption() {
     this.moreMenu.toggleMenu();
     return this.queryByTestId(TEST_IDS.SAVE_MENU_OPTION, {
-      resetScope: true
+      resetScope: true,
     });
   }
   clearCategories() {

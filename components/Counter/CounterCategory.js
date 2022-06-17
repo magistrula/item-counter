@@ -19,7 +19,7 @@ function CounterCategory({
   removeItem,
   renameCategory,
   removeCategory,
-  testId="CounterCategory"
+  testId = 'CounterCategory',
 }) {
   const onKeyDownAddItemInput = useCallback(
     event => {
@@ -47,10 +47,16 @@ function CounterCategory({
         </Box>
 
         <Box display="flex">
-          <IconButton onClick={renameCategoryCb} data-testid="CounterCategory-rename">
+          <IconButton
+            onClick={renameCategoryCb}
+            data-testid="CounterCategory-rename"
+          >
             <EditIcon fontSize="small" />
           </IconButton>
-          <IconButton onClick={removeCategoryCb} data-testid="CounterCategory-remove">
+          <IconButton
+            onClick={removeCategoryCb}
+            data-testid="CounterCategory-remove"
+          >
             <ClearIcon />
           </IconButton>
         </Box>
@@ -61,7 +67,7 @@ function CounterCategory({
           className="u-FullWidth"
           placeholder="Enter item"
           onKeyDown={onKeyDownAddItemInput}
-          inputProps={{ "data-testid": "CounterCategory-itemInput" }}
+          inputProps={{ 'data-testid': 'CounterCategory-itemInput' }}
         />
       </Box>
 

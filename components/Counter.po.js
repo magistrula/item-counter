@@ -7,7 +7,6 @@ import CounterHeaderPO from 'app/components/Counter/CounterHeader.po';
 const TEST_IDS = {
   COUNTER_CATEGORY: 'CounterCategory',
   BLANK_STATE_CREATE_BUTTON: 'Counter-createNew',
-
 };
 
 export default class CounterPO extends BasePO {

@@ -3,10 +3,10 @@ import { within } from '@testing-library/dom';
 
 function query(queryMethod) {
   return function (testId, { resetScope } = {}) {
-    return resetScope ?
-      screen[queryMethod](testId) :
-      within(this.scope)[queryMethod](testId);
-  }
+    return resetScope
+      ? screen[queryMethod](testId)
+      : within(this.scope)[queryMethod](testId);
+  };
 }
 
 export default class BasePageObject {
@@ -18,8 +18,8 @@ export default class BasePageObject {
     this.scope = scope;
 
     // Map react testing library query methods onto page object
-    ['get', 'find', 'query'].forEach((verb) => {
-      ['TestId', 'Text'].forEach((target) => {
+    ['get', 'find', 'query'].forEach(verb => {
+      ['TestId', 'Text'].forEach(target => {
         this[`${verb}By${target}`] = query(`${verb}By${target}`);
         this[`${verb}AllBy${target}`] = query(`${verb}AllBy${target}`);
       });
@@ -27,9 +27,9 @@ export default class BasePageObject {
   }
 
   collection(testId, { PageObject, resetScope = false } = {}) {
-    return this.queryAllByTestId(testId, { resetScope }).map(element => (
-      new PageObject({ scope: element })
-    ));
+    return this.queryAllByTestId(testId, { resetScope }).map(
+      element => new PageObject({ scope: element })
+    );
   }
 
   fireEventOnTestId(eventName, testId, options = {}) {
@@ -46,6 +46,6 @@ export default class BasePageObject {
   }
 
   textForTestId(testId, { resetScope = false } = {}) {
-    return this.getByTestId(testId, { resetScope}).textContent;
+    return this.getByTestId(testId, { resetScope }).textContent;
   }
 }

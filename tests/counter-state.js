@@ -1,10 +1,10 @@
-export function buildStateFromPreset(preset, {
-  itemCounts = {},
-  isCurrPresetSaved = true
-} = {}) {
-  const items = preset.items.map(item => (
+export function buildStateFromPreset(
+  preset,
+  { itemCounts = {}, isCurrPresetSaved = true } = {}
+) {
+  const items = preset.items.map(item =>
     Object.assign({}, item, { count: itemCounts[item.id] || 0 })
-  ));
+  );
   return {
     isCurrPresetSaved,
     items,

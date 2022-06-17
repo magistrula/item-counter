@@ -15,10 +15,26 @@ const FOO_CAT1_ID = 'foo-cat-1-id';
 const FOO_CAT1_NAME = 'Foo Category 1';
 const FOO_CAT2_ID = 'foo-cat-2-id';
 const FOO_CAT2_NAME = 'Foo Category 2';
-const FOO_ITEM_1A = { id: 'item-a-id', name: 'Item A', categoryId: FOO_CAT1_ID };
-const FOO_ITEM_1B = { id: 'item-b-id', name: 'Item B', categoryId: FOO_CAT1_ID };
-const FOO_ITEM_1C = { id: 'item-c-id', name: 'Item C', categoryId: FOO_CAT1_ID };
-const FOO_ITEM_2D = { id: 'item-d-id', name: 'Item D', categoryId: FOO_CAT2_ID };
+const FOO_ITEM_1A = {
+  id: 'item-a-id',
+  name: 'Item A',
+  categoryId: FOO_CAT1_ID,
+};
+const FOO_ITEM_1B = {
+  id: 'item-b-id',
+  name: 'Item B',
+  categoryId: FOO_CAT1_ID,
+};
+const FOO_ITEM_1C = {
+  id: 'item-c-id',
+  name: 'Item C',
+  categoryId: FOO_CAT1_ID,
+};
+const FOO_ITEM_2D = {
+  id: 'item-d-id',
+  name: 'Item D',
+  categoryId: FOO_CAT2_ID,
+};
 const FOO_PRESET = {
   id: 'foo-preset',
   name: FOO_PRESET_NAME,
@@ -33,8 +49,16 @@ const FOO_STATE = buildStateFromPreset(FOO_PRESET);
 const BAR_PRESET_NAME = 'Bar Counter';
 const BAR_CAT3_ID = 'bar-cat-3-id';
 const BAR_CAT3_NAME = 'Bar Category 3';
-const BAR_ITEM_3E = { id: 'item-e-id', name: 'Item F', categoryId: BAR_CAT3_ID };
-const BAR_ITEM_3F = { id: 'item-f-id', name: 'Item G', categoryId: BAR_CAT3_ID };
+const BAR_ITEM_3E = {
+  id: 'item-e-id',
+  name: 'Item F',
+  categoryId: BAR_CAT3_ID,
+};
+const BAR_ITEM_3F = {
+  id: 'item-f-id',
+  name: 'Item G',
+  categoryId: BAR_CAT3_ID,
+};
 const BAR_PRESET = {
   id: 'bar-preset',
   name: BAR_PRESET_NAME,
@@ -58,7 +82,7 @@ function doRender() {
 function mockLocalStorage({ presets, state } = {}) {
   mockGetItem(key => {
     if (key === 'counterState') {
-      return JSON.stringify(state || null)
+      return JSON.stringify(state || null);
     }
 
     if (key === 'counterPresets') {
@@ -175,7 +199,7 @@ describe('header interactions', () => {
   it('shows first alphabetical preset after deleting one of many', () => {
     mockLocalStorage({
       state: FOO_STATE,
-      presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET]
+      presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET],
     });
 
     const view = doRender();
@@ -202,7 +226,7 @@ describe('header menu interactions', () => {
         [FOO_ITEM_1B.id]: 0,
         [FOO_ITEM_1C.id]: 10,
         [FOO_ITEM_2D.id]: 3,
-      }
+      },
     });
     mockLocalStorage({ state, presets: [FOO_PRESET] });
 
@@ -216,7 +240,7 @@ describe('header menu interactions', () => {
   it('shows preset options in alphabetical order', () => {
     mockLocalStorage({
       state: FOO_STATE,
-      presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET]
+      presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET],
     });
 
     const view = doRender();
@@ -231,7 +255,7 @@ describe('header menu interactions', () => {
   it('can select a preset', async () => {
     mockLocalStorage({
       state: FOO_STATE,
-      presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET]
+      presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET],
     });
 
     const view = doRender();
@@ -257,17 +281,17 @@ describe('header menu interactions', () => {
 
     const view = doRender();
     view.addCategory();
-    expect(view.saveMenuOption).toHaveAttribute('aria-disabled', "false");
+    expect(view.saveMenuOption).toHaveAttribute('aria-disabled', 'false');
 
     view.saveViaMenuOption();
-    expect(view.saveMenuOption).toHaveAttribute('aria-disabled', "true");
+    expect(view.saveMenuOption).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('disables save option if there are no changes', () => {
     mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
-    expect(view.saveMenuOption).toHaveAttribute('aria-disabled', "true");
+    expect(view.saveMenuOption).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('can delete current preset', async () => {
@@ -288,7 +312,7 @@ describe('items', () => {
         [FOO_ITEM_1B.id]: 2,
         [FOO_ITEM_1C.id]: 0,
         [FOO_ITEM_2D.id]: 3,
-      }
+      },
     });
     mockLocalStorage({ state, presets: [FOO_PRESET] });
 

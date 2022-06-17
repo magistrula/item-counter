@@ -24,7 +24,7 @@ module.exports = {
     'testing-library/no-debugging-utils': 'warn',
     'testing-library/no-dom-import': 'off',
     'testing-library/no-render-in-setup': 'warn',
-    'testing-library/no-unnecessary-act': ['error', {"isStrict": true}]
+    'testing-library/no-unnecessary-act': ['error', { isStrict: true }],
   },
   settings: {
     react: {
@@ -32,9 +32,9 @@ module.exports = {
     },
   },
   overrides: [
-      {
-        files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
-        extends: ['plugin:testing-library/react'],
-      },
-    ],
+    {
+      files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+      extends: ['plugin:testing-library/react'],
+    },
+  ],
 };

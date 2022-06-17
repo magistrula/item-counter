@@ -39,10 +39,10 @@ export default class CounterCategoryPO extends BasePO {
   }
   addItem(itemName) {
     this.fireEventOnTestId('change', TEST_IDS.ITEM_INPUT, {
-      target: { value: itemName }
+      target: { value: itemName },
     });
     this.fireEventOnTestId('keyDown', TEST_IDS.ITEM_INPUT, {
-      keyCode: 13
+      keyCode: 13,
     });
   }
   incrementItemCount(itemName) {

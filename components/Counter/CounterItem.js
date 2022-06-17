@@ -16,7 +16,7 @@ function CounterItem({
   renameItem,
   incrementItem,
   removeItem,
-  testId="CounterItem"
+  testId = 'CounterItem',
 }) {
   const incrementCb = useCallback(() => {
     incrementItem(itemId, 1);

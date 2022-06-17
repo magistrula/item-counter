@@ -88,7 +88,7 @@ it('can clear count if count is > 0', async () => {
 it('can rename item', async () => {
   const renameStub = jest.fn();
 
-  const page = doRender({ itemCount: 5,  rename: renameStub });
+  const page = doRender({ itemCount: 5, rename: renameStub });
   page.renameItem();
 
   expect(renameStub).toHaveBeenCalledWith(ITEM_ID, ITEM_NAME);
