@@ -107,6 +107,7 @@ function mockStoredData({ presets, state } = {}) {
 
 beforeEach(() => {
   mockSetItem();
+  window.alert = jest.fn();
   jest.spyOn(window, 'confirm').mockReturnValue(true);
   jest.spyOn(window, 'prompt').mockReturnValue(NEW_NAME);
   jest.spyOn(Date, 'now').mockReturnValue(NOW_DATE);
@@ -489,6 +490,25 @@ describe('items', () => {
     ]);
   });
 
+  it('can add item with same name to multiple categories', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.addItemForCategory(NEW_NAME, FOO_CAT2_NAME);
+    view.addItemForCategory(NEW_NAME, FOO_CAT1_NAME);
+
+    expect(view.itemNamesForCategory(FOO_CAT1_NAME)).toEqual([
+      FOO_ITEM_1A.name,
+      FOO_ITEM_1B.name,
+      FOO_ITEM_1C.name,
+      NEW_NAME,
+    ]);
+    expect(view.itemNamesForCategory(FOO_CAT2_NAME)).toEqual([
+      FOO_ITEM_2D.name,
+      NEW_NAME,
+    ]);
+  });
+
   it('can increment item', () => {
     const state = buildState(FOO_PRESET, {
       itemCounts: { [FOO_ITEM_1A.id]: 1 },
@@ -841,6 +861,97 @@ describe('persisting state & presets', () => {
 
     const stateWithClearedCounts = buildState(FOO_PRESET);
     expectSetItem(localStorage.setItem, 'counterState', stateWithClearedCounts);
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
+  });
+});
+
+describe('errors', () => {
+  it('shows an alert on new counter name conflict', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+    const existingCounterName = FOO_PRESET.name;
+
+    const view = doRender();
+    window.prompt.mockReturnValue(existingCounterName);
+    view.createNewCounterViaMenuOption();
+
+    expect(window.alert).toHaveBeenCalledWith(
+      expect.stringMatching(/counter.*already exists/i)
+    );
+  });
+
+  it('shows an alert on rename counter name conflict', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+    const existingCounterName = BAR_PRESET.name;
+
+    const view = doRender();
+    window.prompt.mockReturnValue(existingCounterName);
+    view.renameCounterViaHeaderButton();
+
+    expect(window.alert).toHaveBeenCalledWith(
+      expect.stringMatching(/counter.*already exists/i)
+    );
+  });
+
+  it('shows an alert on new category name conflict', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+    const existingCategoryName = FOO_CAT1_NAME;
+
+    const view = doRender();
+    window.prompt.mockReturnValue(existingCategoryName);
+    view.addCategory();
+
+    expect(window.alert).toHaveBeenCalledWith(
+      expect.stringMatching(/category.*already exists/i)
+    );
+  });
+
+  it('shows an alert on rename category name conflict', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+    const existingCategoryName = FOO_CAT1_NAME;
+
+    const view = doRender();
+    window.prompt.mockReturnValue(existingCategoryName);
+    view.renameCategory(FOO_CAT2_NAME);
+
+    expect(window.alert).toHaveBeenCalledWith(
+      expect.stringMatching(/category.*already exists/i)
+    );
+  });
+
+  it('shows an alert on new item name conflict', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+    const existingItemName = FOO_ITEM_1A.name;
+
+    const view = doRender();
+    view.addItemForCategory(existingItemName, FOO_CAT1_NAME);
+
+    expect(window.alert).toHaveBeenCalledWith(
+      expect.stringMatching(/item.*already exists/i)
+    );
+  });
+
+  it('shows an alert on rename item name conflict', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+    const existingItemName = FOO_ITEM_1A.name;
+
+    const view = doRender();
+    window.prompt.mockReturnValue(existingItemName);
+    view.renameItemInCategory(FOO_ITEM_1B.name, FOO_CAT1_NAME);
+
+    expect(window.alert).toHaveBeenCalledWith(
+      expect.stringMatching(/item.*already exists/i)
+    );
+  });
+
+  it('does not persist data when state is updated with an error', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+    const existingItemName = FOO_ITEM_1A.name;
+
+    const view = doRender();
+    window.prompt.mockReturnValue(existingItemName);
+    view.renameItemInCategory(FOO_ITEM_1B.name, FOO_CAT1_NAME);
+
+    expectSetItemNotCalled(localStorage.setItem, 'counterState');
     expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
   });
 });
