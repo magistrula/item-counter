@@ -41,11 +41,11 @@ export function hasNonZeroItemCounts(items) {
  */
 
 function initItems(items) {
-  return items.map(item => Object.assign({}, item, { count: 0 }));
+  return items.map(item => ({ ...item, count: 0 }));
 }
 
 function updateItems(state, updatedItems, extraStateProps) {
-  return Object.assign({}, state, { items: updatedItems }, extraStateProps);
+  return { ...state, items: updatedItems, ...extraStateProps };
 }
 
 function buildItem(name, categoryId) {
@@ -79,10 +79,11 @@ function findItemInCategory(state, itemName, catId) {
  */
 
 function updateCategories(state, updatedCategories) {
-  return Object.assign({}, state, {
+  return {
+    ...state,
     categories: updatedCategories,
     isCurrPresetSaved: false,
-  });
+  };
 }
 
 function findCategory(state, catName) {
@@ -133,19 +134,18 @@ const ACTION_HANDLERS = {
   },
 
   'use-preset': (state, { preset }) => {
-    return Object.assign({}, state, {
+    return {
+      ...state,
       name: preset.name,
       categories: preset.categories,
       items: initItems(preset.items),
       isCurrPresetSaved: true,
-    });
+    };
   },
 
   'create-preset': (state, { name }) => {
     if (presetExistsWithName(state.presets, name)) {
-      return Object.assign({}, state, {
-        error: `Counter "${name}" already exists`,
-      });
+      return { ...state, error: `Counter "${name}" already exists` };
     }
 
     const newPreset = {
@@ -155,13 +155,14 @@ const ACTION_HANDLERS = {
       items: [],
     };
 
-    return Object.assign({}, state, {
+    return {
+      ...state,
       presets: state.presets.concat([newPreset]),
       name: newPreset.name,
       categories: newPreset.categories,
       items: newPreset.items,
       isCurrPresetSaved: true,
-    });
+    };
   },
 
   'rename-curr-preset': (state, { name }) => {
@@ -172,9 +173,7 @@ const ACTION_HANDLERS = {
 
     const isNameConflict = presetExistsWithName(state.presets, name);
     if (isNameConflict) {
-      return Object.assign({}, state, {
-        error: `Counter "${name}" already exists`,
-      });
+      return { ...state, error: `Counter "${name}" already exists` };
     }
 
     const presets = state.presets.map(preset => {
@@ -215,10 +214,10 @@ const ACTION_HANDLERS = {
       areItemsEqual(state.items, currPreset.items) &&
       isEqual(state.categories, currPreset.categories)
     ) {
-      return Object.assign({}, state, { isCurrPresetSaved: true });
+      return { ...state, isCurrPresetSaved: true };
     }
 
-    return Object.assign({}, state, { isCurrPresetSaved: false });
+    return { ...state, isCurrPresetSaved: false };
   },
 
   'clear-counts': state => {
@@ -226,22 +225,21 @@ const ACTION_HANDLERS = {
   },
 
   'clear-categories': state => {
-    return Object.assign({}, state, {
+    return {
+      ...state,
       categories: [],
       items: [],
       isCurrPresetSaved: false,
-    });
+    };
   },
 
   'clear-error': state => {
-    return Object.assign({}, state, { error: null });
+    return { ...state, error: null };
   },
 
   'add-category': (state, { name }) => {
     if (findCategory(state, name)) {
-      return Object.assign({}, state, {
-        error: `Category "${name}" already exists`,
-      });
+      return { ...state, error: `Category "${name}" already exists` };
     }
 
     const updatedCategories = state.categories.concat([buildCategory(name)]);
@@ -259,14 +257,12 @@ const ACTION_HANDLERS = {
 
     const isNameConflict = !!existingCategory && existingCategory.id !== catId;
     if (isNameConflict) {
-      return Object.assign({}, state, {
-        error: `Category "${trimmedName}" already exists`,
-      });
+      return { ...state, error: `Category "${trimmedName}" already exists` };
     }
 
     const updatedCategories = state.categories.map(category => {
       return category.id === catId
-        ? Object.assign({}, category, { name: trimmedName })
+        ? { ...category, name: trimmedName }
         : category;
     });
     return updateCategories(state, updatedCategories);
@@ -280,9 +276,10 @@ const ACTION_HANDLERS = {
 
   'add-item': (state, { catId, name }) => {
     if (findItemInCategory(state, name, catId)) {
-      return Object.assign({}, state, {
+      return {
+        ...state,
         error: `Item "${name}" already exists in this category`,
-      });
+      };
     }
 
     const item = buildItem(name, catId);
@@ -295,15 +292,14 @@ const ACTION_HANDLERS = {
     const isSameName = item.name.toLowerCase() === newName.toLowerCase();
 
     if (!isSameName && findItemInCategory(state, newName, item.categoryId)) {
-      return Object.assign({}, state, {
+      return {
+        ...state,
         error: `Item "${newName}" already exists in this category`,
-      });
+      };
     }
 
     const updatedItems = state.items.map(item => {
-      return item.id === itemId
-        ? Object.assign({}, item, { name: newName })
-        : item;
+      return item.id === itemId ? { ...item, name: newName } : item;
     });
     return updateItems(state, updatedItems, { isCurrPresetSaved: false });
   },
