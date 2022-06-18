@@ -409,7 +409,7 @@ describe('header menu interactions', () => {
   });
 });
 
-describe('categories', () => {
+describe('category interactions', () => {
   it('shows category names', () => {
     mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
 
@@ -440,7 +440,7 @@ describe('categories', () => {
   });
 });
 
-describe('items', () => {
+describe('item interactions', () => {
   it('shows item names', () => {
     mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
 
@@ -865,7 +865,7 @@ describe('persisting state & presets', () => {
   });
 });
 
-describe('errors', () => {
+describe('handling name conflict errors', () => {
   it('shows an alert on new counter name conflict', () => {
     mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
     const existingCounterName = FOO_PRESET.name;
