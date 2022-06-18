@@ -2,6 +2,7 @@ import find from 'lodash/find';
 import groupBy from 'lodash/groupBy';
 import isEqual from 'lodash/isEqual';
 import isEqualWith from 'lodash/isEqualWith';
+import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 import sortBy from 'lodash/sortBy';
 import without from 'lodash/without';
@@ -185,7 +186,7 @@ const ACTION_HANDLERS = {
 
   'save-curr-preset': state => {
     const categories = state.categories;
-    const items = state.items.map(({ count, ...rest }) => rest);
+    const items = state.items.map(item => omit(item, ['count']));
 
     const presets = state.presets.map(preset => {
       return preset.name === state.name
