@@ -11,9 +11,13 @@ export function buildCounterState({
   allPresets = [],
   currPreset = null,
   isInitialized = false,
+  shouldSaveState = false,
+  shouldSavePresets = false,
 }) {
   return {
     isInitialized,
+    shouldSaveState,
+    shouldSavePresets,
     isCurrPresetSaved: true,
     presets: sortBy(allPresets, ['name']),
     name: currPreset ? currPreset.name : null,
@@ -46,7 +50,12 @@ function initItems(items) {
 }
 
 function updateItems(state, updatedItems, extraStateProps) {
-  return { ...state, items: updatedItems, ...extraStateProps };
+  return {
+    ...state,
+    items: updatedItems,
+    shouldSaveState: true,
+    ...extraStateProps,
+  };
 }
 
 function buildItem(name, categoryId) {
@@ -84,6 +93,7 @@ function updateCategories(state, updatedCategories) {
     ...state,
     categories: updatedCategories,
     isCurrPresetSaved: false,
+    shouldSaveState: true,
   };
 }
 
@@ -124,7 +134,13 @@ const ACTION_HANDLERS = {
     });
 
     if (savedState) {
+      const isCurrPresetSaved =
+        currPreset &&
+        areItemsEqual(savedState.items, currPreset.items) &&
+        isEqual(savedState.categories, currPreset.categories);
+
       Object.assign(newState, {
+        isCurrPresetSaved,
         name: savedState.name,
         categories: savedState.categories,
         items: savedState.items,
@@ -134,6 +150,8 @@ const ACTION_HANDLERS = {
     return newState;
   },
 
+  'did-store-state': state => ({ ...state, shouldSaveState: false }),
+
   'use-preset': (state, { preset }) => {
     return {
       ...state,
@@ -141,6 +159,7 @@ const ACTION_HANDLERS = {
       categories: preset.categories,
       items: initItems(preset.items),
       isCurrPresetSaved: true,
+      shouldSaveState: true,
     };
   },
 
@@ -162,7 +181,9 @@ const ACTION_HANDLERS = {
       name: newPreset.name,
       categories: newPreset.categories,
       items: newPreset.items,
-      isCurrPresetSaved: true,
+      isCurrPresetSaved: false,
+      shouldSavePresets: true,
+      shouldSaveState: true,
     };
   },
 
@@ -181,7 +202,13 @@ const ACTION_HANDLERS = {
       return preset.name === state.name ? { ...preset, name } : preset;
     });
 
-    return { ...state, name, presets };
+    return {
+      ...state,
+      name,
+      presets,
+      shouldSavePresets: true,
+      shouldSaveState: true,
+    };
   },
 
   'save-curr-preset': state => {
@@ -194,7 +221,7 @@ const ACTION_HANDLERS = {
         : preset;
     });
 
-    return { ...state, presets };
+    return { ...state, presets, shouldSavePresets: true };
   },
 
   'delete-curr-preset': state => {
@@ -205,20 +232,14 @@ const ACTION_HANDLERS = {
       allPresets: presets,
       currPreset: presets[0],
       isInitialized: true,
+      isCurrPresetSaved: true,
+      shouldSavePresets: true,
+      shouldSaveState: true,
     });
   },
 
   'did-store-presets': state => {
-    const currPreset = find(state.presets, { name: state.name });
-    if (
-      currPreset &&
-      areItemsEqual(state.items, currPreset.items) &&
-      isEqual(state.categories, currPreset.categories)
-    ) {
-      return { ...state, isCurrPresetSaved: true };
-    }
-
-    return { ...state, isCurrPresetSaved: false };
+    return { ...state, isCurrPresetSaved: true, shouldSavePresets: false };
   },
 
   'clear-counts': state => {
@@ -231,6 +252,7 @@ const ACTION_HANDLERS = {
       categories: [],
       items: [],
       isCurrPresetSaved: false,
+      shouldSaveState: true,
     };
   },
 

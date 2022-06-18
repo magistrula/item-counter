@@ -34,17 +34,18 @@ export default function Counter() {
   }, []);
 
   useEffect(() => {
-    if (state.isInitialized) {
+    if (state.shouldSavePresets) {
       storePresets(state.presets);
       dispatch({ type: 'did-store-presets' });
     }
-  }, [state.presets, state.isInitialized]);
+  }, [state.presets, state.shouldSavePresets]);
 
   useEffect(() => {
-    if (state.isInitialized) {
+    if (state.shouldSaveState) {
       storeState(state);
+      dispatch({ type: 'did-store-state' });
     }
-  }, [state, state.isInitialized]);
+  }, [state, state.shouldSaveState]);
 
   useEffect(() => {
     if (state.error) {

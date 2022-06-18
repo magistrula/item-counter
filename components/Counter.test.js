@@ -140,22 +140,22 @@ describe('initial load', () => {
     );
   });
 
-  // This should not happen; need redux saga or thunk to avoid this
-  it('resaves existing presets', () => {
+  // This test protects against recurrence of undesired redundant save behavior
+  it('does not resave existing presets', () => {
     mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     doRender({ clearMocks: false });
 
-    expectSetItem(localStorage.setItem, 'counterPresets', [FOO_PRESET]);
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
   });
 
-  // This should not happen; need redux saga or thunk to avoid this
-  it('resaves existing state', () => {
+  // This test protects against recurrence of undesired redundant save behavior
+  it('does not resave existing state', () => {
     mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     doRender({ clearMocks: false });
 
-    expectSetItem(localStorage.setItem, 'counterState', FOO_STATE);
+    expectSetItemNotCalled(localStorage.setItem, 'counterState');
   });
 
   it('can restore state with unsaved category changes', () => {
