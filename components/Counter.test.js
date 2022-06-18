@@ -200,7 +200,7 @@ describe('initial load', () => {
   });
 });
 
-describe('blank state', () => {
+describe('when there is no saved state to restore', () => {
   it('shows blank state if stored presets is an empty array', () => {
     mockStoredData({ presets: [] });
 
