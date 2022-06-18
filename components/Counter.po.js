@@ -24,6 +24,8 @@ export default class CounterPO extends BasePO {
   }
 
   // Header
+  // TODO: Come up with a way to alias properties & methods of
+  // related components (e.g., this.header) to make the code below less verbose
 
   get headerTitleText() {
     return this.header.titleText;
@@ -45,6 +47,8 @@ export default class CounterPO extends BasePO {
   }
 
   // Header Dropdown Menu
+  // TODO: Come up with a way to alias properties & methods of
+  // related components (e.g., this.header) to make the code below less verbose
 
   get menuPresetOptionLabels() {
     return this.header.presetTitles;

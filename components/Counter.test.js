@@ -4,8 +4,13 @@
 
 import React from 'react';
 import { render } from '@testing-library/react';
-import { mockGetItem, mockSetItem } from 'tests/mock-local-storage';
-import { buildStateFromPreset } from 'tests/counter-state';
+import {
+  expectSetItem,
+  expectSetItemNotCalled,
+  mockGetItem,
+  mockSetItem,
+} from 'tests/mock-local-storage';
+import { buildStateItem, buildState } from 'tests/counter-state';
 
 import Counter from 'app/components/Counter';
 import CounterPageObject from 'app/components/Counter.po';
@@ -43,7 +48,7 @@ const FOO_PRESET = {
   ],
   items: [FOO_ITEM_1A, FOO_ITEM_1B, FOO_ITEM_1C, FOO_ITEM_2D],
 };
-const FOO_STATE = buildStateFromPreset(FOO_PRESET);
+const FOO_STATE = buildState(FOO_PRESET);
 
 const BAR_CAT3_ID = 'bar-cat-3-id';
 const BAR_CAT3_NAME = 'Bar Category 3';
@@ -71,12 +76,22 @@ const BAZ_PRESET = {
   items: [],
 };
 
-function doRender() {
+const NEW_NAME = 'New Thing';
+const NOW_DATE = 1234567890;
+
+function doRender({ clearMocks = true } = {}) {
   const { container } = render(<Counter />);
+
+  if (clearMocks) {
+    // Clear getItem & setItem calls that run on initial render
+    localStorage.getItem.mockClear();
+    localStorage.setItem.mockClear();
+  }
+
   return new CounterPageObject({ scope: container });
 }
 
-function mockLocalStorage({ presets, state } = {}) {
+function mockStoredData({ presets, state } = {}) {
   mockGetItem(key => {
     if (key === 'counterState') {
       return JSON.stringify(state || null);
@@ -88,21 +103,24 @@ function mockLocalStorage({ presets, state } = {}) {
 
     throw new Error('Unexpected localStorage lookup');
   });
-
-  mockSetItem();
 }
 
 beforeEach(() => {
-  mockLocalStorage();
+  mockSetItem();
   jest.spyOn(window, 'confirm').mockReturnValue(true);
+  jest.spyOn(window, 'prompt').mockReturnValue(NEW_NAME);
+  jest.spyOn(Date, 'now').mockReturnValue(NOW_DATE);
+});
+
+afterEach(() => {
+  jest.resetAllMocks();
 });
 
 describe('initial load', () => {
   it('does not clear existing presets', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
-    doRender();
+    doRender({ clearMocks: false });
 
     expect(localStorage.setItem).not.toHaveBeenCalledWith(
       'counterPresets',
@@ -111,10 +129,9 @@ describe('initial load', () => {
   });
 
   it('does not clear existing state', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
-    doRender();
+    doRender({ clearMocks: false });
 
     expect(localStorage.setItem).not.toHaveBeenCalledWith(
       'counterState',
@@ -124,39 +141,26 @@ describe('initial load', () => {
 
   // This should not happen; need redux saga or thunk to avoid this
   it('resaves existing presets', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    const presets = [FOO_PRESET];
-    mockLocalStorage({ state, presets });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
-    doRender();
+    doRender({ clearMocks: false });
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'counterPresets',
-      JSON.stringify(presets)
-    );
+    expectSetItem(localStorage.setItem, 'counterPresets', [FOO_PRESET]);
   });
 
   // This should not happen; need redux saga or thunk to avoid this
   it('resaves existing state', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
-    doRender();
+    doRender({ clearMocks: false });
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'counterState',
-      JSON.stringify({
-        categories: state.categories,
-        items: state.items,
-        name: state.name,
-      })
-    );
+    expectSetItem(localStorage.setItem, 'counterState', FOO_STATE);
   });
 });
 
 describe('blank state', () => {
   it('shows blank state if stored presets is an empty array', () => {
-    mockLocalStorage({ presets: [] });
+    mockStoredData({ presets: [] });
 
     const view = doRender();
 
@@ -164,7 +168,7 @@ describe('blank state', () => {
   });
 
   it('shows blank state if stored presets is null', () => {
-    mockLocalStorage({ presets: null });
+    mockStoredData({ presets: null });
 
     const view = doRender();
 
@@ -172,26 +176,25 @@ describe('blank state', () => {
   });
 
   it('hides blank state if stored preset is available', () => {
-    mockLocalStorage({ presets: [FOO_PRESET] });
+    mockStoredData({ presets: [FOO_PRESET] });
 
     const view = doRender();
     expect(view.isBlankStateVisible).toEqual(false);
   });
 
   it('can create a new counter from blank state', () => {
-    mockLocalStorage({ presets: [] });
-    jest.spyOn(window, 'prompt').mockReturnValue('My Counter');
+    mockStoredData({ presets: [] });
 
     const view = doRender();
     view.createNewCounterViaBlankState();
 
-    expect(view.headerTitleText).toEqual('My Counter');
+    expect(view.headerTitleText).toEqual(NEW_NAME);
   });
 });
 
 describe('header interactions', () => {
   it('shows current preset title', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
 
@@ -199,8 +202,7 @@ describe('header interactions', () => {
   });
 
   it('can add a category', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Category');
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.addCategory();
@@ -208,41 +210,39 @@ describe('header interactions', () => {
     expect(view.categoryLabels).toEqual([
       FOO_CAT1_NAME,
       FOO_CAT2_NAME,
-      'New Category',
+      NEW_NAME,
     ]);
   });
 
   it('can rename current counter', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Counter Name');
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.renameCounterViaHeaderButton();
 
-    expect(view.headerTitleText).toEqual('New Counter Name');
+    expect(view.headerTitleText).toEqual(NEW_NAME);
+  });
+
+  it('disables save button if there are no changes', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    expect(view.isSaveButtonDisabled).toEqual(true);
   });
 
   it('can save current counter if there are changes', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Category');
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
-    view.addCategory();
+    view.removeCategory(FOO_CAT1_NAME);
     expect(view.isSaveButtonDisabled).toEqual(false);
 
     view.saveCounterViaHeaderButton();
     expect(view.isSaveButtonDisabled).toEqual(true);
   });
 
-  it('disables save button if there are no changes', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-
-    const view = doRender();
-    expect(view.isSaveButtonDisabled).toEqual(true);
-  });
-
   it('shows blank state after deleting one and only preset', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.deleteCounterViaHeaderButton();
@@ -250,8 +250,8 @@ describe('header interactions', () => {
     expect(view.isBlankStateVisible).toEqual(true);
   });
 
-  it('shows first alphabetical preset after deleting one of many', () => {
-    mockLocalStorage({
+  it('shows first alphabetical preset after deleting one of many presets', () => {
+    mockStoredData({
       state: FOO_STATE,
       presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET],
     });
@@ -265,7 +265,7 @@ describe('header interactions', () => {
 
 describe('header menu interactions', () => {
   it('can clear all categories', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.clearAllCategories();
@@ -274,7 +274,7 @@ describe('header menu interactions', () => {
   });
 
   it('can clear all item counts', () => {
-    const state = buildStateFromPreset(FOO_PRESET, {
+    const state = buildState(FOO_PRESET, {
       itemCounts: {
         [FOO_ITEM_1A.id]: 5,
         [FOO_ITEM_1B.id]: 0,
@@ -282,7 +282,7 @@ describe('header menu interactions', () => {
         [FOO_ITEM_2D.id]: 3,
       },
     });
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    mockStoredData({ state, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.clearItemCounts();
@@ -292,7 +292,7 @@ describe('header menu interactions', () => {
   });
 
   it('shows preset options in alphabetical order', () => {
-    mockLocalStorage({
+    mockStoredData({
       state: FOO_STATE,
       presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET],
     });
@@ -306,8 +306,8 @@ describe('header menu interactions', () => {
     ]);
   });
 
-  it('can select a preset', async () => {
-    mockLocalStorage({
+  it('can select a counter', async () => {
+    mockStoredData({
       state: FOO_STATE,
       presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET],
     });
@@ -320,80 +320,79 @@ describe('header menu interactions', () => {
   });
 
   it('can create a new counter', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('My Counter');
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.createNewCounterViaMenuOption();
 
-    expect(view.headerTitleText).toEqual('My Counter');
+    expect(view.headerTitleText).toEqual(NEW_NAME);
   });
 
-  it('can rename current preset', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Counter Name');
-
+  it('can rename current counter', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
     const view = doRender();
     view.renameViaMenuOption();
 
-    expect(view.headerTitleText).toEqual('New Counter Name');
+    expect(view.headerTitleText).toEqual(NEW_NAME);
+  });
+
+  it('disables save option if there are no changes', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    expect(view.saveMenuOption).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('can save current counter if there are changes', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Category');
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
-    view.addCategory();
+    view.removeCategory(FOO_CAT1_NAME);
     expect(view.saveMenuOption).toHaveAttribute('aria-disabled', 'false');
 
     view.saveViaMenuOption();
     expect(view.saveMenuOption).toHaveAttribute('aria-disabled', 'true');
   });
 
-  it('disables save option if there are no changes', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-
-    const view = doRender();
-    expect(view.saveMenuOption).toHaveAttribute('aria-disabled', 'true');
-  });
-
-  it('can delete current preset', async () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+  it('can delete current counter', async () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
 
     const view = doRender();
     view.deleteViaMenuOption();
 
+    expect(window.confirm).toHaveBeenCalledWith(
+      expect.stringMatching(/delete counter/i)
+    );
     expect(view.headerTitleText).toEqual(BAR_PRESET.name);
   });
 });
 
 describe('categories', () => {
   it('can rename a category', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('Renamed Category');
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.renameCategory(FOO_CAT1_NAME);
 
-    expect(view.categoryLabels).toEqual(['Renamed Category', FOO_CAT2_NAME]);
+    expect(view.categoryLabels).toEqual([NEW_NAME, FOO_CAT2_NAME]);
   });
 
   it('can delete a category', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.removeCategory(FOO_CAT1_NAME);
 
+    expect(window.confirm).toHaveBeenCalledWith(
+      expect.stringMatching(/delete category/i)
+    );
     expect(view.categoryLabels).toEqual([FOO_CAT2_NAME]);
   });
 });
 
 describe('items', () => {
   it('shows item counts', () => {
-    const state = buildStateFromPreset(FOO_PRESET, {
+    const state = buildState(FOO_PRESET, {
       itemCounts: {
         [FOO_ITEM_1A.id]: 1,
         [FOO_ITEM_1B.id]: 2,
@@ -401,7 +400,7 @@ describe('items', () => {
         [FOO_ITEM_2D.id]: 3,
       },
     });
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    mockStoredData({ state, presets: [FOO_PRESET] });
 
     const view = doRender();
 
@@ -410,11 +409,10 @@ describe('items', () => {
   });
 
   it('can add an item', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
-    view.addItemForCategory('New Item', FOO_CAT2_NAME);
+    view.addItemForCategory(NEW_NAME, FOO_CAT2_NAME);
 
     expect(view.itemNamesForCategory(FOO_CAT1_NAME)).toEqual([
       FOO_ITEM_1A.name,
@@ -423,15 +421,15 @@ describe('items', () => {
     ]);
     expect(view.itemNamesForCategory(FOO_CAT2_NAME)).toEqual([
       FOO_ITEM_2D.name,
-      'New Item',
+      NEW_NAME,
     ]);
   });
 
   it('can increment item', () => {
-    const state = buildStateFromPreset(FOO_PRESET, {
+    const state = buildState(FOO_PRESET, {
       itemCounts: { [FOO_ITEM_1A.id]: 1 },
     });
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
+    mockStoredData({ state, presets: [FOO_PRESET] });
 
     const view = doRender();
     expect(view.itemCountsForCategory(FOO_CAT1_NAME)).toEqual(['1', '0', '0']);
@@ -441,28 +439,27 @@ describe('items', () => {
   });
 
   it('can rename item', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Item A Name');
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.renameItemInCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
 
     expect(view.itemNamesForCategory(FOO_CAT1_NAME)).toEqual([
-      'New Item A Name',
+      NEW_NAME,
       FOO_ITEM_1B.name,
       FOO_ITEM_1C.name,
     ]);
   });
 
   it('can delete item', () => {
-    const state = buildStateFromPreset(FOO_PRESET);
-    mockLocalStorage({ state, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Item A Name');
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.removeItemInCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
 
+    expect(window.confirm).toHaveBeenCalledWith(
+      expect.stringMatching(/delete item/i)
+    );
     expect(view.itemNamesForCategory(FOO_CAT1_NAME)).toEqual([
       FOO_ITEM_1B.name,
       FOO_ITEM_1C.name,
@@ -470,64 +467,316 @@ describe('items', () => {
   });
 });
 
-describe('saving presets', () => {
-  it('saves presets to localStorage when counter is created', () => {
-    mockLocalStorage({ presets: [] });
-    jest.spyOn(window, 'prompt').mockReturnValue('My Counter');
+describe('unsaved content warnings', () => {
+  it('warns before switching counters when there are item counts', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
 
     const view = doRender();
-    localStorage.setItem.mockClear();
-    view.createNewCounterViaBlankState();
+    view.incrementItemForCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+    view.selectPreset(BAR_PRESET.name);
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'counterPresets',
-      expect.stringContaining('My Counter')
+    expect(window.confirm).toHaveBeenCalledWith(
+      expect.stringMatching(/discard.*counts/i)
     );
   });
 
-  it('saves presets to localStorage when counter is saved', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Category');
+  it('warns before switching counters when there are unsaved preset changes', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+
+    const view = doRender();
+    view.addItemForCategory(NEW_NAME, FOO_CAT1_NAME);
+    view.selectPreset(BAR_PRESET.name);
+
+    expect(window.confirm).toHaveBeenCalledWith(
+      expect.stringMatching(/without saving changes/i)
+    );
+  });
+
+  it('warns before switching counters when there are item counts & unsaved preset changes', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+
+    const view = doRender();
+    view.incrementItemForCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+    view.addItemForCategory(NEW_NAME, FOO_CAT1_NAME);
+    view.selectPreset(BAR_PRESET.name);
+
+    expect(window.confirm).toHaveBeenNthCalledWith(
+      1,
+      expect.stringMatching(/discard.*counts/i)
+    );
+    expect(window.confirm).toHaveBeenNthCalledWith(
+      2,
+      expect.stringMatching(/without saving changes/i)
+    );
+  });
+
+  it('warns before creating counter when there are item counts', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+
+    const view = doRender();
+    view.incrementItemForCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+    view.createNewCounterViaMenuOption(BAR_PRESET.name);
+
+    expect(window.confirm).toHaveBeenCalledWith(
+      expect.stringMatching(/discard.*counts/i)
+    );
+  });
+
+  it('warns before creating counter when there are unsaved preset changes', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+
+    const view = doRender();
+    view.addItemForCategory(NEW_NAME, FOO_CAT1_NAME);
+    view.createNewCounterViaMenuOption(BAR_PRESET.name);
+
+    expect(window.confirm).toHaveBeenCalledWith(
+      expect.stringMatching(/without saving changes/i)
+    );
+  });
+
+  it('warns before creating counter when there are item counts & unsaved preset changes', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+
+    const view = doRender();
+    view.incrementItemForCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+    view.addItemForCategory(NEW_NAME, FOO_CAT1_NAME);
+    view.createNewCounterViaMenuOption(BAR_PRESET.name);
+
+    expect(window.confirm).toHaveBeenNthCalledWith(
+      1,
+      expect.stringMatching(/discard.*counts/i)
+    );
+    expect(window.confirm).toHaveBeenNthCalledWith(
+      2,
+      expect.stringMatching(/without saving changes/i)
+    );
+  });
+});
+
+describe('persisting state & presets', () => {
+  it('persists state & presets on create new counter', () => {
+    mockStoredData({ presets: [] });
+
+    const view = doRender();
+    view.createNewCounterViaBlankState();
+
+    expectSetItem(localStorage.setItem, 'counterState', {
+      name: NEW_NAME,
+      items: [],
+      categories: [],
+    });
+    expectSetItem(localStorage.setItem, 'counterPresets', [
+      { name: NEW_NAME, id: `preset-${NOW_DATE}`, items: [], categories: [] },
+    ]);
+  });
+
+  it('persists state & presets on rename current counter', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.renameCounterViaHeaderButton();
+
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      name: NEW_NAME,
+    });
+    expectSetItem(localStorage.setItem, 'counterPresets', [
+      { ...FOO_PRESET, name: NEW_NAME },
+    ]);
+  });
+
+  it('persists state & presets on save current counter', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.removeCategory(FOO_CAT1_NAME);
+    view.saveCounterViaHeaderButton();
+
+    const updatedCategories = [{ id: FOO_CAT2_ID, name: FOO_CAT2_NAME }];
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      categories: updatedCategories,
+    });
+    expectSetItem(localStorage.setItem, 'counterPresets', [
+      { ...FOO_PRESET, categories: updatedCategories },
+    ]);
+  });
+
+  it('persists state & presets on delete current counter', () => {
+    mockStoredData({
+      state: FOO_STATE,
+      presets: [FOO_PRESET, BAR_PRESET],
+    });
+
+    const view = doRender();
+    view.deleteCounterViaHeaderButton();
+
+    expectSetItem(localStorage.setItem, 'counterState', buildState(BAR_PRESET));
+    expectSetItem(localStorage.setItem, 'counterPresets', [BAR_PRESET]);
+  });
+
+  it('persists state on select counter', async () => {
+    mockStoredData({
+      state: FOO_STATE,
+      presets: [BAZ_PRESET, FOO_PRESET, BAR_PRESET],
+    });
+
+    const view = doRender();
+    await view.selectPreset(BAR_PRESET.name);
+
+    expectSetItem(localStorage.setItem, 'counterState', buildState(BAR_PRESET));
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
+  });
+
+  it('persists state on add new category', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
     view.addCategory();
-    localStorage.setItem.mockClear();
-    view.saveCounterViaHeaderButton();
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'counterPresets',
-      expect.stringContaining('New Category')
-    );
+    const updatedCategories = FOO_STATE.categories.concat([
+      { name: NEW_NAME, id: `cat-${NOW_DATE}` },
+    ]);
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      categories: updatedCategories,
+    });
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
   });
 
-  it('saves presets to localStorage when counter is renamed', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET] });
-    jest.spyOn(window, 'prompt').mockReturnValue('New Counter Name');
+  it('persists state on rename category', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
-    localStorage.setItem.mockClear();
-    view.renameCounterViaHeaderButton();
+    view.renameCategory(FOO_CAT1_NAME);
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'counterPresets',
-      expect.stringContaining('New Counter Name')
-    );
+    const updatedCategories = [
+      { id: FOO_CAT1_ID, name: NEW_NAME },
+      { id: FOO_CAT2_ID, name: FOO_CAT2_NAME },
+    ];
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      categories: updatedCategories,
+    });
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
   });
 
-  it('saves presets to localStorage when counter is deleted', () => {
-    mockLocalStorage({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+  it('persists state on delete category', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
     const view = doRender();
-    localStorage.setItem.mockClear();
-    view.deleteCounterViaHeaderButton();
+    view.removeCategory(FOO_CAT1_NAME);
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'counterPresets',
-      expect.stringContaining(BAR_PRESET.name)
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      categories: [{ id: FOO_CAT2_ID, name: FOO_CAT2_NAME }],
+    });
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
+  });
+
+  it('persists state on clear all categories', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.clearAllCategories();
+
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      categories: [],
+      items: [],
+    });
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
+  });
+
+  it('persists state on add item', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.addItemForCategory(NEW_NAME, FOO_CAT2_NAME);
+
+    const updatedItems = FOO_STATE.items.concat([
+      {
+        id: `item-${NOW_DATE}`,
+        name: NEW_NAME,
+        categoryId: FOO_CAT2_ID,
+        count: 0,
+      },
+    ]);
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      items: updatedItems,
+    });
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
+  });
+
+  it('persists state on increment item', () => {
+    const state = buildState(FOO_PRESET, {
+      itemCounts: { [FOO_ITEM_1A.id]: 1 },
+    });
+    mockStoredData({ state, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.incrementItemForCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+
+    const updatedItems = [
+      buildStateItem(FOO_ITEM_1A, { count: 2 }),
+      buildStateItem(FOO_ITEM_1B),
+      buildStateItem(FOO_ITEM_1C),
+      buildStateItem(FOO_ITEM_2D),
+    ];
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      items: updatedItems,
+    });
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
+  });
+
+  it('persists state on rename item', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.renameItemInCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+
+    const updatedItems = [
+      buildStateItem(FOO_ITEM_1A, { name: NEW_NAME }),
+      buildStateItem(FOO_ITEM_1B),
+      buildStateItem(FOO_ITEM_1C),
+      buildStateItem(FOO_ITEM_2D),
+    ];
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      items: updatedItems,
+    });
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
+  });
+
+  it('persists state on delete item', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.removeItemInCategory(FOO_ITEM_1A.name, FOO_CAT1_NAME);
+
+    const updatedItems = FOO_STATE.items.filter(
+      item => item.name !== FOO_ITEM_1A.name
     );
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'counterPresets',
-      expect.not.stringContaining(FOO_PRESET.name)
-    );
+    expectSetItem(localStorage.setItem, 'counterState', {
+      ...FOO_STATE,
+      items: updatedItems,
+    });
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
+  });
+
+  it('persists state on clear all item counts', () => {
+    const state = buildState(FOO_PRESET, {
+      itemCounts: { [FOO_ITEM_1A.id]: 5 },
+    });
+    mockStoredData({ state, presets: [FOO_PRESET] });
+
+    const view = doRender();
+    view.clearItemCounts();
+
+    const stateWithClearedCounts = buildState(FOO_PRESET);
+    expectSetItem(localStorage.setItem, 'counterState', stateWithClearedCounts);
+    expectSetItemNotCalled(localStorage.setItem, 'counterPresets');
   });
 });

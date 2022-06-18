@@ -114,6 +114,7 @@ const ACTION_HANDLERS = {
     const currPreset = savedName
       ? find(presets, { name: savedName })
       : presets[0];
+
     const newState = buildCounterState({
       currPreset,
       allPresets: presets,
@@ -176,31 +177,24 @@ const ACTION_HANDLERS = {
       });
     }
 
-    const isCurrPresetStored = presetExistsWithName(state.presets, state.name);
-    if (isCurrPresetStored) {
-      const presets = state.presets.map(preset => {
-        return preset.name === state.name
-          ? Object.assign({}, preset, { name })
-          : preset;
-      });
+    const presets = state.presets.map(preset => {
+      return preset.name === state.name ? { ...preset, name } : preset;
+    });
 
-      return Object.assign({}, state, { name, presets });
-    }
-
-    return Object.assign({}, state, { name });
+    return { ...state, name, presets };
   },
 
   'save-curr-preset': state => {
     const categories = state.categories;
-    const items = initItems(state.items);
+    const items = state.items.map(({ count, ...rest }) => rest);
 
     const presets = state.presets.map(preset => {
       return preset.name === state.name
-        ? Object.assign({}, preset, { categories, items })
+        ? { ...preset, categories, items }
         : preset;
     });
 
-    return Object.assign({}, state, { presets });
+    return { ...state, presets };
   },
 
   'delete-curr-preset': state => {
@@ -300,19 +294,16 @@ const ACTION_HANDLERS = {
     const item = find(state.items, { id: itemId });
     const isSameName = item.name.toLowerCase() === newName.toLowerCase();
 
-    if (
-      !isSameName &&
-      findItemInCategory(state, newName, item.categoryId)
-    ) {
+    if (!isSameName && findItemInCategory(state, newName, item.categoryId)) {
       return Object.assign({}, state, {
         error: `Item "${newName}" already exists in this category`,
       });
     }
 
     const updatedItems = state.items.map(item => {
-      return item.id === itemId ?
-        Object.assign({}, item, { name: newName }) :
-        item;
+      return item.id === itemId
+        ? Object.assign({}, item, { name: newName })
+        : item;
     });
     return updateItems(state, updatedItems, { isCurrPresetSaved: false });
   },
@@ -333,7 +324,7 @@ const ACTION_HANDLERS = {
 
 export default function reducer(state, action) {
   if (ACTION_HANDLERS[action.type]) {
-    console.log('Received action', action.type);
+    // console.log('Received action', action.type);
     return ACTION_HANDLERS[action.type](state, action.payload);
   }
 
