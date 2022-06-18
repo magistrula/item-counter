@@ -156,6 +156,47 @@ describe('initial load', () => {
 
     expectSetItem(localStorage.setItem, 'counterState', FOO_STATE);
   });
+
+  it('can restore state with unsaved category changes', () => {
+    const unsavedCategories = FOO_STATE.categories.concat({
+      id: 'unsaved-category',
+      name: 'Unsaved Category',
+    });
+    mockStoredData({
+      state: { ...FOO_STATE, categories: unsavedCategories },
+      presets: [FOO_PRESET],
+    });
+
+    const view = doRender({ clearMocks: false });
+
+    expect(view.isSaveButtonDisabled).toEqual(false);
+    expect(view.categoryLabels).toEqual([
+      FOO_CAT1_NAME,
+      FOO_CAT2_NAME,
+      'Unsaved Category',
+    ]);
+  });
+
+  it('can restore state with unsaved item changes', () => {
+    const unsavedItems = FOO_STATE.items.concat({
+      id: 'unsaved-item',
+      name: 'Unsaved Item',
+      categoryId: FOO_CAT2_ID,
+      count: 0,
+    });
+    mockStoredData({
+      state: { ...FOO_STATE, items: unsavedItems },
+      presets: [FOO_PRESET],
+    });
+
+    const view = doRender({ clearMocks: false });
+
+    expect(view.isSaveButtonDisabled).toEqual(false);
+    expect(view.itemNamesForCategory(FOO_CAT2_NAME)).toEqual([
+      FOO_ITEM_2D.name,
+      'Unsaved Item',
+    ]);
+  });
 });
 
 describe('blank state', () => {
@@ -368,6 +409,14 @@ describe('header menu interactions', () => {
 });
 
 describe('categories', () => {
+  it('shows category names', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+
+    const view = doRender();
+
+    expect(view.categoryLabels).toEqual([FOO_CAT1_NAME, FOO_CAT2_NAME]);
+  });
+
   it('can rename a category', () => {
     mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET] });
 
@@ -391,6 +440,21 @@ describe('categories', () => {
 });
 
 describe('items', () => {
+  it('shows item names', () => {
+    mockStoredData({ state: FOO_STATE, presets: [FOO_PRESET, BAR_PRESET] });
+
+    const view = doRender();
+
+    expect(view.itemNamesForCategory(FOO_CAT1_NAME)).toEqual([
+      FOO_ITEM_1A.name,
+      FOO_ITEM_1B.name,
+      FOO_ITEM_1C.name,
+    ]);
+    expect(view.itemNamesForCategory(FOO_CAT2_NAME)).toEqual([
+      FOO_ITEM_2D.name,
+    ]);
+  });
+
   it('shows item counts', () => {
     const state = buildState(FOO_PRESET, {
       itemCounts: {
