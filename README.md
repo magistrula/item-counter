@@ -10,4 +10,4 @@ This app was created to make the counting process easier. The idea is that you t
 
 ![Food Bank Counter](https://magistrula-dev.s3.us-west-1.amazonaws.com/misc/food-bank-counter.png)
 
-See the live app [here](https://www.herokuapp.com/item-counter).
+See the live app [here](https://item-counter.herokuapp.com/).
