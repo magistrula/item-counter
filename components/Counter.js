@@ -58,7 +58,7 @@ export default function Counter() {
     setItemsByCategory(buildItemsByCategory(state.categories, state.items));
   }, [state.categories, state.items]);
 
-  const usePreset = useCallback(
+  const selectPreset = useCallback(
     preset => {
       const canLeaveCurrPreset = confirmLeaveCurrPreset({
         hasCounts: hasNonZeroItemCounts(state.items),
@@ -182,7 +182,7 @@ export default function Counter() {
       renameCurrPreset={renameCurrPreset}
       renameItem={renameItem}
       saveCurrPreset={saveCurrPreset}
-      usePreset={usePreset}
+      selectPreset={selectPreset}
     />
   );
 }

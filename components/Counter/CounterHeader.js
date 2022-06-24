@@ -27,7 +27,7 @@ function CounterHeader({
   deleteCurrPreset,
   renameCurrPreset,
   saveCurrPreset,
-  usePreset,
+  selectPreset,
 }) {
   const showHelp = useCallback(() => {
     window.alert(INSTRUCTIONS_TEXT);
@@ -114,7 +114,7 @@ function CounterHeader({
             renameCurrPreset={renameCurrPreset}
             saveCurrPreset={saveCurrPreset}
             showHelp={showHelp}
-            usePreset={usePreset}
+            selectPreset={selectPreset}
           />
         </Box>
       </Box>
@@ -133,7 +133,7 @@ CounterHeader.propTypes = {
   deleteCurrPreset: PropTypes.func.isRequired,
   renameCurrPreset: PropTypes.func.isRequired,
   saveCurrPreset: PropTypes.func.isRequired,
-  usePreset: PropTypes.func.isRequired,
+  selectPreset: PropTypes.func.isRequired,
 };
 
 export default CounterHeader;

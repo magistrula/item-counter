@@ -19,7 +19,7 @@ function CounterHeaderMenu({
   renameCurrPreset,
   saveCurrPreset,
   showHelp,
-  usePreset,
+  selectPreset,
 }) {
   return (
     <MoreMenu testId="CounterHeaderMenu-MoreMenu">
@@ -52,7 +52,7 @@ function CounterHeaderMenu({
         <CounterPresetMenuItem
           key={preset.name}
           preset={preset}
-          usePreset={usePreset}
+          selectPreset={selectPreset}
         />
       ))}
 
@@ -110,8 +110,8 @@ CounterHeaderMenu.propTypes = {
   deleteCurrPreset: PropTypes.func.isRequired,
   renameCurrPreset: PropTypes.func.isRequired,
   saveCurrPreset: PropTypes.func.isRequired,
+  selectPreset: PropTypes.func.isRequired,
   showHelp: PropTypes.func.isRequired,
-  usePreset: PropTypes.func.isRequired,
 };
 
 export default CounterHeaderMenu;

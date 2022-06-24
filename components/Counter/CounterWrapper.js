@@ -27,7 +27,7 @@ function CounterWrapper({
   renameCurrPreset,
   renameItem,
   saveCurrPreset,
-  usePreset,
+  selectPreset,
 }) {
   return (
     <>
@@ -42,7 +42,7 @@ function CounterWrapper({
         deleteCurrPreset={deleteCurrPreset}
         renameCurrPreset={renameCurrPreset}
         saveCurrPreset={saveCurrPreset}
-        usePreset={usePreset}
+        selectPreset={selectPreset}
       />
 
       <Box mt={3} mx={2}>
@@ -99,7 +99,7 @@ CounterWrapper.propTypes = {
   renameCurrPreset: PropTypes.func.isRequired,
   renameItem: PropTypes.func.isRequired,
   saveCurrPreset: PropTypes.func.isRequired,
-  usePreset: PropTypes.func.isRequired,
+  selectPreset: PropTypes.func.isRequired,
 };
 
 export default CounterWrapper;
