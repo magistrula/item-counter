@@ -3,23 +3,23 @@ body {
   font-family: Roboto;
 }
 
-.u-FullWidth {
+.u-fullWidth {
   width: 100%;
 }
 
-.u-Ellipsized {
+.u-ellipsized {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
 }
 
-.u-HiddenXs {
+.u-hiddenXs {
   @media (max-width: 599px) {
     display: none !important;
   }
 }
 
-.u-HiddenNotXs {
+.u-hiddenNotXs {
   @media (min-width: 600px) {
     display: none !important;
   }

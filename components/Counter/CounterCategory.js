@@ -64,7 +64,7 @@ function CounterCategory({
 
       <Box mb={1}>
         <TextField
-          className="u-FullWidth"
+          className="u-fullWidth"
           placeholder="Enter item"
           onKeyDown={onKeyDownAddItemInput}
           inputProps={{ 'data-testid': 'CounterCategory-itemInput' }}

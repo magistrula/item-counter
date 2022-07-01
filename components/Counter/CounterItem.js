@@ -44,7 +44,7 @@ function CounterItem({
         <Button
           variant="contained"
           size="large"
-          className="u-FullWidth"
+          className="u-fullWidth"
           onClick={incrementCb}
           data-testid="CounterItem-mainButton"
         >

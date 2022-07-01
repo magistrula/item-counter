@@ -58,7 +58,7 @@ function CounterHeader({
             </Box>
           )}
 
-          <Box mr={1} className="u-HiddenXs">
+          <Box mr={1} className="u-hiddenXs">
             <IconButton color="inherit" onClick={showHelp}>
               <InfoOutlinedIcon />
             </IconButton>
@@ -67,7 +67,7 @@ function CounterHeader({
 
         <Box display="flex" alignItems="center">
           <Box mr={2} className={styles['CounterHeader-title']}>
-            <div className="u-Ellipsized" data-testid="CounterHeader-title">
+            <div className="u-ellipsized" data-testid="CounterHeader-title">
               {currPresetTitle}
             </div>
           </Box>
@@ -77,7 +77,7 @@ function CounterHeader({
               display="flex"
               alignItems="center"
               flexShrink={0}
-              className="u-HiddenXs"
+              className="u-hiddenXs"
             >
               <ButtonGroup variant="text" color="inherit">
                 <Button

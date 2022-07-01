@@ -18,7 +18,7 @@ function CounterPresetMenuItem({ preset, selectPreset }) {
       onClick={selectPresetCb}
       data-testid="CounterHeaderMenu-presetItem"
     >
-      <div className="u-Ellipsized">{preset.name}</div>
+      <div className="u-ellipsized">{preset.name}</div>
     </MenuItem>
   );
 }

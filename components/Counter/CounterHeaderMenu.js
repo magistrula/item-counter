@@ -37,7 +37,7 @@ function CounterHeaderMenu({
       >
         Clear Counts
       </MenuItem>
-      <MenuItem dense onClick={showHelp} className="u-HiddenNotXs">
+      <MenuItem dense onClick={showHelp} className="u-hiddenNotXs">
         Instructions
       </MenuItem>
       <Divider />
